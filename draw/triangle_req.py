@@ -1,0 +1,6 @@
+# triangle_indices = ((0, 1, 2), (2, 1, 3))
+
+triangle_indices = (
+    (0, 1, 2),
+    (0, 0, 0)
+)
