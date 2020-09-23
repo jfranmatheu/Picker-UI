@@ -440,7 +440,7 @@ class PK_OT_draw_picker(Operator):
                 b_data.size[1] = b_data.size[0]
             # Get real coordinates and size.
             x, y, w, h = b_data.get_real_pos_size()
-            if point_inside_rect(mouse, [x + ox, y + oy], [w, h]):
+            if point_inside_rect(mouse, (x + ox, y + oy), (w, h)):
                 self.active_button = b
                 return self.select_bone(context, b, event.shift)
         self.active_button = None
@@ -463,7 +463,7 @@ class PK_OT_draw_picker(Operator):
                 b_data.size[1] = b_data.size[0]
             # Get real coordinates and size.
             x, y, w, h = b_data.get_real_pos_size()
-            if point_inside_rect(mouse, [x + ox, y + oy], [w, h]):
+            if point_inside_rect(mouse, (x + ox, y + oy), (w, h)):
                 #self.active_button = b
                 return b
         # self.active_button = None
@@ -615,7 +615,7 @@ class PK_OT_draw_picker(Operator):
                             self.scaling = True
                         else:
                             self.moving = True
-                            self.offset = self.mousePos - Vector((self.picker.pos[0], self.picker.pos[1]))
+                            self.offset = self.mousePos - Vector((pk.pos[0], pk.pos[1]))
                     return {'RUNNING_MODAL'}
                 # EXIT 0/
                 elif event.type == 'ESC':
@@ -651,7 +651,7 @@ class PK_OT_draw_picker(Operator):
                             self.scaling = True
                         else:
                             self.moving = True
-                            self.offset = self.mousePos - Vector((self.picker.pos[0], self.picker.pos[1]))
+                            self.offset = self.mousePos - Vector((pk.pos[0], pk.pos[1]))
                     return {'RUNNING_MODAL'}
                 # EXIT EDIT MODE 0/
                 elif event.type == 'ESC':
