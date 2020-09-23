@@ -19,10 +19,19 @@ class PK_OT_create_picker(Operator):
         # Create Picker and fill data
         picker = context.scene.pickers.data.add()
         picker.name = create.picker_name
-        # TODO: change object to armature selector, then:
+
         # 1. Get object by armature name, if nothing...
         # 2. Iterate over scene objects and check for data.
-        picker.arm_obj = create.armature_object
+        arm_obj = context.scene.objects.get(create.armature.name, None)
+        if not arm_obj:
+            arm = create.armature
+            for ob in context.scene.objects:
+                if ob.data == arm:
+                    arm_obj = ob
+                    break
+            if not arm_obj:
+                return {'CANCELLED'}
+        picker.arm_obj = arm_obj
         picker.active_scene = -1 # No scenes ATM
 
         # Update Picker Active Index to created one

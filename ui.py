@@ -16,12 +16,18 @@ class PK_PT_setup_picker_panel(Panel):
         layout = self.layout
         col = layout.column(align=True)
 
-        col.prop(pk, 'armature_object')
+        col.prop(pk, 'armature')
 
-        if not pk.armature_object:
+        if not pk.armature:
             return
 
-        col.prop(pk, 'name')
+        col.prop(pk, 'picker_name')
+        col.prop(pk, 'generate_picker_image')
+        row = col.row()
+        row.enabled = not pk.generate_picker_image
+        row.prop(pk, 'picker_image')
+        
+        '''
         row = col.row()
         row.enabled = context.mode == 'POSE'
         row.prop(pk, 'only_selected_pose_bones')
@@ -48,6 +54,7 @@ class PK_PT_setup_picker_panel(Panel):
         box.prop(pk, 'color_leg_r')
         box.prop(pk, 'color_body')
         box.prop(pk, 'color_head')
+        '''
 
         op = layout.row()
         op.scale_y = 1.25

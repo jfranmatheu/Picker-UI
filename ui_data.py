@@ -4,6 +4,15 @@ from bpy.props import *
 
 class PK_UI_Properties(PropertyGroup):
     picker_name : StringProperty(default="New Picker", name="Picker Name", description="Identifier for your picker")
+    
+    armature_object : PointerProperty(type=Object, name="Armature Object")
+    armature : PointerProperty(type=Armature, name="Armature") # TODO: Change to dyn enum (armatures in active scene).
+    
+    generate_picker_image : BoolProperty(default=True, name="Generate Picker Images")
+    picker_image : PointerProperty(type=Image, name="Picker Image")
+    
+    
+    '''
     scene_name : StringProperty(default="New Scene", name="Scene Name", description="Identifier for your scene")
     view_name : StringProperty(default="New View", name="View Name", description="Identifier for your view")
     view : EnumProperty (
@@ -29,12 +38,10 @@ class PK_UI_Properties(PropertyGroup):
         name="Generate Default Layers?",
         description="Automatically will generate a bunch of useful layers for you (hands, arms, legs, body, face...)"
     )
-
-    armature_object : PointerProperty(type=Object, name="Armature Object")
-
+    
     generate_facial : BoolProperty(default=True, name="Generate Facial Picker")
 
-    ''' Views to create. '''
+    # Views to create.
     facial_views : EnumProperty (
         items=(
             ('FRONT',       "Front",        "Create front view"),
@@ -47,10 +54,8 @@ class PK_UI_Properties(PropertyGroup):
         description="Select views you want to generate"
     )
 
-    generate_picker_image : BoolProperty(default=True, name="Generate Picker Images")
     picker_facial_image : PointerProperty(type=Image, name="Facial Image")
-    picker_image : PointerProperty(type=Image, name="Picker Image")
-
+    
     color_arm_l         : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="Left Arm")
     color_arm_r         : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="Right Arm")
     color_leg_l         : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="Left Leg")
@@ -60,3 +65,4 @@ class PK_UI_Properties(PropertyGroup):
     #color_spine         : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="Spine Color")
     color_body          : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="Body")
     color_head          : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="Head")
+    '''
