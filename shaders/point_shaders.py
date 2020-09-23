@@ -29,52 +29,52 @@ void main()
 
 circle_fill_frag_shader_1 = """
 uniform vec4 color;
-
+out vec4 co;
 void main()
 {
   float dist = length(gl_PointCoord - vec2(0.5)); // First method.
 
-  vec4 co = vec4(1.0);
-  co.rgb = color.rgb;
-  co.a = mix(color.a, 0.0, smoothstep(.5, .5, dist));
+  vec4 col = vec4(1.0);
+  col.rgb = color.rgb;
+  col.a = mix(color.a, 0.0, smoothstep(.5, .5, dist));
 
-  if (co.a == 1.0) {
+  if (col.a == 1.0) {
     discard;
   }
-  gl_FragColor = co;
+  co = col;
 }
 """
 
 circle_fill_frag_shader_2 = """
 uniform vec4 color;
-
+out vec4 co;
 float circleshape(vec2 _pos, float _radius){
     return step(_radius, length(_pos - vec2(0.5)));
 }
 
 void main()
 {
-  vec4 co = vec4(1.0);
-  co.rgb = color.rgb;
-  co.a = circleshape(gl_PointCoord, .5); // Second method.
+  vec4 col = vec4(1.0);
+  col.rgb = color.rgb;
+  col.a = circleshape(gl_PointCoord, .5); // Second method.
 
-  if (co.a == 1.0) {
+  if (col.a == 1.0) {
     discard;
   }
-  gl_FragColor = co;
+  co = col;
 }
 """
 
 circle_fill_frag_shader_3 = """
 uniform vec4 color;
-
+out vec4 co;
 void main()
 {
   vec2 coord = gl_PointCoord - vec2(0.5);  // from [0,1] to [-0.5,0.5]
   if(length(coord) > 0.5)                  // outside of circle radius?
     discard;
 
-  gl_FragColor = color;
+  co = color;
 }
 """
 
@@ -85,7 +85,7 @@ void main()
 circle_fill_smooth_frag_shader = """
 precision mediump float;
 uniform vec4 color;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -95,7 +95,7 @@ void main()
   alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
   if (alpha < 0.1) // threshold
     discard;
-  gl_FragColor = color * alpha;
+  co = color * alpha;
 }
 """
 
@@ -106,7 +106,7 @@ precision mediump float;
 #endif
 
 uniform vec4 color;
-
+out vec4 co;
 float roundedFrame (float d, float thickness)
 {
   return smoothstep(0.55, 0.45, abs(d / thickness) * 5.0);
@@ -121,8 +121,8 @@ void main()
     float s = roundedFrame(r, 9.5);
     if (s < 0.05)
       discard;
-    gl_FragColor = color;
-    gl_FragColor.a *= s;
+    co = color;
+    co.a *= s;
 }
 """
 
@@ -133,7 +133,7 @@ precision mediump float;
 #endif
 
 uniform vec4 color;
-
+out vec4 co;
 float roundedRectangle (float d, float thickness)
 {
   return smoothstep(0.66, 0.33, d / thickness * 5.0);
@@ -146,8 +146,8 @@ void main()
     r = dot(cxy, cxy);
 
     float s = roundedRectangle(r, 8);
-    gl_FragColor = color;
-    gl_FragColor.a *= s;
+    co = color;
+    co.a *= s;
 }
 """
 
@@ -159,7 +159,7 @@ circle_fill_outline_frag_shader_3 = """
 uniform vec4 color;
 uniform vec4 outline_color;
 uniform float outline_factor; // between [-0.5, 0.5], ideal [-0.4, 0.4]
-
+out vec4 co;
 void main()
 {
   vec2 coord = gl_PointCoord - vec2(0.5);  // from [0,1] to [-0.5,0.5]ç
@@ -167,9 +167,9 @@ void main()
   if(len > 0.5)                  // outside of circle radius?
     discard;
   if (len > outline_factor)
-    gl_FragColor = outline;
+    co = outline;
   else
-    gl_FragColor = color;
+    co = color;
 }
 """
 
@@ -182,7 +182,7 @@ precision mediump float;
 uniform vec4 color;
 uniform vec4 outline_color;
 uniform float outline_factor; // between [-0.5, 0.5], ideal [-0.4, 0.4]
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -193,9 +193,9 @@ void main()
   if (alpha < 0.1) // threshold
     discard;
   if (r > outline_factor)
-    gl_FragColor = outline_color * alpha;
+    co = outline_color * alpha;
   else
-    gl_FragColor = color * alpha;
+    co = color * alpha;
 }
 """
 
@@ -210,7 +210,7 @@ uniform vec4 color;
 uniform vec4 outline_color;
 uniform float outline_factor; // between [-0.5, 0.5], ideal [-0.4, 0.4]
 uniform float outline_blur;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -222,13 +222,13 @@ void main()
     discard;
 
   if (outline_blur == 1){
-    gl_FragColor = mix(color, outline_color, r+(1-outline_factor)) * alpha;
+    co = mix(color, outline_color, r+(1-outline_factor)) * alpha;
   }
   else{
     if (r > outline_factor)
-      gl_FragColor = outline_color * alpha;
+      co = outline_color * alpha;
     else
-      gl_FragColor = color * alpha;
+      co = color * alpha;
   }
 }
 """
@@ -239,7 +239,7 @@ uniform vec4 color;
 uniform vec4 outline_color;
 uniform float outline_factor; // between [-0.5, 0.5], ideal [-0.4, 0.4]
 uniform float outline_blur;
-
+out vec4 co;
 vec4 ColorLerp(vec4 a, vec4 b, float t)
 {
   return vec4(
@@ -261,13 +261,13 @@ void main()
     discard;
 
   if (outline_blur == 1){
-    gl_FragColor = ColorLerp(color, outline_color, r) * alpha;
+    co = ColorLerp(color, outline_color, r) * alpha;
   }
   else{
     if (r > outline_factor)
-      gl_FragColor = outline_color * alpha;
+      co = outline_color * alpha;
     else
-      gl_FragColor = color * alpha;
+      co = color * alpha;
   }
 }
 """
@@ -282,7 +282,7 @@ precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -293,11 +293,11 @@ void main()
   if (alpha < 0.1) // threshold
     discard;
 
-  gl_FragColor = mix(color, second_color, r+factor); // * alpha
+  co = mix(color, second_color, r+factor); // * alpha
 
   // Gamma correct.
-  // gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(.454545)); // 1.0/2.2
-  gl_FragColor.a *= alpha;
+  // co.rgb = pow(co.rgb, vec3(.454545)); // 1.0/2.2
+  co.a *= alpha;
 }
 """
 
@@ -307,7 +307,7 @@ precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
-
+out vec4 co;
 float PI_4 = 0.785398;
 
 void main()
@@ -321,23 +321,23 @@ void main()
     discard;
 
   // Method 1:
-  // gl_FragColor = mix(color, second_color, pow(r, asin(factor)));
+  // co = mix(color, second_color, pow(r, asin(factor)));
 
   // Method 2:
-  // gl_FragColor = mix(color, second_color, r*(1+factor));
+  // co = mix(color, second_color, r*(1+factor));
 
   // Method 3:
   //if (factor > 0)
-  //  gl_FragColor = mix(color, second_color, step(r, factor));
+  //  co = mix(color, second_color, step(r, factor));
   //else
-  //  gl_FragColor = mix(color, second_color, pow(r, 1+factor));
+  //  co = mix(color, second_color, pow(r, 1+factor));
 
   // Method 4:
-  gl_FragColor = mix(color, second_color, pow(r, tan(factor*PI_4+PI_4)));
+  co = mix(color, second_color, pow(r, tan(factor*PI_4+PI_4)));
 
   // Gamma correct.
-  gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(0.454545)); // 1.0/2.2
-  gl_FragColor.a *= alpha;
+  co.rgb = pow(co.rgb, vec3(0.454545)); // 1.0/2.2
+  co.a *= alpha;
 }
 """
 # float k = cos(cxy.x+factor) - sin(cxy.y+factor);
@@ -359,7 +359,7 @@ uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
 uniform float rotation;
-
+out vec4 co;
 float PI_4 = 0.785398;
 
 void main()
@@ -373,14 +373,14 @@ void main()
     discard;
 
   // float k = (cxy.x + factor) * cos(rotation) - (cxy.y + factor) * sin(rotation) + 1.0;
-  // gl_FragColor = mix(color, second_color, (cxy.x + factor) * cos(rotation) - (cxy.y + factor) * sin(rotation) + 1.0);  // * alpha
+  // co = mix(color, second_color, (cxy.x + factor) * cos(rotation) - (cxy.y + factor) * sin(rotation) + 1.0);  // * alpha
 
   float k = cxy.x * cos(rotation) - cxy.y * sin(rotation);
-  gl_FragColor = mix(color, second_color, pow((k+1)/2, tan(factor*PI_4+PI_4)));
+  co = mix(color, second_color, pow((k+1)/2, tan(factor*PI_4+PI_4)));
 
   // Gamma correct.
-  gl_FragColor.rgb =  pow(gl_FragColor.rgb, vec3(0.454545)); // 1.0/2.2
-  gl_FragColor.a *= alpha + (0 * rotation);
+  co.rgb =  pow(co.rgb, vec3(0.454545)); // 1.0/2.2
+  co.a *= alpha + (0 * rotation);
 }
 """
 # LINEAR HORIZONTAL
@@ -389,7 +389,7 @@ precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -400,7 +400,7 @@ void main()
   if (alpha < 0.1) // threshold
     discard;
 
-  gl_FragColor = mix(color, second_color, cxy.x + factor) * alpha; // Intensity: cxy.y*1.5
+  co = mix(color, second_color, cxy.x + factor) * alpha; // Intensity: cxy.y*1.5
 }
 """
 # LINEAR VERTICAL
@@ -409,7 +409,7 @@ precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -420,7 +420,7 @@ void main()
   if (alpha < 0.1) // threshold
     discard;
 
-  gl_FragColor = mix(color, second_color, cxy.y + factor) * alpha; // Intensity: cxy.y*1.5
+  co = mix(color, second_color, cxy.y + factor) * alpha; // Intensity: cxy.y*1.5
 }
 """
 # LINEAR DIAGONAL
@@ -429,7 +429,7 @@ precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -440,7 +440,7 @@ void main()
   if (alpha < 0.1) // threshold
     discard;
 
-  gl_FragColor = mix(color, second_color, cxy.y+cxy.x+factor) * alpha; // Intensity: cxy.y*1.5
+  co = mix(color, second_color, cxy.y+cxy.x+factor) * alpha; // Intensity: cxy.y*1.5
 }
 """
 # REFLECTED WITH ROTATION
@@ -451,7 +451,7 @@ uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
 uniform float rotation;
 float PI_4 = 0.785398;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -465,14 +465,14 @@ void main()
   // (cxy.x + factor) * cos(rotation) - (cxy.y + factor) * sin(rotation) + 1.0
 
   // float k = (cxy.x + factor) * cos(rotation) - (cxy.y + factor) * sin(rotation);
-  // gl_FragColor = mix(color, second_color, abs(k)); // * alpha;
+  // co = mix(color, second_color, abs(k)); // * alpha;
 
   float k = cxy.x * cos(rotation) - cxy.y * sin(rotation);
-  gl_FragColor = mix(color, second_color, pow(abs(k), tan(factor*PI_4+PI_4)));
+  co = mix(color, second_color, pow(abs(k), tan(factor*PI_4+PI_4)));
 
   // Gamma correction.
-  gl_FragColor.rgb =  pow(gl_FragColor.rgb, vec3(0.454545)); // 1.0/2.2
-  gl_FragColor.a *= alpha;
+  co.rgb =  pow(co.rgb, vec3(0.454545)); // 1.0/2.2
+  co.a *= alpha;
 }
 """
 # REFLECTED HORIZONTAL
@@ -481,7 +481,7 @@ precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -491,7 +491,7 @@ void main()
   alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
   if (alpha < 0.1) // threshold
     discard;
-  gl_FragColor = mix(color, second_color, clamp(abs(cxy.x)/.9, 0.0, 1.0)+factor) * alpha; // Intensity: cxy.y*1.5
+  co = mix(color, second_color, clamp(abs(cxy.x)/.9, 0.0, 1.0)+factor) * alpha; // Intensity: cxy.y*1.5
 }
 """
 # REFLECTED VERTICAL
@@ -500,7 +500,7 @@ precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -510,7 +510,7 @@ void main()
   alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
   if (alpha < 0.1) // threshold
     discard;
-  gl_FragColor = mix(color, second_color, clamp(abs(cxy.y)/.9, 0.0, 1.0)+factor) * alpha; // Intensity: cxy.y*1.5
+  co = mix(color, second_color, clamp(abs(cxy.y)/.9, 0.0, 1.0)+factor) * alpha; // Intensity: cxy.y*1.5
 }
 """
 # DIAMOND WITH ROTATION
@@ -521,7 +521,7 @@ uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
 uniform float factor;
 uniform float rotation;
 float PI_4 = 0.785398;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -533,14 +533,14 @@ void main()
     discard;
 
   // float k = abs(cxy.x + factor) * cos(rotation) - abs(cxy.y + factor) * sin(rotation)+1.0;
-  // gl_FragColor = mix(color, second_color, clamp(k/.9, 0.0, 1.0)); // * alpha;
+  // co = mix(color, second_color, clamp(k/.9, 0.0, 1.0)); // * alpha;
 
   float k = abs(cxy.x) * cos(rotation) - abs(cxy.y) * sin(rotation) + .5;
-  gl_FragColor = mix(color, second_color, pow(clamp(k/.5, 0.0, 1.0), tan(factor*PI_4+PI_4)));
+  co = mix(color, second_color, pow(clamp(k/.5, 0.0, 1.0), tan(factor*PI_4+PI_4)));
 
   // Gamma correction.
-  gl_FragColor.rgb =  pow(gl_FragColor.rgb, vec3(0.454545)); // 1.0/2.2
-  gl_FragColor.a *= alpha;
+  co.rgb =  pow(co.rgb, vec3(0.454545)); // 1.0/2.2
+  co.a *= alpha;
 }
 """
 # FLAT - HALF COLOR_1 HALF COLOR_2 (DIAGONAL)
@@ -548,7 +548,7 @@ circle_fill_smooth_multicolor_diagonal_frag_shader = """
 precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -559,7 +559,7 @@ void main()
   if (alpha < 0.1) // threshold
     discard;
 
-  gl_FragColor = mix(color, second_color, smoothstep(cxy.x-.25, cxy.x, cxy.y)) * alpha;
+  co = mix(color, second_color, smoothstep(cxy.x-.25, cxy.x, cxy.y)) * alpha;
 }
 """
 
@@ -569,7 +569,7 @@ circle_fill_smooth_gradient_linestrip_diagonal = """
 precision mediump float;
 uniform vec4 color;         // vec4(1.,0.5,1.,1.)
 uniform vec4 second_color;  // vec4(0.,0.,0.,1.)
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -582,7 +582,7 @@ void main()
 
   float k = smoothstep(cxy.x-1, cxy.x, cxy.y) - smoothstep(cxy.x, cxy.x+1, cxy.y);
 
-  gl_FragColor = mix(color, second_color, k) * alpha;
+  co = mix(color, second_color, k) * alpha;
 }
 """
 
@@ -591,7 +591,7 @@ circle_fill_smooth_gradient_test_frag_shader = """
 precision mediump float;
 //uniform vec4 color;
 //uniform vec4 second_color;
-
+out vec4 co;
 void main()
 {
   float r = 0.0, delta = 0.0, alpha = 0.0;
@@ -604,7 +604,7 @@ void main()
 
   vec3 color = vec3(1.0);
   color += 0.1 * 0.1 / r;
-  gl_FragColor = vec4(color, (1-r)) * alpha;
+  co = vec4(color, (1-r)) * alpha;
 }
 """
 
@@ -613,7 +613,7 @@ circle_fill_smooth_gradient_test2_frag_shader = """
 #ifdef GL_ES
 precision mediump float;
 #endif
-
+out vec4 co;
 // unsigned round box
 float udRoundBox( vec3 p, vec3 b, float r )
 {
@@ -639,7 +639,7 @@ void main()
     r = dot(cxy, cxy);
 
     float s = udRoundBoxBorder(vec3(cxy, 0.0), vec3(0.0), r, 1.2);
-    gl_FragColor = vec4(0., 1., 1., 1-s);
+    co = vec4(0., 1., 1., 1-s);
 }
 """
 
@@ -651,7 +651,7 @@ polygon_frag_shader = """
 #ifdef GL_ES
 precision mediump float;
 #endif
-
+out vec4 co;
 const float PI = 3.1415926535;
 
 float polygonshape(vec2 position, float radius, float sides){
@@ -677,7 +677,7 @@ void main()
   if (polygon == 1.0)
     discard;
   color = vec3(polygon);
-  gl_FragColor = vec4(color, 1.0);
+  co = vec4(color, 1.0);
 }
 """
 
@@ -690,7 +690,7 @@ precision mediump float;
 #endif
 
 uniform vec4 color;
-
+out vec4 co;
 void main()
 {
   // Ring outer.
@@ -709,7 +709,7 @@ void main()
   if (alpha > 0.9999) // threshold
     discard;
 
-  gl_FragColor = color * alpha;
+  co = color * alpha;
 }
 """
 
@@ -724,7 +724,7 @@ precision mediump float;
 uniform vec4 color;
 uniform vec4 outline_color;
 uniform float outline_factor;
-
+out vec4 co;
 void main()
 {
   vec2 cxy = 2.0 * gl_PointCoord - 1.0;
@@ -738,11 +738,11 @@ void main()
   if (cxy.x < maxX && cxy.x > minX &&
       cxy.y < maxY && cxy.y > minY)
   {
-    gl_FragColor = color;
+    co = color;
   }
   else
   {
-    gl_FragColor = outline_color;
+    co = outline_color;
   }
 }
 """
@@ -760,7 +760,7 @@ uniform float r; // Factor del radio del círculo para hacer el clamping.
 uniform float f; // Factor para desenfocar el borde (0-1, siendo 0 nada).
 uniform float c; // Factor de curvatura para rectangulo (siendo 0 desactivarlo y crear un círculo).
 uniform vec4 co; // Color.
-
+out vec4 coout;
 void main()
 {
   if (co.a == 0)
@@ -776,14 +776,14 @@ void main()
     if (corner < r) // pow(.2, 3) 0.008
       discard;
     radius = smoothstep(f, 1, clamp(corner*100*f, 0., 1.));
-    gl_FragColor = co;
-    gl_FragColor.a = radius;
+    coout = co;
+    coout.a = radius;
   }
   else if (radius > r)
     discard;
   else{
-    gl_FragColor = co;
-    gl_FragColor.a *= smoothstep(r, r-f, radius);
+    coout = co;
+    coout.a *= smoothstep(r, r-f, radius);
   }
 }
 """
@@ -795,7 +795,7 @@ square_smooth_top_left_frag_shader = """
 #ifdef GL_ES
 precision mediump float;
 #endif
-
+out vec4 co;
 // This approximates the error function, needed for the gaussian integral
 vec4 erf(vec4 x) {
   vec4 s = sign(x), a = abs(x);
@@ -827,9 +827,9 @@ void main()
   vec2 upper = vec2(1.);
 
   float s = boxShadow(lower, upper, cxy, .08);
-  //gl_FragColor = vec4(0.0, 1.0, 1.0, 0.0);
-  //gl_FragColor.a = s*10;
-  gl_FragColor = vec4(vec3(s*10), 1.0)
+  //co = vec4(0.0, 1.0, 1.0, 0.0);
+  //co.a = s*10;
+  co = vec4(vec3(s*10), 1.0)
 }
 """
 
@@ -840,7 +840,7 @@ ringdot_aim_frag_shader = """
 #ifdef GL_ES
 precision mediump float;
 #endif
-
+out vec4 co;
 float roundedFrame (vec2 pos, float radius, float thickness)
 {
   float d = length(pos) - radius;
@@ -854,7 +854,7 @@ void main()
     r = dot(cxy, cxy);
 
     float s = roundedFrame(cxy, r+.1, 1.);
-    gl_FragColor = vec4(0., 1., 1., s);
+    co = vec4(0., 1., 1., s);
 }
 """
 
@@ -865,7 +865,7 @@ circle_dot_frag_shader = """
 #ifdef GL_ES
 precision mediump float;
 #endif
-
+out vec4 co;
 float roundedFrame (float d, float thickness)
 {
   return smoothstep(0.55, 0.45, abs(d / thickness) * 5.0);
@@ -878,7 +878,7 @@ void main()
     r = dot(cxy, cxy);
 
     float s = roundedFrame(r, .1);
-    gl_FragColor = vec4(0., 1., 1., s);
+    co = vec4(0., 1., 1., s);
 }
 """
 

@@ -426,8 +426,11 @@ class PK_OT_draw_picker(Operator):
 
     def check_clicked_button(self, context, event, mouse) -> bool:
         # print("Clicked, searching button...")
-        ox, oy = self.get_scene_position(True)
+        
+        # ox, oy = self.get_scene_position(True)
         scene = self.picker.get_active_scene()
+        ox, oy, ow, oh = self.get_view_image_pos_size(scene.get_active_view())
+        
         active_view = scene.active_view
 
         if active_view == -1:
@@ -794,6 +797,7 @@ class PK_OT_draw_picker(Operator):
         context.window_manager.modal_handler_add(self)
         args = (self, context)
         self._handler = context.space_data.draw_handler_add(draw_picker_callback_px, args, 'WINDOW', 'POST_PIXEL')
+        context.area.tag_redraw()
         return {'RUNNING_MODAL'}
 
     def finish(self, context=None):
@@ -1021,6 +1025,8 @@ def draw_picker_callback_px(self, context):
         if self.on_hover_layer[0].is_active:
             # color = Color.Tomato()
             for indice in self.on_hover_layer[0].button_indices:
+                if indice == -1:
+                    break
                 b = buttons[indice]
                 data = b.get_data_from_view_index(active_view)
                 if b.style.shape == RECTANGLE:

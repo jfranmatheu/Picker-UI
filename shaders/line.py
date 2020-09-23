@@ -16,12 +16,12 @@ void main()
 line_dotted_fragment_shader = '''
 uniform vec4 color;
 uniform float factor; // 0.3
-
+out vec4 co;
 void main()
 {
     if (step(sin(factor * (gl_FragCoord.x+gl_FragCoord.y)/2.0), 0.5f))
         discard;
-    gl_FragColor = color;
+    co = color;
 }
 '''
 LINE_DOTTED_SHADER = (line_dotted_vertex_shader, line_dotted_fragment_shader)
@@ -33,13 +33,14 @@ line_dotted_multi_fragment_shader = '''
 uniform vec4 color_1;
 uniform vec4 color_2;
 uniform float factor; // 0.3
+out vec4 co;
 
 void main()
 {
     if (step(sin(factor * (gl_FragCoord.x+gl_FragCoord.y)/2.0), 0.5f))
-        gl_FragColor = color_1;
+        co = color_1;
     else
-        gl_FragColor = color_2;
+        co = color_2;
 }
 '''
 LINE_DOTTED_MULTI_SHADER = (line_dotted_vertex_shader, line_dotted_multi_fragment_shader)

@@ -18,7 +18,7 @@ bl_info = {
     "blender" : (2, 83, 0),
     "version" : (0, 0, 1),
     "location" : "3D Viewport > Sidebar (N) > 'Rig' tab",
-    "warning" : "This project is real thanks to all patrons that support me on Patreon! THANKS!!!",
+    "warning" : "",
     "category" : "Interface"
 }
 

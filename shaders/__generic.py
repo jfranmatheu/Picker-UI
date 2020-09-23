@@ -30,10 +30,11 @@ generic_2d_basic_depth_vertex_shader = '''
 generic_2d_basic_frag_shader = '''
     // uniform vec4 color;
     in vec4 col;
+    out vec4 co;
 
     void main()
     {
-        gl_FragColor = col;
+        co = col;
     }
 '''
 # gl_FragDepth = -1.0;

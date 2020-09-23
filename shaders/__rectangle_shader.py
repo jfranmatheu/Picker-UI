@@ -7,6 +7,7 @@ rect_round_frag_shader = """
 
     uniform sampler2D u_sampler2D;
     const float max = pow(0.2, 4);
+    out vec4 co;
 
     void main()
     {
@@ -17,7 +18,7 @@ rect_round_frag_shader = """
         vec4 color = texture2D(u_sampler2D, v_texCoord0) * v_color;
         color.rgb = color.rgb * smoothstep(0, max, vignette);
 
-        gl_FragColor = color;
+        co = color;
     }
 """
 
@@ -33,9 +34,10 @@ float roundedFrame (vec2 pos, vec2 size, float radius, float thickness)
 
 uniform vec4 color;
 in vec4 col;
+out vec4 co;
 
 void main()
 {
-    gl_FragColor = col;
+    co = col;
 }
 """

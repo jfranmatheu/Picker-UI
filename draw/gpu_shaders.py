@@ -49,8 +49,12 @@ shader_2d_color_smooth = from_builtin('2D_SMOOTH_COLOR') # 2D_FLAT_COLOR # 2D_SM
 shader_3d_color_unif = from_builtin('3D_UNIFORM_COLOR') # 3D_FLAT_COLOR # 3D_SMOOTH_COLOR
 
 # LINE
-shader_2d_line_dotted = GPUShader(*LINE_DOTTED_SHADER)
-shader_2d_line_dotted_multi = GPUShader(*LINE_DOTTED_MULTI_SHADER)
+try:
+    shader_2d_line_dotted = GPUShader(*LINE_DOTTED_SHADER)
+    shader_2d_line_dotted_multi = GPUShader(*LINE_DOTTED_MULTI_SHADER)
+except:
+    shader_2d_line_dotted = shader_2d_color_unif
+    shader_2d_line_dotted_multi = shader_2d_color_unif
 
 # TRIS
 shader_2d_generic_basic = GPUShader(generic_2d_basic_vertex_shader, generic_2d_basic_frag_shader)

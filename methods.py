@@ -19,6 +19,9 @@ class PK_OT_create_picker(Operator):
         # Create Picker and fill data
         picker = context.scene.pickers.data.add()
         picker.name = create.picker_name
+        # TODO: change object to armature selector, then:
+        # 1. Get object by armature name, if nothing...
+        # 2. Iterate over scene objects and check for data.
         picker.arm_obj = create.armature_object
         picker.active_scene = -1 # No scenes ATM
 

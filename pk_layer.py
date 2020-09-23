@@ -252,6 +252,8 @@ class PK_Layer(PropertyGroup):
 
                 # Calculate the factor [0-1].
                 b_data.factor = [b_data.pos[0]/w, b_data.pos[1]/h]
+                b_data.pos[0] -= 7
+                b_data.pos[1] -= 7
 
                 # Add button to view and layer.
                 self.add_button(button)
@@ -279,6 +281,8 @@ class PK_Layer(PropertyGroup):
 
                     # Calculate the factor [0-1].
                     b_data.factor = [b_data.pos[0]/w, b_data.pos[1]/h]
+                    b_data.pos[0] -= 7
+                    b_data.pos[1] -= 7
 
                     # Add button to view and layer.
                     self.add_button(button)
