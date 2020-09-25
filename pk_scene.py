@@ -125,3 +125,6 @@ class PK_Scene(PropertyGroup):
     def is_visible(self, button) -> bool:
         return self.buttons[button].is_visible[self.active_view] if isinstance(button, int) else button.is_visible[self.active_view]
     
+    def switch_view(self):
+        self.active_view = MASTER_VIEW if self.active_view == SECONDARY_VIEW else SECONDARY_VIEW
+    

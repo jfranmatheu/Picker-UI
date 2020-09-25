@@ -737,7 +737,7 @@ class PK_OT_draw_picker(Operator):
         m_scene.add_item(PK_UI_MenuItem("Switch Scene", OP, bpy.ops.pk.change_scene_selector, 'INVOKE_DEFAULT'))
 
         m_view = PK_UI_Menu("View", menu_bar)
-        m_view.add_item(PK_UI_MenuItem("Switch View", OP, None))
+        m_view.add_item(PK_UI_MenuItem("Switch View", OP, bpy.ops.pk.switch_view))
         m_view.add_item(PK_UI_MenuSeparator())
         m_view.add_item(PK_UI_MenuItem("Clear", OP, bpy.ops.pk.clear_view, 'INVOKE_DEFAULT'))
 
