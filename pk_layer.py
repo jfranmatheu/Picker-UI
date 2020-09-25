@@ -78,6 +78,10 @@ class PK_Layer(PropertyGroup):
         for i in range(len(good_indices), LAYER_MAX_BUTTONS): # NOTE: what if len is LAYER_MAX_BUTTONS?
             good_indices.append(-1)
         self.button_indices = good_indices
+        
+    def reset_indices(self):
+        for idx in self.button_indices:
+            idx = -1
 
     def check_button(self, button):
         if isinstance(button, int):

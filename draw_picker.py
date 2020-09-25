@@ -738,6 +738,8 @@ class PK_OT_draw_picker(Operator):
 
         m_view = PK_UI_Menu("View", menu_bar)
         m_view.add_item(PK_UI_MenuItem("Switch View", OP, None))
+        m_view.add_item(PK_UI_MenuSeparator())
+        m_view.add_item(PK_UI_MenuItem("Clear", OP, bpy.ops.pk.clear_view, 'INVOKE_DEFAULT'))
 
         m_layer = PK_UI_Menu("Layer", menu_bar)
         m_layer.add_item(PK_UI_MenuItem("New", OP, bpy.ops.pk.create_layer, 'INVOKE_DEFAULT'))

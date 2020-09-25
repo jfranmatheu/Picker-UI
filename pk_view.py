@@ -66,14 +66,18 @@ class PK_View(PropertyGroup):
         self.button_indices.append(self.get_index(button))
 
     def remove_button(self, button):
-        b_index = self.get_index(button)
-        if b_index in self.button_indices:
-            self.button_indices.remove(b_index)
+        if not isinstance(button, int):
+            button = self.get_index(button)
+        if button in self.button_indices:
+            self.button_indices.remove(button)
         else:
-            print("PK_VIEW::remove_button - Button index not found", b_index)
+            print("PK_VIEW::remove_button - Button index not found", button)
 
     def check_button(self, button):
         return self.get_index(button) in self.button_indices
+    
+    def has_button_index(self, index):
+        return index in self.button_indices
 
     def get_index(self, button):
         return button if isinstance(button, int) else button.index
@@ -88,6 +92,82 @@ class PK_View(PropertyGroup):
         #for idx in buttons_to_update:
         #    # NOTE: Check this for future.
         #    self.button_indices[idx] = idx - 1
+    
+    def remove_layer(self, index):
+        self.layers.remove(index)
+        
+    def clear(self, scene, use_cached_indices = False):
+        # 1st method... #
+        scene.print_button()
+        
+        # Remove buttons.
+        buttons = scene.buttons
+
+        if use_cached_indices:
+            # FASTER METHOD BUT UNSAFE.
+            self.button_indices.sort(reverse=True)
+            for idx in self.button_indices:
+                buttons[idx].remove(scene, True)
+        else:
+            # METHOD MORE SAFE BUT EXPENSIVE.
+            for idx, button in enumerate(reversed(buttons)):
+                buttons[idx].remove(scene, True)
+
+        # Remove Layers.
+        n = len(self.layers) - 1
+        for idx, layer in enumerate(reversed(self.layers)):
+            layer.reset_indices()
+            self.layers.remove(n - idx)
+        self.active_layer = -1
+
+        # Reset View.
+        self.button_indices.clear()
+        
+        scene.print_button()
+        
+        # 2nd method... #
+        ''' 
+        # Get other view just to compare.
+        other = scene.get_other_view()
+        # Remove buttons.
+        buttons = scene.buttons
+        buttons_to_remove = []
+        if use_cached_indices:
+            # FASTER METHOD BUT UNSAFE.
+            for idx in self.button_indices:
+                if not other.has_button_index(idx):
+                    print("Button %s with index %i will be removed from Scene." % (buttons[idx].name, idx))
+                    buttons_to_remove.append(idx)
+                else:
+                    print("Button %s with index %i will be removed from Active View." % (buttons[idx].name, idx))
+                    buttons[idx].get_data_from_view_index(view_idx).is_active = False
+        else:
+            # METHOD MORE SAFE BUT EXPENSIVE.
+            view_idx = scene.active_view
+            other_view_idx = 0 if view_idx == 1 else 1
+            for idx, button in enumerate(buttons):
+                if button.get_data_from_view_index(view_idx).is_active:
+                    if not button.get_data_from_view_index(other_view_idx).is_active:
+                        print("Button %s with index %i will be removed from Scene." % (buttons[idx].name, idx))
+                        buttons_to_remove.append(idx)
+                    else:
+                        print("Button %s with index %i will be removed from Active View." % (buttons[idx].name, idx))
+                        button.get_data_from_view_index(view_idx).is_active = False
+                    
+        self.button_indices.clear()
+        
+        # Ensure order and make it reversed, this way indices won't scroll.
+        buttons_to_remove.sort(reverse=True)
+        
+        scene.print_button()
+        
+        for button in buttons_to_remove:
+            buttons.remove(idx)
+
+        scene.update_indices(idx)
+        scene.print_button()
+        '''
+            
 
     def load_image(self):
         if self.image:
