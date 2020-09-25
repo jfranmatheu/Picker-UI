@@ -110,8 +110,10 @@ class PK_View(PropertyGroup):
                 buttons[idx].remove(scene, True)
         else:
             # METHOD MORE SAFE BUT EXPENSIVE.
-            for idx, button in enumerate(reversed(buttons)):
-                buttons[idx].remove(scene, True)
+            # for idx, button in enumerate(reversed(buttons)):
+            n = len(buttons) - 1
+            for idx in range(0, n + 1):
+                buttons[n-idx].remove(scene, True)
 
         # Remove Layers.
         n = len(self.layers) - 1
@@ -122,8 +124,6 @@ class PK_View(PropertyGroup):
 
         # Reset View.
         self.button_indices.clear()
-        
-        scene.print_button()
         
         # 2nd method... #
         ''' 

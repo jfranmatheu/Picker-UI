@@ -509,6 +509,9 @@ class PK_OT_draw_picker(Operator):
         elif self.ctx_area != context.area:
             self.finish()
             return {'CANCELLED'}
+        if not self.picker:
+            self.finish()
+            return {'CANCELLED'}
         #print(event.type, event.value)
         #print(bpy.context.window_manager.clipboard)
 
@@ -822,6 +825,8 @@ class PK_OT_draw_picker(Operator):
 def draw_picker_callback_px(self, context):
     if self.ctx_area != context.area:
         return
+    if not self.picker:
+        return
 
     ''' INTERESTING VARS '''
     pk = self.picker
@@ -1081,10 +1086,11 @@ def draw_buttons(active_view, layers, buttons, ox, oy, text_size):
             for indice in layer.button_indices:
                 if indice == -1:
                     break
-                b = buttons[indice]
-                #style = b.style
-                #data = b.get_data_from_view_index(active_view)
-                draw_button(ox, oy, b, b.get_data_from_view_index(active_view), b.style, text_size)
+                try:
+                    b = buttons[indice]
+                    draw_button(ox, oy, b, b.get_data_from_view_index(active_view), b.style, text_size)
+                except:
+                    print("Button %i in %s is not valid" % (indice, layer.name))
 
 def draw_button(ox, oy, b, data, style, text_size):
     xt = data.pos[0] + ox
