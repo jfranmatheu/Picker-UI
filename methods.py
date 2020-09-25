@@ -11,7 +11,7 @@ class PK_OT_create_picker(Operator):
     bl_label = ""
     bl_description = "Create Picker"
 
-    create_scene: BoolProperty(default=True)
+    create_scene : BoolProperty(default=True)
 
     def execute(self, context):
         create = context.window_manager.ui_data
@@ -150,6 +150,7 @@ class PK_OT_create_picker_layer(Operator):
 ''' CREATE A PICKER BUTTON SLOT
     active_picker > active_scene > buttons
 '''
+'''
 class PK_OT_create_picker_button(Operator):
     bl_idname = "pk.create_picker_button"
     bl_label = ""
@@ -162,6 +163,24 @@ class PK_OT_create_picker_button(Operator):
         return context.scene.pickers.active_index != -1
 
     def execute(self, context):
+        active_picker = context.scene.pickers.active_picker()
+        if not active_picker:
+            print("ERROR: Active Picker")
+            return {'CANCELLED'}
+        active_scene = active_picker.get_active_scene()
+        if not active_scene:
+            print("ERROR: Active Scene")
+            return {'CANCELLED'}
+        active_view = active_scene.get_active_view()
+        if not active_view:
+            print("ERROR: Active View")
+            return {'CANCELLED'}
+        if not active_view.show_layer_selector():
+            print("WARNING: Active View has no Layers")
+            return {'CANCELLED'}
+        return {'FINISHED'}
+        
+        """
         create = context.window_manager.ui_data
         active_scene = context.scene.pickers.active_scene()
         if not active_scene:
@@ -181,7 +200,8 @@ class PK_OT_create_picker_button(Operator):
 
         active_scene.add_button(name, text)
         return {'FINISHED'}
-
+        """
+'''
 
 ''' ADD BUTTON TO SELECTED LAYER
     active_picker > active_scene > active_view > layer(INDEX)

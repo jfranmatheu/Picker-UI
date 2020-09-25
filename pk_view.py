@@ -1,15 +1,30 @@
-from bpy.types import PropertyGroup, Image
+from bpy.types import PropertyGroup, Image, Panel
+from bpy import ops as OP
 from bpy.props import (
-    StringProperty, CollectionProperty, BoolProperty,
+    StringProperty, CollectionProperty, BoolProperty, EnumProperty,
     PointerProperty, FloatProperty, IntVectorProperty, IntProperty
 )
 from .pk_layer import PK_Layer
 
 
+layer_items = [('NONE', "NONE", "")]
+
 class PK_View(PropertyGroup):
+    ''' Capas en forma de lista:
+    def get_view_layer_as_enum(self, context):
+        layer_items.clear()
+        for layer in self.layers:
+            layer_items.append((layer.name, layer.text, ""))
+        if layer_items:
+            return layer_items
+        return [('NONE', "NONE", "")]
+    layers_enum : EnumProperty(items=get_view_layer_as_enum, name="Layer List")
+    '''
+    
     view : StringProperty(default="FRONT", name="View")
     active_layer : IntProperty(default=-1, name="Active Layer")
     layers : CollectionProperty(type=PK_Layer, name="Layers")
+    
     # al iniciar un picker ya creado,
     # esta lista se creará a partir de
     # los índices de botones de las layers (que no son una py list sino una lista de int vector ppt de Blender)
@@ -117,3 +132,31 @@ class PK_View(PropertyGroup):
         region3d.view_rotation      = old_view_rotation
         region3d.view_camera_zoom   = old_view_camera_zoom
 
+    def show_layer_selector(self):
+        if self.layers_enum != 'NONE' and self.layers:
+            OP.wm.call_panel(name="PK_PT_view_layer_selector", keep_open=False)
+            return True
+        return False
+
+'''
+class PK_View_Layer_Selector(Panel):
+    bl_idname = "PK_PT_view_layer_selector"
+    bl_label = "Layer Selector"
+    bl_space_type = 'VIEW_3D'
+    bl_region_type = 'UI'
+    bl_context = "NONE"
+
+    def draw(self, context):
+        active_picker = context.scene.pickers.active_picker()
+        if not active_picker:
+            print("ERROR: Active Picker")
+            return
+        active_scene = active_picker.get_active_scene()
+        if not active_scene:
+            print("ERROR: Active Scene")
+            return
+        active_view = active_scene.get_active_view()
+        self.layout.label(text="Select a layer :")
+        self.layout.prop(active_view, 'layers_enum', text='')
+        self.layout.operator('pk.layer_add_selected_buttons', text="Add buttons to layer")
+'''

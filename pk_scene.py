@@ -46,7 +46,7 @@ class PK_Scene(PropertyGroup):
             then gr_button is removed completely...
         MODEL 3: NOTE: I picked this one.
             Just keep 2 views per scene: master view, secondary view.
-            - We can store 2 position for buttons: pos1, pos2.
+            - We can store 2 position for buttons: pos1, pos2. -> depending view
             - We need some active_view min=0, max=1 or boolean. MASTER_VIEW = 0; SECONDARY_VIEW = 1.
             - We need a list of button indices inside each view, we will use this as a cache.
             - We need some bool[2] active_view per button to know if button is visible/active
@@ -124,3 +124,4 @@ class PK_Scene(PropertyGroup):
 
     def is_visible(self, button) -> bool:
         return self.buttons[button].is_visible[self.active_view] if isinstance(button, int) else button.is_visible[self.active_view]
+    

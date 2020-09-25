@@ -744,8 +744,8 @@ class PK_OT_draw_picker(Operator):
         m_layer.add_item(PK_UI_MenuItem("Remove", OP, bpy.ops.pk.create_picker_layer))
 
         m_button = PK_UI_Menu("Button", menu_bar)
-        m_button.add_item(PK_UI_MenuItem("Add", OP, bpy.ops.pk.create_picker_button))
-        m_button.add_item(PK_UI_MenuItem("Remove", OP, bpy.ops.pk.remove_picker_button))
+        m_button.add_item(PK_UI_MenuItem("Add", OP, bpy.ops.pk.layer_add_selected_buttons, 'INVOKE_DEFAULT')) # pk.create_picker_button))
+        # m_button.add_item(PK_UI_MenuItem("Remove", OP, bpy.ops.pk.remove_picker_button))
         m_button.add_item(PK_UI_MenuSeparator())
         m_button.add_item(PK_UI_MenuItem("Direct action", PPT, self.picker.get_set_use_button_direct_action))
 
