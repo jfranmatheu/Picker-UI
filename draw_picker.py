@@ -539,7 +539,7 @@ class PK_OT_draw_picker(Operator):
                 self.using_tool = False
             return {'RUNNING_MODAL'}
 
-        elif self.picker.mode == 0 and self.menu_bar.check(event, self.mousePos):
+        elif self.picker.mode == 0 and self.menu_bar.check(context.region, event, self.mousePos):
             return {'RUNNING_MODAL'}
         elif self.picker.mode == 1 and self.edit_menu_bar.check(event, self.mousePos):
             return {'RUNNING_MODAL'}

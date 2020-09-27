@@ -247,11 +247,12 @@ class PK_UI_MenuBar:
             Draw_Text(x0, y0 + 8, menu.title, tsize, 0, *tco, True)
             x0 += menu.title_width + self.spacing
 
-    def check(self, event, mouse):
+    def check(self, region, event, mouse):
         if self.active_menu:
             # Check if mouse is outside menu to set active_menu to NULL.
             on_hover, clicked = self.active_menu.check(self.get_menu_position(self.active_menu), event, mouse)
             if clicked:
+                region.tag_redraw()
                 return True
             if not on_hover:
                 if not point_inside_rect(mouse, self.pos, self.size):
@@ -260,8 +261,9 @@ class PK_UI_MenuBar:
 
             else:
                 # NOTE: So events inside menu items are not pass through to picker...
-                if point_inside_rect(mouse, self.pos, self.size):
-                    return True
+                # if point_inside_rect(mouse, self.pos, self.size):
+                region.tag_redraw()
+                return True
             # Check if mouse is still inside active menu.
             if point_inside_rect(mouse, self.active_menu_rect.pos, self.active_menu_rect.size):
                 return False # UNDO
