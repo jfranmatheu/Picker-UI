@@ -148,8 +148,8 @@ class PK_OT_layer_add_selected_buttons(Operator):
         return WindowManager.invoke_props_dialog(self, width=250)
 
     def execute(self, context):
-        if self.layers_enum == '' or self.layers_enum.isspace():
-            self.report({'WARNING'}, "Selected layer is invalid")
+        if self.layers_enum in {'', 'NONE'} or self.layers_enum.isspace():
+            self.report({'WARNING'}, "Selected layer is invalid or picker has no layers")
             return {'CANCELLED'}
         pickers = context.scene.pickers
         active_picker = pickers.data[pickers.active_index]
