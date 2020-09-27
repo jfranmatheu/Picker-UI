@@ -525,7 +525,7 @@ class PK_OT_draw_picker(Operator):
         #print(bpy.context.window_manager.clipboard)
 
         # UI is locked due to some external event / operator.
-        #if context.scene.pickers.lock_ui:
+        #if context.scene.pickers.block_ui:
         #    return {'PASS_THROUGH'}
 
         self.mousePos = Vector((event.mouse_region_x, event.mouse_region_y))
@@ -541,7 +541,7 @@ class PK_OT_draw_picker(Operator):
 
         elif self.picker.mode == 0 and self.menu_bar.check(context.region, event, self.mousePos):
             return {'RUNNING_MODAL'}
-        elif self.picker.mode == 1 and self.edit_menu_bar.check(event, self.mousePos):
+        elif self.picker.mode == 1 and self.edit_menu_bar.check(context.region, event, self.mousePos):
             return {'RUNNING_MODAL'}
 
         # We are moving our picker UI.
@@ -606,16 +606,19 @@ class PK_OT_draw_picker(Operator):
                     # TOP_RIGHT ? (for scaling).
                     tr = [pk.pos[0] + pk.size[0], pk.pos[1] + pk.size[1]]
                     if point_inside_tri(
-                        self.mousePos[0], self.mousePos[1],
-                        tr[0], tr[1],
-                        tr[0] - 12, tr[1],
-                        tr[0], tr[1] - 12):
+                            self.mousePos[0], self.mousePos[1],
+                            tr[0], tr[1],
+                            tr[0] - 12, tr[1],
+                            tr[0], tr[1] - 12):
+                        
                         self.hover_type = HoverType.TOP_RIGHT
                         Cursor.set_icon(context, CursorIcon.MOVE_X)
-                        return {'PASS_THROUGH'}
-
-                Cursor.set_icon(context, CursorIcon.DEFAULT)
-                self.hover_type = HoverType.NONE
+                    else:
+                        Cursor.set_icon(context, CursorIcon.DEFAULT)
+                        self.hover_type = HoverType.NONE
+                else:
+                    Cursor.set_icon(context, CursorIcon.DEFAULT)
+                    self.hover_type = HoverType.NONE
 
             ''' 2o. Check WHICH event was triggered. '''
             # PICKER MODE
