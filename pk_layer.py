@@ -134,7 +134,9 @@ class PK_Layer(PropertyGroup):
             if self == layer:
                 layer_index = idx
                 break
-
+        
+        context.active_object.data.pose_position = 'REST'
+        
         ''' PROJECTION SETUP '''
         # Change to object. (just for 'well-framing')
         bpy.ops.object.mode_set(mode='OBJECT')
@@ -299,6 +301,8 @@ class PK_Layer(PropertyGroup):
         region3d.view_location      = old_view_location
         region3d.view_rotation      = old_view_rotation
         region3d.view_camera_zoom   = old_view_camera_zoom
+        
+        context.active_object.data.pose_position = 'POSE'
 
     @staticmethod
     def project_bone_to_picker(context, armature_matrix_world, pose_bone, pk_button_data, xo, yo, relX, relY):
@@ -328,6 +332,7 @@ class PK_Layer(PropertyGroup):
         pk_button_data.pos = [int(posX), int(posY)]
         # UPDATE: USES SIZE AS "RADIUS" (half the size)
         pk_button_data.size = [int(7), int(7)] # TODO: Should be possible to specify size.
+
 
 
 class PK_Layer_ContextMenu(Panel):

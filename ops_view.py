@@ -57,3 +57,51 @@ class PK_OT_switch_view(Operator):
             return {'CANCELLED'}
         active_scene.switch_view()
         return {'FINISHED'}
+
+
+class PK_OT_view_generate_image(Operator):
+    bl_idname = "pk.view_generate_image"
+    bl_label = "Generate Active View Image :"
+    bl_description = "Generate Active View Image based on selected view"
+    bl_options = {'INTERNAL'}
+    
+    view : EnumProperty (
+        items=(
+            ('FRONT', 'Front', ""),
+            ('LEFT', 'Left', ""),
+            ('RIGHT', 'Right', ""),
+            ('TOP', 'Top', ""),
+            ('BOTTOM', 'Bottom', ""),
+            ('BACK', 'Back', "")
+        ),
+        default='FRONT',
+        name="View",
+        description="Generate image from this view"
+    )
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene.pickers.active_index != -1 and context.scene.pickers.data is not None
+
+    def draw(self, context):
+        self.layout.prop(self, 'view')
+
+    def invoke(self, context, event):
+        return WindowManager.invoke_props_dialog(self, width=300)
+
+    def execute(self, context):
+        if self.view == '':
+            self.report({'WARNING'}, "Invalid view")
+            return {'CANCELLED'}
+        pickers = context.scene.pickers
+        active_picker = pickers.data[pickers.active_index]
+        if active_picker.active_scene == -1:
+            self.report({'WARNING'}, "Picker has no scene")
+            return {'CANCELLED'}
+        active_scene = active_picker.scenes[active_picker.active_scene]
+        if active_scene.active_view == -1:
+            self.report({'WARNING'}, "Picker has no view")
+            return {'CANCELLED'}
+        # active_view = active_scene.views[active_scene.active_view]
+        active_scene.get_active_view().generate_image(context, self.view)
+        return {'FINISHED'}

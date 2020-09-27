@@ -5,7 +5,12 @@ from bpy.props import (
     PointerProperty, FloatProperty, IntVectorProperty, IntProperty
 )
 from .pk_layer import PK_Layer
-
+from . functions import (
+    get_corner_points_from_bb_relative_to_view,
+    convert_3d_spacecoords_to_2d_screencoords,
+    viewport_screenshot
+)
+from bpy_extras import view3d_utils
 
 layer_items = [('NONE', "NONE", "")]
 
@@ -167,7 +172,7 @@ class PK_View(PropertyGroup):
         scene.update_indices(idx)
         scene.print_button()
         '''
-            
+        
 
     def load_image(self):
         if self.image:
@@ -177,16 +182,25 @@ class PK_View(PropertyGroup):
         if self.image:
             self.image.gl_free()
 
-    def generate_image(self, context, view):
+    def show_layer_selector(self):
+        if self.layers_enum != 'NONE' and self.layers:
+            OP.wm.call_panel(name="PK_PT_view_layer_selector", keep_open=False)
+            return True
+        return False
+    
+    def generate_image(self, context, view: str):
+        if view == "" or view.isspace():
+            return
         if self.image:
             self.image.gl_free()
             self.image.buffers_free()
-
+        
+        import bpy
+        
         # Get 3d region
         region = context.region
         area = context.area
-        space_data = context.space_data
-        region3d = context.area.spaces.active.region_3d
+        region3d = area.spaces.active.region_3d
 
         # Back-Up matrix data
         old_is_perspective      = region3d.is_perspective * True
@@ -195,7 +209,39 @@ class PK_View(PropertyGroup):
         old_view_location       = region3d.view_location * 1
         old_view_rotation       = region3d.view_rotation * 1
         old_view_camera_zoom    = region3d.view_camera_zoom * 1
+        
+        print("GenerateViewImage::CONTEXT: ", context)
+        space   = context.space_data
+        overlay = space.overlay
+        shading = space.shading
+        
+        # BACK-UP SHADING PROPS
+        show_overlays           = overlay.show_overlays * True
+        show_gizmo              = space.show_gizmo * True
+        background_type         = shading.background_type + ''
+        background_color        = shading.background_color * 1
+        color_type              = shading.color_type + ''
+        light                   = shading.light + ''
+        object_outline_color    = shading.object_outline_color * 1
+        shading_type            = shading.type + ''
+        show_object_outline     = shading.show_object_outline * True
+        show_cavity             = shading.show_cavity * True
+        show_shadows            = shading.show_shadows * True
 
+        # CHANGE VIEWPORT SETTINGS TO RENDER
+        overlay.show_overlays           = False
+        space.show_gizmo                = False
+        shading.background_type         = 'VIEWPORT'
+        shading.background_color        = (0, 0, 0) # Black
+        shading.color_type              = 'SINGLE'
+        shading.single_color            = (.5,.5,.5)
+        shading.light                   = 'FLAT'
+        shading.show_object_outline     = True
+        shading.object_outline_color    = (.2,.2,.2)
+        shading.type                    = 'SOLID'
+        shading.show_cavity             = True
+        shading.show_shadows            = True
+        
         # View camera to specific view
         bpy.ops.view3d.view_axis(type=view)
         # Fit view to target
@@ -203,7 +249,29 @@ class PK_View(PropertyGroup):
         # Update Matrix
         # region3d.update()
 
+        # Redraw Window to update draw data
+        bpy.ops.wm.redraw_timer(type='DRAW_WIN_SWAP', iterations=1) # TODO: better to refresh each area?
+        
+        # GET PROJECTED POINTS AND SIZE FROM ARMATURE OBJECT AND MESH BOUNDS
+        # Get specific bound points per view.
+        bounds = get_corner_points_from_bb_relative_to_view(context.active_object, view)
+        # Get 2D Screen projected Positions.
+        a = view3d_utils.location_3d_to_region_2d(region, space.region_3d, bounds[0], default=None)
+        b = view3d_utils.location_3d_to_region_2d(region, space.region_3d, bounds[1], default=None)
+        # Extend bounds of armature/skeleton to have some margins.
+        A = (int(a[0]) - 10, int(a[1]) + 10)
+        B = (int(b[0]) - 10, int(b[1]) + 10)
+        # Get projected size.
+        _w = abs(B[0] - A[0])
+        _h = abs(B[1] - A[1])
+        # Get projected origin points.
+        xo = A[0] if A[0] < B[0] else B[0]
+        yo = A[1] if A[1] < B[1] else B[1]
 
+        # Create Picker View Image
+        name = "Picker_" + self.name + "_Image"
+        pk_image = viewport_screenshot(area.x + xo, area.y + yo, _w, _h, name)
+        
         # RETURN TO PREVIOUS VIEW AND MODE
         region3d.is_perspective     = old_is_perspective
         region3d.view_matrix        = old_view_matrix
@@ -211,12 +279,23 @@ class PK_View(PropertyGroup):
         region3d.view_location      = old_view_location
         region3d.view_rotation      = old_view_rotation
         region3d.view_camera_zoom   = old_view_camera_zoom
+        
+        # Recover Viewport settings
+        overlay.show_overlays           = show_overlays
+        space.show_gizmo                = show_gizmo
+        shading.background_type         = background_type
+        shading.background_color        = background_color
+        shading.color_type              = color_type
+        shading.light                   = light
+        shading.show_object_outline     = show_object_outline
+        shading.object_outline_color    = object_outline_color
+        shading.type                    = shading_type
+        shading.show_cavity             = show_cavity
+        shading.show_shadows            = show_shadows
 
-    def show_layer_selector(self):
-        if self.layers_enum != 'NONE' and self.layers:
-            OP.wm.call_panel(name="PK_PT_view_layer_selector", keep_open=False)
-            return True
-        return False
+        if pk_image:
+            self.image = pk_image
+            self.load_image()
 
 '''
 class PK_View_Layer_Selector(Panel):
