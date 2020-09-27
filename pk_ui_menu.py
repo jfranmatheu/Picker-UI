@@ -192,6 +192,7 @@ class PK_UI_MenuBar:
         # Hardcoded attributes.
         self.spacing = 20
         self.margin_left = 15
+        
         self.text_size = self.picker.theme.menubar_text_size
 
     def add_menu(self, menu: PK_UI_Menu = None):

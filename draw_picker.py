@@ -84,7 +84,7 @@ class PK_OT_draw_picker(Operator):
     bl_label = ""
     bl_description = "Draw Picker"
 
-    def toggle_ghost_mode(self, toggle=False):
+    def toggle_ghost_mode(self, toggle: bool = False) -> bool:
         if toggle:
             self.ghost_mode = not self.ghost_mode
         return self.ghost_mode
@@ -96,6 +96,15 @@ class PK_OT_draw_picker(Operator):
         # RESET.
         if self.picker.mode == 0:
             self.using_tool = False
+    
+    def lock_ui(self, toggle: bool = False) -> bool:
+        if toggle:
+            self.picker.is_locked = not self.picker.is_locked
+        return self.picker.is_locked
+
+    def is_locked(self):
+        print(self.picker.is_locked)
+        return self.picker.is_locked
 
     def move_picker(self, reg):
         size = self.picker.size
@@ -593,18 +602,20 @@ class PK_OT_draw_picker(Operator):
                     self.hover_type = HoverType.LAYER
                     return {'PASS_THROUGH'}
 
-                # TOP_RIGHT ? (for scaling).
-                tr = [pk.pos[0] + pk.size[0], pk.pos[1] + pk.size[1]]
-                if point_inside_tri(
-                    self.mousePos[0], self.mousePos[1],
-                    tr[0], tr[1],
-                    tr[0] - 12, tr[1],
-                    tr[0], tr[1] - 12):
-                    self.hover_type = HoverType.TOP_RIGHT
-                    Cursor.set_icon(context, CursorIcon.MOVE_X)
-                else:
-                    Cursor.set_icon(context, CursorIcon.DEFAULT)
-                    self.hover_type = HoverType.NONE
+                if not self.is_locked():
+                    # TOP_RIGHT ? (for scaling).
+                    tr = [pk.pos[0] + pk.size[0], pk.pos[1] + pk.size[1]]
+                    if point_inside_tri(
+                        self.mousePos[0], self.mousePos[1],
+                        tr[0], tr[1],
+                        tr[0] - 12, tr[1],
+                        tr[0], tr[1] - 12):
+                        self.hover_type = HoverType.TOP_RIGHT
+                        Cursor.set_icon(context, CursorIcon.MOVE_X)
+                        return {'PASS_THROUGH'}
+
+                Cursor.set_icon(context, CursorIcon.DEFAULT)
+                self.hover_type = HoverType.NONE
 
             ''' 2o. Check WHICH event was triggered. '''
             # PICKER MODE
@@ -617,11 +628,12 @@ class PK_OT_draw_picker(Operator):
                                 #if self.picker.use_button_direct_action:
                                 #    return {'PASS_THROUGH'}
                                 return {'RUNNING_MODAL'}
-                        if self.hover_type == HoverType.TOP_RIGHT:
-                            self.scaling = True
-                        else:
-                            self.moving = True
-                            self.offset = self.mousePos - Vector((pk.pos[0], pk.pos[1]))
+                        if not self.is_locked():
+                            if self.hover_type == HoverType.TOP_RIGHT:
+                                self.scaling = True
+                            else:
+                                self.moving = True
+                                self.offset = self.mousePos - Vector((pk.pos[0], pk.pos[1]))
                     return {'RUNNING_MODAL'}
                 # EXIT 0/
                 elif event.type == 'ESC':
@@ -653,11 +665,12 @@ class PK_OT_draw_picker(Operator):
                 # WIDGET.
                 if event.type == 'LEFTMOUSE':
                     if event.value == 'PRESS':
-                        if self.hover_type == HoverType.TOP_RIGHT:
-                            self.scaling = True
-                        else:
-                            self.moving = True
-                            self.offset = self.mousePos - Vector((pk.pos[0], pk.pos[1]))
+                        if not self.is_locked():
+                            if self.hover_type == HoverType.TOP_RIGHT:
+                                self.scaling = True
+                            else:
+                                self.moving = True
+                                self.offset = self.mousePos - Vector((pk.pos[0], pk.pos[1]))
                     return {'RUNNING_MODAL'}
                 # EXIT EDIT MODE 0/
                 elif event.type == 'ESC':
@@ -730,6 +743,8 @@ class PK_OT_draw_picker(Operator):
         # TODO: add poll function to know if button is enabled or disabled.
         m_picker = PK_UI_Menu("Picker ", menu_bar)
         m_picker.add_item(PK_UI_MenuItem("Toggle Edit Mode", OP, self.toggle_edit_mode))
+        m_picker.add_item(PK_UI_MenuSeparator())
+        m_picker.add_item(PK_UI_MenuItem("Lock UI", PPT, self.lock_ui))
         m_picker.add_item(PK_UI_MenuSeparator())
         m_picker.add_item(PK_UI_MenuItem("Close", OP, self.finish))
 

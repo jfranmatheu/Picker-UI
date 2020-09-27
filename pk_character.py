@@ -32,6 +32,7 @@ class PK_Character(PropertyGroup):
     arm_obj : PointerProperty(type=Object, name="Armature Object")
 
     mode : IntProperty(default=PK_Mode.OBJECT(), min=0, max=1, name="Mode")
+    is_locked : BoolProperty(default=False, name="Lock UI")
 
     ''' Here is our serialization path to export our picker. '''
     database_path : StringProperty(default="", subtype='FILE_PATH', name="Database Path")
@@ -51,10 +52,15 @@ class PK_Character(PropertyGroup):
     def get_active_view(self):
         return self.get_active_scene().get_active_view()
 
-    def get_set_use_button_direct_action(self, toggle=False):
+    def get_set_use_button_direct_action(self, toggle: bool = False) -> bool:
         if toggle:
             self.use_button_direct_action = not self.use_button_direct_action
         return self.use_button_direct_action
+
+    def get_set_lock_ui(self, toggle: bool = False) -> bool:
+        if toggle:
+            self.picker.is_locked = not self.picker.is_locked
+        return self.picker.is_locked
 
     def toggle_edit_mode(self):
         self.mode = PK_Mode.EDIT() if self.mode == PK_Mode.OBJECT() else PK_Mode.OBJECT()
