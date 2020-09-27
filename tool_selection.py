@@ -55,6 +55,7 @@ class Tool_SelectTweak(PK_UI_Tool):
         return False
 
     def cancel(self, op):
+        self.back_up(op)
         d = op.active_button.get_data_from_view_index(op.active_view_index)
         if op.scaling:
             d.pos = op.initial_pos
@@ -64,6 +65,15 @@ class Tool_SelectTweak(PK_UI_Tool):
             d.pos = op.initial_pos
             op.moving = False
         op.active_button = None
+    
+    def back_up(self, op):
+        # Back-Up properties data if available.
+        if op.temp_button_props:
+            style = op.active_button.style
+            for key in op.temp_button_props.keys():
+                if hasattr(style, key):
+                    setattr(style, key, op.temp_button_props[key])
+            op.temp_button_props.clear()
 
     def modal(self, op, event) -> int:
         # We are using out tool.
@@ -73,13 +83,7 @@ class Tool_SelectTweak(PK_UI_Tool):
                 return MODAL_FINISHED
             if event.type == 'LEFTMOUSE' and event.value == 'RELEASE':
                 if op.moving or op.scaling:
-                    # Back-Up properties data if available.
-                    if op.temp_button_props:
-                        style = op.active_button.style
-                        for key in op.temp_button_props.keys():
-                            if hasattr(style, key):
-                                setattr(style, key, op.temp_button_props[key])
-                        op.temp_button_props.clear()
+                    self.back_up(op)
                     d = op.active_button.get_data_from_view_index(op.active_view_index)
                     fx, fy = d.factor
                     x, y = d.pos
