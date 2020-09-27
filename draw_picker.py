@@ -521,6 +521,9 @@ class PK_OT_draw_picker(Operator):
         if not self.picker:
             self.finish()
             return {'CANCELLED'}
+        if context.mode != 'POSE':
+            self.finish()
+            return {'CANCELLED'}
         #print(event.type, event.value)
         #print(bpy.context.window_manager.clipboard)
 
