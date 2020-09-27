@@ -257,9 +257,13 @@ class PK_UI_MenuBar:
                     self.active_menu = None
                 self.on_hover_menu = None
 
+            else:
+                # NOTE: So events inside menu items are not pass through to picker...
+                if point_inside_rect(mouse, self.pos, self.size):
+                    return True
             # Check if mouse is still inside active menu.
             if point_inside_rect(mouse, self.active_menu_rect.pos, self.active_menu_rect.size):
-                return True # NOTE: Changed from False to True so events inside menu items are not pass through to picker...
+                return False # UNDO
 
             #print("- Mouse:", mouse)
             #print("- Rect-Pos:", self.active_menu_rect.pos)
