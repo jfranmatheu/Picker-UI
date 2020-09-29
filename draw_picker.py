@@ -707,8 +707,14 @@ class PK_OT_draw_picker(Operator):
 
         ''' SETUP PICKER VARIABLES '''
         self.ghost_mode = False
-        self.picker = context.scene.pickers.data[-1]
         context.scene.pickers.active_index = len(context.scene.pickers.data) - 1
+        if context.scene.pickers.active_index < 0:
+            print("ERROR: Picker data not found")
+            return {'CANCELLED'}
+        self.picker = context.scene.pickers.data[-1]
+        if not self.picker:
+            print("ERROR: Picker data is invalid or corrupted")
+            return {'CANCELLED'}
         if self.picker.active_scene != -1:
             scene = self.picker.scenes[self.picker.active_scene]
             if scene.active_view != -1:
