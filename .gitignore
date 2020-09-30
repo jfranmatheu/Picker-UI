@@ -5,3 +5,4 @@ __pycache__
 *$py.class
 *.cs
 auto_load.py
+.vscode
