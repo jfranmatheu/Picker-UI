@@ -1,21 +1,17 @@
 import bpy
 
-from .draw.polygon import (
-    dr2drr_2, dr2dr, dr2dt, dr2drUniform
-)
-from .draw.primitives import (
-    dr2dl
-)
-from .draw.text import (
-    drtbx, drtrbx, drt
-)
 from .draw.gpu_shaders import shader_2d_color_unif
-from .draw.image import dria
 from .pk_ui_icon import PK_UI_Icon
 from .functions import point_inside_rect
 from .utils.shapes import RectSimple
 from blf import size as text_size, dimensions as text_dim
 from .utils.colors import ColorsRGBA as Color
+from .draw.fun import  (
+    dr2drr_2, dr2dr, dr2dt, dr2drUniform,
+    dr2dls,
+    drtbx, drtrbx, drt,
+    dria
+)
 
 
 MODAL_PASS = 0
@@ -453,6 +449,6 @@ class PK_UI_ToolBar:
 
         # Draw Batched Lines.
         if batch_lines:
-            dr2dl(
+            dr2dls(
                 theme.toolbar_line_color, *batch_lines
             )

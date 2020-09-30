@@ -3,16 +3,13 @@ from mathutils import Vector
 from .draw_picker import RECTANGLE, CIRCLE, NONE, TOP, BOTTOM, LEFT, RIGHT
 from .pk_ui_tool import MODAL_PASS, MODAL_RUN, MODAL_FINISHED, PK_UI_Tool
 from .functions import distance_between
-from .draw.text import (
-    drt, drt_AlignCenter,
-    drtbxc, drtbxcwd,
-    drtc, drtc_Smooth, drtc_Smooth_Gradient,
-    drtc_Smooth_Outline, drtc_Smooth_Outline_Gradient
+from .draw.fun import  (
+    drt, drtcent, drtbxc, drtbxcwd, drtc, drtcs, drtcsg, drtcsout, drtcsoutg,
+    dr2drf, dr2drcdep,
+    dr2dcsdep, dr2dcsout,
+    dr2dcl, _dr2dl_plist, dr2dps,
+    dr2fldot
 )
-from .draw.polygon import dr2drf, dr2drc_WithDepth
-from .draw.circle import dr2dcs_WithDepth, dr2dcs_Outline
-from .draw.primitives import dr2dcl, dr2dl_FromPointList, dr2dps
-from .draw.frame import Draw_2D_Frame_Line_Dotted
 # from .draw.gpu_shaders import shader_2d_color_unif
 import bgl
 import time
@@ -87,7 +84,7 @@ class Tool_MagicPicker(PK_UI_Tool):
     def draw_callback(self, op, *args, **kwargs):
         if self.has_selection:
             size = self.max_point - self.min_point
-            #Draw_2D_Frame_Line_Dotted(
+            #dr2fldot(
             #    self.min_point[0], self.min_point[1],
             #    size[0], size[1],
             #    (1, 1, 0, 1), 2, .3
@@ -110,7 +107,7 @@ class Tool_MagicPicker(PK_UI_Tool):
             points.append(self.points[-1])
             points.append(self.points[0])
 
-            dr2dl_FromPointList(
+            _dr2dl_plist(
                 (0, 1, 1, 1),
                 points
             )
@@ -120,7 +117,7 @@ class Tool_MagicPicker(PK_UI_Tool):
         #if self.buffer:
         #    co = self.buffer.to_list()
         #    co[3] = 1.0
-        #    dr2dcs_Outline(
+        #    dr2dcsout(
         #        op.mousePos[0] + 5, op.mousePos[1] + 5, 5, co, (0, 0, 0, 1), .75
         #    )
 

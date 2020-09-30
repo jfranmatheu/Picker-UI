@@ -4,23 +4,15 @@ from .pk_character import PK_Character
 from .pk_ui_icon import PK_UI_Icon
 from .pk_ui_tool import PK_UI_Tool
 from .utils.colors import ColorsRGBA as Color
-from .draw.polygon import (
-    dr2drc, dr2ds, dr2drf, dr2drfsc
-)
-from .draw.circle import (
-    dr2dc, dr2dcs, dr2dcaaswd
-)
-from .draw.text import (
+from .draw.fun import  (
+    dr2drc, dr2ds, dr2drf, dr2drfsc,
+    dr2dc, dr2dcs, dr2dcaaswd,
     drtbxc, drtbxcwd, drt,
     drtbxcrwd,
     drtc, drtcswd, drtcsgwd,
-    drtcsoutwd, drtcsoutgwd
-)
-from .draw.primitives import (
-    dr2dcl, dr2dp, dr2dps, dr2dcls
-)
-from .draw.frame import (
-    Draw_2D_Frame_Line_Dotted, Draw_2D_Frame_Line_Dotted_MultiColor
+    drtcsoutwd, drtcsoutgwd,
+    dr2dcl, dr2dp, dr2dps, dr2dcls,
+    dr2fldot, dr2fldotmul
 )
 from .draw_picker import RECTANGLE, CIRCLE, ROUND_SQUARE, NONE, TOP, BOTTOM, LEFT, RIGHT
 from .pk_ui_tool import MODAL_PASS, MODAL_RUN, MODAL_FINISHED
@@ -378,7 +370,7 @@ class Tool_SelectBox(PK_UI_Tool):
                     )
 
         if self.boxing:
-            Draw_2D_Frame_Line_Dotted_MultiColor(
+            dr2fldotmul(
                 self.box_origin[0], self.box_origin[1],
                 self.box_size[0], self.box_size[1],
                 (.02, .02, .02, 1), (.9, .9, .9, 1),

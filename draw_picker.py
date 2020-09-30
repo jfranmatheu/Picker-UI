@@ -1,5 +1,4 @@
 from enum import Enum
-
 import bpy
 from bpy.types import Operator
 from mathutils import Vector
@@ -8,7 +7,6 @@ from bgl import (
     glEnable, glDisable, GL_DEPTH_TEST, GL_BLEND, glDepthRange, glScissor, GL_SCISSOR_TEST,
     GL_COLOR_BUFFER_BIT
 )
-
 from .utils.event import Simulate as Event
 '''
 try:
@@ -16,36 +14,27 @@ try:
 except:
     import keyboard as Event
 '''
-
-from .draw_functions import (
+from .functions import (
+    point_inside_rect, point_inside_tri, _point_inside_tri, deselect_all_pose_bones, point_inside_circle
+)
+from .draw.fun import (
     _dr2dr,
     _dr2drt,
     _drai,
     _draoi,
-    text_size
-)
-from .functions import (
-    point_inside_rect, point_inside_tri, _point_inside_tri, deselect_all_pose_bones, point_inside_circle
-)
-from .draw.polygon import (
+    text_size,
     dr2dr, dr2drr, dr2drrt,
     dr2dt, dr2drrf, dr2drf,
     dr2ds, dr2drc, dr2drrb,
-    dr2drfsc
-)
-from .draw.circle import dr2dc, dr2dcs, dr2dcaaswd
-from .draw.text import (
+    dr2drfsc,
     drt, drtbx, drtrbx, dr2dsbr,
     drtbxc, drtbxcwd, drtbxcrwd,
     drtc, drtcswd,
     drtcsoutwd, drtcsoutgwd,
-    drtcsgwd
-)
-from .draw.image import (
-    driao, dria, driac
-)
-from .draw.primitives import (
-    dr2dl, dr2dps, dr2dp, dr2dcl, dr2dcls
+    drtcsgwd,
+    driao, dria, driac,
+    dr2dl, dr2dls, dr2dps, dr2dp, dr2dcl, dr2dcls,
+    dr2dc, dr2dcs, dr2dcaaswd
 )
 from .pk_ui_menu import PK_UI_MenuBar, PK_UI_Menu, PK_UI_MenuItem, MenuItemType, PK_UI_MenuSeparator
 from .pk_ui_tool import PK_UI_ToolBar, PK_UI_Tool, MODAL_PASS, MODAL_RUN, MODAL_FINISHED
@@ -916,7 +905,7 @@ def draw_picker_callback_px(self, context):
     right = [self.scene_pos[0] + int(self.scene_size[0] / 2) + int(width / 2), self.scene_pos[1] + self.scene_size[1]]
 
     # Draw scene frame representing margins.
-    dr2dl((.4, .4, .4, .2),
+    dr2dls((.4, .4, .4, .2),
                   # B  # D
                   # A  # C
                   [self.scene_pos[0], self.scene_pos[1]], [self.scene_pos[0], self.scene_pos[1] + self.scene_size[1]], # A-B

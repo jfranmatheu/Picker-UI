@@ -8,10 +8,12 @@ from mathutils import Vector
 
 from .functions import point_inside_rect
 from .utils.shapes import Rect, RectSimple
-from .draw.polygon import dr2drrt, dr2dr, dr2drrb, dr2drr
-from .draw.text import drt, drtbx
-from .draw.toggle import drcbx, drcbxsmpl
-from .draw.primitives import Draw_2D_Line
+from .draw.fun import (
+    dr2drrt, dr2dr, dr2drrb, dr2drr,
+    drt, drtbx,
+    drcbx, drcbxsmpl,
+    dr2dl
+)
 
 
 class MenuItemType(Enum):
@@ -113,7 +115,7 @@ class PK_UI_Menu:
         for item in reversed(self.items):
             if item.is_separator():
                 y = y0 + int(self.item_height/2 - self.spacing/2)
-                Draw_2D_Line((x0, y), (x0+self.width, y), (1, 1, 1, .4))
+                dr2dl((x0, y), (x0+self.width, y), (1, 1, 1, .4))
             else:
                 if item == self.on_hover_item:
                     dr2dr(x0+1, y0 - self.spacing, self.width-2, self.item_height + self.spacing, theme.menubar_drop_color_active)

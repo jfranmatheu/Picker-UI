@@ -1,3 +1,199 @@
+vs2gen = '''
+    uniform mat4 ModelViewProjectionMatrix;
+    in vec2 pos;
+    uniform vec4 color;
+    out vec4 col;
+    void main()
+    {
+        gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0, 1.0);
+        col = color;
+    }
+'''
+vs2gendep = '''
+    uniform mat4 ModelViewProjectionMatrix;
+    in vec2 pos;
+    uniform vec4 color;
+    uniform float depth;
+    out vec4 col;
+    void main()
+    {
+        gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0, 1.0);
+        gl_Position.z = depth / 100 - .1; // Debe ser inferior a 0.92 o así por tanto hay que restarle para asegurar...
+        col = color;
+    }
+'''
+fs2gen = '''
+    // uniform vec4 color;
+    in vec4 col;
+    out vec4 co;
+    void main()
+    {
+        co = col;
+    }
+'''
+fs2rr = """
+    varying vec4 v_color;
+    varying vec2 v_texCoord0;
+    uniform vec2 u_resolution;
+    uniform vec2 u_screenOffset;
+    uniform sampler2D u_sampler2D;
+    const float max = pow(0.2, 4);
+    out vec4 co;
+    void main()
+    {
+        vec2 pos = (gl_FragCoord.xy - u_screenOffset) / u_resolution;
+        float vignette = pos.x * pos.y * (1.-pos.x) * (1.-pos.y);
+        vec4 color = texture2D(u_sampler2D, v_texCoord0) * v_color;
+        color.rgb = color.rgb * smoothstep(0, max, vignette);
+        co = color;
+    }
+"""
+fs2rf = """
+//---------------------------------------------------------
+// draw rectangle frame with rounded edges
+//---------------------------------------------------------
+float roundedFrame (vec2 pos, vec2 size, float radius, float thickness)
+{
+  float d = length(max(abs(uv - pos),size) - size) - radius;
+  return smoothstep(0.55, 0.45, abs(d / thickness) * 5.0);
+}
+uniform vec4 color;
+in vec4 col;
+out vec4 co;
+void main()
+{
+    co = col;
+}
+"""
+fs2plight = """
+precision mediump float;
+void main()
+{
+  float r = 0.0, delta = 0.0, alpha = 0.0;
+  vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+  r = dot(cxy, cxy);
+  delta = fwidth(r);
+  alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
+  if (alpha < 0.5) // threshold
+    discard;
+  vec3 color = vec3(0.0);
+  color += 0.1 * 0.1 / r;
+  gl_FragColor = vec4(color, 1.0); // apply alpha: (1-r) or r
+}
+"""
+fs2plightc = """
+precision mediump float;
+void main()
+{
+  float r = 0.0, delta = 0.0, alpha = 0.0;
+  vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+  r = dot(cxy, cxy);
+  delta = fwidth(r);
+  alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
+  if (alpha < 0.5) // threshold
+    discard;
+  vec3 color = vec3(0.0);
+  for(int i = 0; i < 40; i++){
+    float radius = 0.3;
+    float rad = radians(360.0 / 40.0) * float(i);
+    color += 0.003 / length(cxy + vec2(radius * cos(rad), radius * sin(rad)));
+  }
+  gl_FragColor = vec4(color, 1.0-r); // alpha: 1.0
+}
+"""
+vs2i = '''
+    uniform mat4 ModelViewProjectionMatrix;
+    /* Keep in sync with intern/opencolorio/gpu_shader_display_transform_vertex.glsl */
+    in vec2 texCoord;
+    in vec2 pos;
+    out vec2 texCoord_interp;
+    void main()
+    {
+        gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0f, 1.0f);
+        gl_Position.z = 1.0;
+        texCoord_interp = texCoord;
+    }
+'''
+fs2ia = '''
+    in vec2 texCoord_interp;
+    out vec4 fragColor;
+    uniform sampler2D image;
+    void main()
+    {
+        vec4 texColor = texture(image, texCoord_interp);
+        if(texColor.a < 0.05)
+            discard;
+        fragColor = texColor;
+    }
+'''
+fs2iao = '''
+    in vec2 texCoord_interp;
+    out vec4 fragColor;
+    uniform sampler2D image;
+    uniform float opacity;
+    void main()
+    {
+        vec4 texColor = texture(image, texCoord_interp);
+        if(texColor.a < 0.05)
+            discard;
+        if(texColor.a > opacity)
+            texColor.a = opacity;
+        fragColor = texColor;
+    }
+'''
+fs2iaoex = '''
+    in vec2 texCoord_interp;
+    out vec4 fragColor;
+    uniform sampler2D image;
+    uniform float opacity;
+    uniform vec3 exclude_color;
+    void main()
+    {
+        vec4 texColor = texture(image, texCoord_interp);
+        if(texColor.a < 0.1)
+            discard;
+        if(textColor.rgb == exclude_color)
+            discard;
+        if(texColor.a > opacity)
+            texColor.a = opacity;
+        fragColor = texColor;
+    }
+'''
+
+vs2ldot = '''
+uniform mat4 ModelViewProjectionMatrix;
+in vec2 position;
+void main()
+{
+    gl_Position = ModelViewProjectionMatrix * vec4(position, 0.0, 1.0);
+}
+'''
+fs2ldot = '''
+uniform vec4 color;
+uniform float factor; // 0.3
+out vec4 co;
+void main()
+{
+    if (step(sin(factor * (gl_FragCoord.x+gl_FragCoord.y)/2.0), 0.5f))
+        discard;
+    co = color;
+}
+'''
+s2ldot = (vs2ldot, fs2ldot)
+fs2ldotmul = '''
+uniform vec4 color_1;
+uniform vec4 color_2;
+uniform float factor; // 0.3
+out vec4 co;
+void main()
+{
+    if (step(sin(factor * (gl_FragCoord.x+gl_FragCoord.y)/2.0), 0.5f))
+        co = color_1;
+    else
+        co = color_2;
+}
+'''
+s2ldotmul = (vs2ldot, fs2ldotmul)
 vs2c = """
 uniform mat4 ModelViewProjectionMatrix;
 uniform float size;

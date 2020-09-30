@@ -3,15 +3,15 @@ from mathutils import Vector
 from .draw_picker import RECTANGLE, CIRCLE, NONE, TOP, BOTTOM, LEFT, RIGHT
 from .pk_ui_tool import MODAL_PASS, MODAL_RUN, MODAL_FINISHED, PK_UI_Tool
 from .functions import distance_between
-from .draw.text import (
-    drt, drt_AlignCenter,
+from .draw.fun import  (
+    drt, drtcent,
     drtbxc, drtbxcwd,
-    drtc, drtc_Smooth, drtc_Smooth_Gradient,
-    drtc_Smooth_Outline, drtc_Smooth_Outline_Gradient
+    drtc, drtcs, drtcsg,
+    drtcsout, drtcsoutg,
+    dr2drf, dr2drcdep,
+    dr2dcsdep,
+    dr2dcls
 )
-from .draw.polygon import dr2drf, dr2drc_WithDepth
-from .draw.circle import dr2dcs_WithDepth
-from .draw.primitives import dr2dcls
 # from .draw.gpu_shaders import shader_2d_color_unif
 
 
@@ -97,7 +97,7 @@ class Tool_ZDepth(PK_UI_Tool):
                     (data.pos[0]+ox, data.pos[1]+oy), data.size[0], 32, 2.0, (0, 1, 1, 1)
                 )
             depth = round(data.depth, 2)
-            drt_AlignCenter(
+            drtcent(
                 data.pos[0]+ox, data.pos[1]+oy, str(depth), text_size, (0, 1, 1, 1), True
             )
 
@@ -120,12 +120,12 @@ class Tool_ZDepth(PK_UI_Tool):
                     # Draw button.
                     # drtbx(data.pos[0] + ox, data.pos[1] + oy, data.size, b.style.color, b.text, b.style.text_color, text_size, True)
                     if style.shape == RECTANGLE:
-                        dr2drc_WithDepth(
+                        dr2drcdep(
                             data.pos[0] + ox, data.pos[1] + oy,
                             data.size, color, data.depth
                         )
                     else: # CIRCLE
-                        dr2dcs_WithDepth (
+                        dr2dcsdep (
                                 data.pos[0] + ox, data.pos[1] + oy,
                                 data.size[0], color, data.depth
                             )
