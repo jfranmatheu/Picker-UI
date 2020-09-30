@@ -13,10 +13,10 @@
 
 bl_info = {
     "name" : "Picker",
-    "author" : "JFranMatheu",
+    "author" : "J. Fran Matheu (@jfranmatheu)",
     "description" : "The most wanted power for rig and animation",
     "blender" : (2, 83, 0),
-    "version" : (0, 0, 1),
+    "version" : (0, 1, 0),
     "location" : "3D Viewport > Sidebar (N) > 'Rig' tab",
     "warning" : "",
     "category" : "Interface"
