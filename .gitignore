@@ -6,3 +6,5 @@ __pycache__
 *.cs
 auto_load.py
 .vscode
+.gitignore
+debug.log
