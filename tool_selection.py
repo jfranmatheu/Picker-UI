@@ -5,19 +5,19 @@ from .pk_ui_icon import PK_UI_Icon
 from .pk_ui_tool import PK_UI_Tool
 from .utils.colors import ColorsRGBA as Color
 from .draw.polygon import (
-    Draw_2D_Rectangle_Center, Draw_2D_Square, Draw_2D_Rectangle_Frame, Draw_2D_Rectangle_Frame_Smooth_Center
+    dr2drc, dr2ds, dr2drf, dr2drfsc
 )
 from .draw.circle import (
-    Draw_2D_Circle, Draw_2D_Circle_Smooth, Draw_2D_Circle_AA_Smooth_WithDepth
+    dr2dc, dr2dcs, dr2dcaaswd
 )
 from .draw.text import (
-    Draw_Text_Box_Center, Draw_Text_Box_Center_WithDepth, Draw_Text,
-    Draw_Text_Box_Center_Rotate_WithDepth,
-    Draw_Text_Circle, Draw_Text_Circle_Smooth_WithDepth, Draw_Text_Circle_Smooth_Gradient_WithDepth,
-    Draw_Text_Circle_Smooth_Outline_WithDepth, Draw_Text_Circle_Smooth_Outline_Gradient_WithDepth
+    drtbxc, drtbxcwd, drt,
+    drtbxcrwd,
+    drtc, drtcswd, drtcsgwd,
+    drtcsoutwd, drtcsoutgwd
 )
 from .draw.primitives import (
-    Draw_2D_Circle_Line, Draw_2D_Point, Draw_2D_Points, Draw_2D_Circle_Line_Smooth
+    dr2dcl, dr2dp, dr2dps, dr2dcls
 )
 from .draw.frame import (
     Draw_2D_Frame_Line_Dotted, Draw_2D_Frame_Line_Dotted_MultiColor
@@ -128,42 +128,42 @@ class Tool_SelectTweak(PK_UI_Tool):
             if op.ghost_mode:
                 if op.moving or op.scaling:
                     if shape == RECTANGLE:
-                        Draw_2D_Rectangle_Center(xt, yt, data.size, (1, 1, 1, .07))
+                        dr2drc(xt, yt, data.size, (1, 1, 1, .07))
                     elif shape == CIRCLE:
                         #w2 = w/2
-                        Draw_2D_Circle_Smooth(xt, yt, w, (1, 1, 1, .07))
-                        Draw_2D_Circle_Line_Smooth((xt, yt), w, 32, 1.3, (1, 1, 1, 1))
+                        dr2dcs(xt, yt, w, (1, 1, 1, .07))
+                        dr2dcls((xt, yt), w, 32, 1.3, (1, 1, 1, 1))
                     else:
-                        Draw_2D_Circle_AA_Smooth_WithDepth(
+                        dr2dcaaswd(
                             xt, yt, w,
                             0.008, .8, 1.0,
                             (1, 1, 1, .2), 1.0
                         )
-                        Draw_2D_Rectangle_Frame_Smooth_Center(
+                        dr2drfsc(
                             xt, yt, w, w, 2, (1, 1, 1, .07)
                         )
-                    Draw_2D_Square((xt, yt), 2, (1, 1, 1, 1))
+                    dr2ds((xt, yt), 2, (1, 1, 1, 1))
                 else:
                     if shape == RECTANGLE:
-                        Draw_2D_Rectangle_Center(xt, yt, data.size, (1, 1, 1, .2))
+                        dr2drc(xt, yt, data.size, (1, 1, 1, .2))
                     elif shape == CIRCLE:
                         #w2 = w/2
-                        Draw_2D_Circle_Smooth(xt, yt, w, (1, 1, 1, .2))
-                        Draw_2D_Circle_Line_Smooth((xt, yt), w, 32, 1.3, (1, 1, 1, 1))
+                        dr2dcs(xt, yt, w, (1, 1, 1, .2))
+                        dr2dcls((xt, yt), w, 32, 1.3, (1, 1, 1, 1))
                     else:
-                        Draw_2D_Circle_AA_Smooth_WithDepth(
+                        dr2dcaaswd(
                             xt, yt, w,
                             0.008, style.sharpness_factor, 1.0,
                             style.color_on_hover, 1.0
                         )
-                        Draw_2D_Rectangle_Frame_Smooth_Center(
+                        dr2drfsc(
                             xt, yt, w, w, 2, (1, 1, 1, 1)
                         )
-                    Draw_2D_Square((xt, yt), 1, (1, 1, 1, 1))
+                    dr2ds((xt, yt), 1, (1, 1, 1, 1))
             else:
                 shading = style.shading
                 if shape == RECTANGLE:
-                    Draw_Text_Box_Center_Rotate_WithDepth (
+                    drtbxcrwd (
                         xt, yt, data.size, data.rotation, style.color_on_hover,
                         op.on_hover_button.text, style.text_color_on_hover, text_size, True, data.depth
                     )
@@ -171,26 +171,26 @@ class Tool_SelectTweak(PK_UI_Tool):
                     if shading == 'FLAT':
                         if style.use_outline:
                             if style.outline_blur:
-                                Draw_Text_Circle_Smooth_Outline_Gradient_WithDepth (
+                                drtcsoutgwd (
                                     xt, yt,
                                     w, style.color_on_hover, style.outline_color,
                                     1-style.outline_factor, style.outline_blur,
                                     op.on_hover_button.text, style.text_color_on_hover, text_size, True, data.depth
                                 )
                             else:
-                                Draw_Text_Circle_Smooth_Outline_WithDepth (
+                                drtcsoutwd (
                                     xt, yt,
                                     w, style.color_on_hover,
                                     style.outline_color, 1-style.outline_factor,
                                     op.on_hover_button.text, style.text_color_on_hover, text_size, True, data.depth
                                 )
                         else:
-                            Draw_Text_Circle_Smooth_WithDepth (
+                            drtcswd (
                                 xt, yt, w, style.color_on_hover,
                                 op.on_hover_button.text, style.text_color_on_hover, text_size, True, data.depth
                             )
                     elif shading == 'GRAD':
-                        Draw_Text_Circle_Smooth_Gradient_WithDepth (
+                        drtcsgwd (
                             xt, yt,
                             w, style.color_on_hover,
                             style.second_color, style.gradient_type, style.gradient_factor, style.gradient_rotation,
@@ -199,12 +199,12 @@ class Tool_SelectTweak(PK_UI_Tool):
                     elif shading == 'IMG':
                         pass
                 elif style.shape == ROUND_SQUARE:
-                    Draw_2D_Circle_AA_Smooth_WithDepth(
+                    dr2dcaaswd(
                         xt, yt, w,
                         0.008, style.sharpness_factor, 1.0,
                         style.color_on_hover, data.depth
                     )
-                    Draw_2D_Rectangle_Frame_Smooth_Center(
+                    dr2drfsc(
                         xt, yt, w, w, 2, (1, 1, 1, .07)
                     )
 
@@ -217,12 +217,12 @@ class Tool_SelectTweak(PK_UI_Tool):
 
             # Draw frame and control points for scaling.
             if shape == RECTANGLE:
-                Draw_2D_Rectangle_Frame(xt, yt, w, h, (1, 1, 1, 1))
+                dr2drf(xt, yt, w, h, (1, 1, 1, 1))
             elif shape == CIRCLE:
                 w2 = w/2
-                Draw_2D_Circle_Line_Smooth((xt+w2, yt+w2), w2, 32, 1.3, (1, 1, 1, 1))
+                dr2dcls((xt+w2, yt+w2), w2, 32, 1.3, (1, 1, 1, 1))
             #else:
-            #    Draw_2D_Rectangle_Frame_Smooth_Center(
+            #    dr2drfsc(
             #        xt, yt, w, w, 2, (1, 1, 1, 1)
             #    )
 
@@ -234,16 +234,16 @@ class Tool_SelectTweak(PK_UI_Tool):
                 r = (xt + w + sep, yt + int(h / 2))
 
                 if not op.scaling:
-                    Draw_2D_Points((0, 0, 0, 1), b, t, l, r)
+                    dr2dps((0, 0, 0, 1), b, t, l, r)
 
                 if op.scaling_from == BOTTOM:
-                    Draw_2D_Point(b, Color.Cyan())
+                    dr2dp(b, Color.Cyan())
                 elif op.scaling_from == TOP:
-                    Draw_2D_Point(t, Color.Cyan())
+                    dr2dp(t, Color.Cyan())
                 elif op.scaling_from == LEFT:
-                    Draw_2D_Point(l, Color.Cyan())
+                    dr2dp(l, Color.Cyan())
                 elif op.scaling_from == RIGHT:
-                    Draw_2D_Point(r, Color.Cyan())
+                    dr2dp(r, Color.Cyan())
 
             elif not op.moving:
                 sep = 2
@@ -252,7 +252,7 @@ class Tool_SelectTweak(PK_UI_Tool):
                 l = (xt - sep, yt + int(h / 2))
                 r = (xt + w + sep, yt + int(h / 2))
 
-                Draw_2D_Points((0, 0, 0, 1), b, t, l, r)
+                dr2dps((0, 0, 0, 1), b, t, l, r)
 
 
 
@@ -367,12 +367,12 @@ class Tool_SelectBox(PK_UI_Tool):
             for b in self.selected_buttons:
                 b_data = b.get_data_from_view_index(active_view)
                 if b.style.shape == RECTANGLE:
-                    Draw_2D_Rectangle_Center(
+                    dr2drc(
                         b_data.pos[0] + ox, b_data.pos[1] + oy,
                         b_data.size, (1, 1, 0, 1)
                     )
                 else:
-                    Draw_2D_Circle_Smooth (
+                    dr2dcs (
                         b_data.pos[0] + ox, b_data.pos[1] + oy,
                         b_data.size[0], (1, 1, 0, 1)
                     )
@@ -386,6 +386,6 @@ class Tool_SelectBox(PK_UI_Tool):
             )
 
         if self.shift:
-            Draw_Text(
+            drt(
                 op.mousePos[0] + 4, op.mousePos[1], '+', 12, 0, 1, 1, 1, 1, True
             )

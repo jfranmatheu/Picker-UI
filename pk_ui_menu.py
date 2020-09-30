@@ -8,9 +8,9 @@ from mathutils import Vector
 
 from .functions import point_inside_rect
 from .utils.shapes import Rect, RectSimple
-from .draw.polygon import Draw_2D_Rectangle_Rounded_Top, Draw_2D_Rectangle, Draw_2D_Rectangle_Rounded_Bottom, Draw_2D_Rectangle_Rounded
-from .draw.text import Draw_Text, Draw_Text_Box
-from .draw.toggle import Draw_Checkbox, Draw_Checkbox_Simple
+from .draw.polygon import dr2drrt, dr2dr, dr2drrb, dr2drr
+from .draw.text import drt, drtbx
+from .draw.toggle import drcbx, drcbxsmpl
 from .draw.primitives import Draw_2D_Line
 
 
@@ -107,8 +107,8 @@ class PK_UI_Menu:
         x0 = menu_pos[0]
         height = self.item_height * n + self.spacing * (n - 1) + self.margin_top
         y0 = menu_pos[1] - height
-        # Draw_2D_Rectangle(x0, y0 - self.margin_bottom, self.width, height + self.margin_bottom, theme.menubar_drop_bg_color)
-        Draw_2D_Rectangle_Rounded_Bottom(x0, y0 - self.margin_bottom, [self.width, height + self.margin_bottom], theme.menubar_drop_bg_color, 5)
+        # dr2dr(x0, y0 - self.margin_bottom, self.width, height + self.margin_bottom, theme.menubar_drop_bg_color)
+        dr2drrb(x0, y0 - self.margin_bottom, [self.width, height + self.margin_bottom], theme.menubar_drop_bg_color, 5)
         text_indent_x = x0 + 10
         for item in reversed(self.items):
             if item.is_separator():
@@ -116,13 +116,13 @@ class PK_UI_Menu:
                 Draw_2D_Line((x0, y), (x0+self.width, y), (1, 1, 1, .4))
             else:
                 if item == self.on_hover_item:
-                    Draw_2D_Rectangle(x0+1, y0 - self.spacing, self.width-2, self.item_height + self.spacing, theme.menubar_drop_color_active)
+                    dr2dr(x0+1, y0 - self.spacing, self.width-2, self.item_height + self.spacing, theme.menubar_drop_color_active)
                 if item.is_property():
-                    Draw_Text(text_indent_x + self.item_height, y0+3, item.name, self.text_size, 0, 1, 1, 1, 1, True)
-                    # Draw_Checkbox(x0 + 6, y0, [self.item_height-2, self.item_height-2], item.value, checkbox_bg, item == self.on_hover_item)
-                    Draw_Checkbox_Simple(x0+6, y0+1, self.item_height-6, self.item_height-6, item.value, (1, 1, 1, 1), (.1,.1,.1,1))
+                    drt(text_indent_x + self.item_height, y0+3, item.name, self.text_size, 0, 1, 1, 1, 1, True)
+                    # drcbx(x0 + 6, y0, [self.item_height-2, self.item_height-2], item.value, checkbox_bg, item == self.on_hover_item)
+                    drcbxsmpl(x0+6, y0+1, self.item_height-6, self.item_height-6, item.value, (1, 1, 1, 1), (.1,.1,.1,1))
                 else:
-                    Draw_Text(text_indent_x, y0+3, item.name, self.text_size, 0, 1, 1, 1, 1, True)
+                    drt(text_indent_x, y0+3, item.name, self.text_size, 0, 1, 1, 1, 1, True)
             y0 += self.item_height + self.spacing
 
     # TODO: add menu_size
@@ -233,18 +233,18 @@ class PK_UI_MenuBar:
         self.size = [w, h]
         self.pos = [x0, y0]
 
-        Draw_2D_Rectangle_Rounded_Top(x0, y0, self.size, theme.menubar_bg_color)
+        dr2drrt(x0, y0, self.size, theme.menubar_bg_color)
 
         x0 += self.margin_left
 
         for menu in self.menus:
             if menu == self.active_menu:
-                Draw_2D_Rectangle(x0-8, y0+2, menu.title_width+16, h-4, theme.menubar_color_active)
+                dr2dr(x0-8, y0+2, menu.title_width+16, h-4, theme.menubar_color_active)
                 menu.draw([x0-8, y0])
             elif menu == self.on_hover_menu:
-                Draw_2D_Rectangle(x0-8, y0+2, menu.title_width+16, h-4, theme.menubar_color_active)
+                dr2dr(x0-8, y0+2, menu.title_width+16, h-4, theme.menubar_color_active)
                 # menu.draw([x0-8, y0]) # NOTE: If want to draw on hover instead.
-            Draw_Text(x0, y0 + 8, menu.title, tsize, 0, *tco, True)
+            drt(x0, y0 + 8, menu.title, tsize, 0, *tco, True)
             x0 += menu.title_width + self.spacing
 
     def check(self, region, event, mouse):

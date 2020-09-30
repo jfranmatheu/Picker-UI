@@ -1,44 +1,44 @@
 from ..shaders.image_shaders import (
-    image_vertex_shader,
-    alpha_image_frag_shader,
-    alpha_opacity_image_frag_shader
+    vs2i,
+    fs2ia,
+    fs2iao
 )
 from ..shaders.generic import (
-    generic_2d_basic_vertex_shader,
-    generic_2d_basic_frag_shader,
-    generic_2d_basic_depth_vertex_shader
+    vs2gen,
+    fs2gen,
+    vs2gendep
 )
 from ..shaders.rectangle_shader import (
-    rect_round_frag_shader
+    fs2rr
 )
 from ..shaders.point_shaders import (
-    circle_fill_vert_shader, circle_fill_depth_vert_shader,
-    circle_fill_frag_shader_3,
-    circle_fill_aa_smooth_frag_shader,
+    vs2c, vs2cdep,
+    fs2c3,
+    fs2caas,
 
-    circle_fill_smooth_frag_shader,
-    circle_fill_smooth_2_frag_shader,
-    circle_fill_smooth_3_frag_shader,
+    fs2cs,
+    fs2cs2,
+    fs2cs3,
 
-    circle_fill_smooth_gradient_radial_frag_shader, circle_fill_smooth_gradient_radial_frag_shader_2,
-    circle_fill_smooth_gradient_linear_frag_shader,
-    circle_fill_smooth_gradient_linear_horizontal_frag_shader,
-    circle_fill_smooth_gradient_linear_vertical_frag_shader,
-    circle_fill_smooth_gradient_linear_diagonal_frag_shader,
-    circle_fill_smooth_gradient_reflect_frag_shader,
-    circle_fill_smooth_gradient_reflect_horizontal_frag_shader,
-    circle_fill_smooth_gradient_reflect_vertical_frag_shader,
-    circle_fill_smooth_gradient_diamond_frag_shader,
+    fs2csgrd, fs2csgrd2,
+    fs2csgln,
+    fs2csglnh,
+    fs2csglnv,
+    fs2csglnd,
+    fs2csgrf,
+    fs2csgrfh,
+    fs2csgrfv,
+    fs2csgdm,
 
-    circle_fill_smooth_outline_frag_shader,
-    circle_fill_smooth_outline_gradient_frag_shader
+    fs2csout,
+    fs2csoutg
 )
 from ..shaders.line import (
-    LINE_DOTTED_SHADER, LINE_DOTTED_MULTI_SHADER
+    s2ldot, s2ldotmul
 )
 
 from gpu.shader import from_builtin
-from gpu.types import GPUShader
+from gpu.types import GPUShader as Shader
 
 
 # BUILT-IN SHADERS
@@ -50,50 +50,50 @@ shader_3d_color_unif = from_builtin('3D_UNIFORM_COLOR') # 3D_FLAT_COLOR # 3D_SMO
 
 # LINE
 try:
-    shader_2d_line_dotted = GPUShader(*LINE_DOTTED_SHADER)
-    shader_2d_line_dotted_multi = GPUShader(*LINE_DOTTED_MULTI_SHADER)
+    gps2ldot = Shader(*s2ldot)
+    gps2ldotmul = Shader(*s2ldotmul)
 except:
-    shader_2d_line_dotted = shader_2d_color_unif
-    shader_2d_line_dotted_multi = shader_2d_color_unif
+    gps2ldot = shader_2d_color_unif
+    gps2ldotmul = shader_2d_color_unif
 
 # TRIS
-shader_2d_generic_basic = GPUShader(generic_2d_basic_vertex_shader, generic_2d_basic_frag_shader)
-shader_2d_generic_basic_depth = GPUShader(generic_2d_basic_depth_vertex_shader, generic_2d_basic_frag_shader)
+gps2gen = Shader(vs2gen, fs2gen)
+gps2gendep = Shader(vs2gendep, fs2gen)
 
 # POINT RECT
-shader_2d_rect_round = GPUShader(generic_2d_basic_vertex_shader, rect_round_frag_shader)
+gps2rr = Shader(vs2gen, fs2rr)
 
 # POINT CIRCLE
-shader_2d_circle = GPUShader(circle_fill_vert_shader, circle_fill_frag_shader_3)
+gps2c = Shader(vs2c, fs2c3)
 
-shader_2d_circle_smooth = GPUShader(circle_fill_vert_shader, circle_fill_smooth_2_frag_shader)
-shader_2d_circle_smooth_depth = GPUShader(circle_fill_depth_vert_shader, circle_fill_smooth_2_frag_shader)
-shader_2d_circle_aa_smooth_depth = GPUShader(circle_fill_depth_vert_shader, circle_fill_aa_smooth_frag_shader)
+gps2cs = Shader(vs2c, fs2cs2)
+gps2csdep = Shader(vs2cdep, fs2cs2)
+gps2caasdep = Shader(vs2cdep, fs2caas)
 
-shader_2d_circle_smooth_gradient_radial = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_radial_frag_shader)
-shader_2d_circle_smooth_gradient_radial_gamma = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_radial_frag_shader_2)
-shader_2d_circle_smooth_gradient_radial_depth = GPUShader(circle_fill_depth_vert_shader, circle_fill_smooth_gradient_radial_frag_shader)
+gpgps2csgrd = Shader(vs2c, fs2csgrd)
+gps2csgrdgam = Shader(vs2c, fs2csgrd2)
+gps2csgrddep = Shader(vs2cdep, fs2csgrd)
 
-shader_2d_circle_smooth_gradient_linear = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_linear_frag_shader)
-shader_2d_circle_smooth_gradient_linear_horizontal = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_linear_horizontal_frag_shader)
-shader_2d_circle_smooth_gradient_linear_vertical = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_linear_vertical_frag_shader)
-shader_2d_circle_smooth_gradient_linear_diagonal = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_linear_diagonal_frag_shader)
-shader_2d_circle_smooth_gradient_linear_depth = GPUShader(circle_fill_depth_vert_shader, circle_fill_smooth_gradient_linear_frag_shader)
+gps2csgln = Shader(vs2c, fs2csgln)
+gps2csglnh = Shader(vs2c, fs2csglnh)
+gps2csglnv = Shader(vs2c, fs2csglnv)
+gps2csglnd = Shader(vs2c, fs2csglnd)
+gps2csglndep = Shader(vs2cdep, fs2csgln)
 
-shader_2d_circle_smooth_gradient_reflect = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_reflect_frag_shader)
-shader_2d_circle_smooth_gradient_reflect_horizontal = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_reflect_horizontal_frag_shader)
-shader_2d_circle_smooth_gradient_reflect_vertical = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_reflect_vertical_frag_shader)
-shader_2d_circle_smooth_gradient_reflect_depth = GPUShader(circle_fill_depth_vert_shader, circle_fill_smooth_gradient_reflect_frag_shader)
+gps2csgrf = Shader(vs2c, fs2csgrf)
+gps2csgrfh = Shader(vs2c, fs2csgrfh)
+gps2csgrfv = Shader(vs2c, fs2csgrfv)
+gps2csgrfdep = Shader(vs2cdep, fs2csgrf)
 
-shader_2d_circle_smooth_gradient_diamond = GPUShader(circle_fill_vert_shader, circle_fill_smooth_gradient_diamond_frag_shader)
-shader_2d_circle_smooth_gradient_diamond_depth = GPUShader(circle_fill_depth_vert_shader, circle_fill_smooth_gradient_diamond_frag_shader)
+gps2csgdm = Shader(vs2c, fs2csgdm)
+gps2csgdmdep = Shader(vs2cdep, fs2csgdm)
 
-shader_2d_circle_smooth_outline = GPUShader(circle_fill_vert_shader, circle_fill_smooth_outline_frag_shader)
-shader_2d_circle_smooth_outline_depth = GPUShader(circle_fill_depth_vert_shader, circle_fill_smooth_outline_frag_shader)
+gps2csout = Shader(vs2c, fs2csout)
+gps2csoutdep = Shader(vs2cdep, fs2csout)
 
-shader_2d_circle_smooth_outline_gradient = GPUShader(circle_fill_vert_shader, circle_fill_smooth_outline_gradient_frag_shader)
-shader_2d_circle_smooth_outline_gradient_depth = GPUShader(circle_fill_depth_vert_shader, circle_fill_smooth_outline_gradient_frag_shader)
+gps2csoutg = Shader(vs2c, fs2csoutg)
+gps2csoutgdep = Shader(vs2cdep, fs2csoutg)
 
 # IMAGE
-shader_image_alpha = GPUShader(image_vertex_shader, alpha_image_frag_shader)
-shader_image_alpha_opacity = GPUShader(image_vertex_shader, alpha_opacity_image_frag_shader)
+gps2ia = Shader(vs2i, fs2ia)
+gps2iao = Shader(vs2i, fs2iao)

@@ -4,14 +4,14 @@ from .draw_picker import RECTANGLE, CIRCLE, NONE, TOP, BOTTOM, LEFT, RIGHT
 from .pk_ui_tool import MODAL_PASS, MODAL_RUN, MODAL_FINISHED, PK_UI_Tool
 from .functions import distance_between
 from .draw.text import (
-    Draw_Text, Draw_Text_AlignCenter,
-    Draw_Text_Box_Center, Draw_Text_Box_Center_WithDepth,
-    Draw_Text_Circle, Draw_Text_Circle_Smooth, Draw_Text_Circle_Smooth_Gradient,
-    Draw_Text_Circle_Smooth_Outline, Draw_Text_Circle_Smooth_Outline_Gradient
+    drt, drt_AlignCenter,
+    drtbxc, drtbxcwd,
+    drtc, drtc_Smooth, drtc_Smooth_Gradient,
+    drtc_Smooth_Outline, drtc_Smooth_Outline_Gradient
 )
-from .draw.polygon import Draw_2D_Rectangle_Frame, Draw_2D_Rectangle_Center_WithDepth
-from .draw.circle import Draw_2D_Circle_Smooth_WithDepth
-from .draw.primitives import Draw_2D_Circle_Line_Smooth
+from .draw.polygon import dr2drf, dr2drc_WithDepth
+from .draw.circle import dr2dcs_WithDepth
+from .draw.primitives import dr2dcls
 # from .draw.gpu_shaders import shader_2d_color_unif
 
 
@@ -81,7 +81,7 @@ class Tool_ZDepth(PK_UI_Tool):
         if self.b_data:
             depth = round(self.b_data.depth, 2)
             x, y = self.b_data.pos
-            Draw_Text_Box_Center(
+            drtbxc(
                 ox+x, oy+y, self.b_data.size, (1, 1, 1, 0), str(depth), (0, 0, 0, 1), text_size
             )
         if op.on_hover_button:
@@ -89,15 +89,15 @@ class Tool_ZDepth(PK_UI_Tool):
             data = b.get_data_from_view_index(active_scene.active_view)
             x, y, w, h = data.get_real_pos_size()
             if b.style.shape == RECTANGLE:
-                Draw_2D_Rectangle_Frame(
+                dr2drf(
                     x+ox, y+oy, w, h, (0, 1, 1, 1)
                 )
             else:
-                Draw_2D_Circle_Line_Smooth(
+                dr2dcls(
                     (data.pos[0]+ox, data.pos[1]+oy), data.size[0], 32, 2.0, (0, 1, 1, 1)
                 )
             depth = round(data.depth, 2)
-            Draw_Text_AlignCenter(
+            drt_AlignCenter(
                 data.pos[0]+ox, data.pos[1]+oy, str(depth), text_size, (0, 1, 1, 1), True
             )
 
@@ -118,14 +118,14 @@ class Tool_ZDepth(PK_UI_Tool):
                     # t = 1.0 if c < 0.5 else 0.0
                     # t_color = (t, t, t, 1.0)
                     # Draw button.
-                    # Draw_Text_Box(data.pos[0] + ox, data.pos[1] + oy, data.size, b.style.color, b.text, b.style.text_color, text_size, True)
+                    # drtbx(data.pos[0] + ox, data.pos[1] + oy, data.size, b.style.color, b.text, b.style.text_color, text_size, True)
                     if style.shape == RECTANGLE:
-                        Draw_2D_Rectangle_Center_WithDepth(
+                        dr2drc_WithDepth(
                             data.pos[0] + ox, data.pos[1] + oy,
                             data.size, color, data.depth
                         )
                     else: # CIRCLE
-                        Draw_2D_Circle_Smooth_WithDepth (
+                        dr2dcs_WithDepth (
                                 data.pos[0] + ox, data.pos[1] + oy,
                                 data.size[0], color, data.depth
                             )

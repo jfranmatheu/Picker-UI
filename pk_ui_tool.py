@@ -1,16 +1,16 @@
 import bpy
 
 from .draw.polygon import (
-    Draw_2D_Rectangle_Rounded_2, Draw_2D_Rectangle, Draw_2D_Triangle, Draw_2D_RectangleUniform
+    dr2drr_2, dr2dr, dr2dt, dr2drUniform
 )
 from .draw.primitives import (
-    Draw_2D_Lines
+    dr2dl
 )
 from .draw.text import (
-    Draw_Text_Box, Draw_Text_Rounded_Box, Draw_Text
+    drtbx, drtrbx, drt
 )
 from .draw.gpu_shaders import shader_2d_color_unif
-from .draw.image import Draw_Image_Alpha
+from .draw.image import dria
 from .pk_ui_icon import PK_UI_Icon
 from .functions import point_inside_rect
 from .utils.shapes import RectSimple
@@ -24,7 +24,7 @@ MODAL_FINISHED = 2
 
 
 class PK_UI_ToolTip:
-    def __init__(self, parent=None, tooltip: str = "This is my Tool tooltip"):
+    def __init__(self, parent=None, tooltip: str = ""):
         self.tooltip = tooltip.splitlines() if isinstance(tooltip, str) else [str(tooltip)]
         self.is_active = False
         self.expand = False
@@ -42,10 +42,8 @@ class PK_UI_ToolTip:
     def start_timer(self, context=None):
         # This one invoke the function in time.
         if not bpy.app.timers.is_registered(self.activate):
-            print("Start Timer:", self.tool)
             bpy.app.timers.register(self.activate, first_interval=.6)
         else:
-            print("Stop + Start Timer:", self.tool)
             bpy.app.timers.unregister(self.activate)
             bpy.app.timers.register(self.activate, first_interval=.6)
         # This other one provoke-refresh so we can see the tooltip poping-up.
@@ -56,7 +54,6 @@ class PK_UI_ToolTip:
 
     def stop_timer(self, context=None):
         if bpy.app.timers.is_registered(self.activate):
-            print("Stop Timer:", self.tool)
             bpy.app.timers.unregister(self.activate)
         if self._timer:
             if not context:
@@ -72,26 +69,26 @@ class PK_UI_ToolTip:
             return
         # _x, _y, _size, _color, _text, text_size, _text_color
         if not self.expand:
-            Draw_Text_Rounded_Box(
+            drtrbx(
                 pos[0] + 10, pos[1], parent.text_dim, (.1, .1, .1, .9), parent.name, 11, (1, 1, 1, 1), shader_2d_color_unif
             )
         else:
             off_y = 20
             height = len(self.tooltip) * 15 + 35
             y = pos[1] - height + 10 + off_y
-            Draw_2D_Rectangle_Rounded_2(
+            dr2drr_2(
                 pos[0] + 10, y, 170, height, (.1, .1, .1, .9), 2, 6, shader_2d_color_unif
             )
             y = y + height - 20
-            Draw_Text(pos[0] + 20, y, parent.name, 11, 0, 1, 1, 1, 1, True)
+            drt(pos[0] + 20, y, parent.name, 11, 0, 1, 1, 1, 1, True)
             y = y - 20
             for line in self.tooltip:
-                Draw_Text(pos[0] + 20, y, line, 10, 0, 1, 1, 1, 1)
+                drt(pos[0] + 20, y, line, 10, 0, 1, 1, 1, 1)
                 y -= 15
 
 
 class PK_UI_Tool:
-    def __init__(self, name: str = "Tool", parent=None):
+    def __init__(self, name: str = "", parent=None):
         self.name = name
         text_size(0, 12, 72)
         dim = text_dim(0, name)
@@ -115,7 +112,7 @@ class PK_UI_Tool:
     def set_char_as_icon(self, char: str = '?'):
         self.icon_char = char
 
-    def set_tooltip(self, tooltip: str = "This is my Tool tooltip"):
+    def set_tooltip(self, tooltip: str = ""):
         self.tooltip = PK_UI_ToolTip(self, tooltip)
         self.parent._add_timer(self.tooltip)
 
@@ -135,15 +132,15 @@ class PK_UI_Tool:
 
     def draw(self, x, y, size):
         if self.icon:
-            Draw_Image_Alpha(
+            dria(
                 self.icon, x, y, size, size
             )
         elif self.icon_char:
-            Draw_Text(x+4, y+4, self.icon_char, 20, 0, 1, 1, 1, 1, True)
+            drt(x+4, y+4, self.icon_char, 20, 0, 1, 1, 1, 1, True)
         if self.tooltip:
             self.tooltip.draw(self, (x + size, y))
         #else:
-        #    Draw_2D_Rectangle(
+        #    dr2dr(
         #        x, y, size, size, (.4, .4, .4, 1.0)
         #    )
 
@@ -170,7 +167,7 @@ class PK_UI_Tool:
 
 
 class PK_UI_ToolSet:
-    def __init__(self, name: str = "Tool Set", parent=None):
+    def __init__(self, name: str = "", parent=None):
         self.name = name
         self.parent = parent # toolbar
         self.default = None # tool
@@ -203,7 +200,7 @@ class PK_UI_ToolSet:
 
     # ToolSet Pop-up.
     def draw(self, x, y, size):
-        Draw_2D_Rectangle(
+        dr2dr(
             x, y, size, size
         )
 
@@ -279,9 +276,6 @@ class PK_UI_ToolBar:
             self.prev_spacer = True
             self.num_spacers += 1
             self.num_cats += 1
-        print("NUM_CATS:", self.num_cats)
-        print("CATS:", self.cats)
-        print("TOOLS:", self.tools)
 
     def add_separator(self):
         self.add_tool(None)
@@ -401,7 +395,7 @@ class PK_UI_ToolBar:
         x, y = self.get_pos()
         w, h = self.get_size()
 
-        Draw_2D_Rectangle(
+        dr2dr(
             x, y-h, w, h, (0, 0, 0, .2)
         )
 
@@ -427,7 +421,7 @@ class PK_UI_ToolBar:
             # print(num_cat_tools)
 
             # Draw cat background.
-            Draw_2D_Rectangle_Rounded_2(
+            dr2drr_2(
                 x, y-cat_h, w, cat_h, co, 2, 3
             )
 
@@ -436,9 +430,9 @@ class PK_UI_ToolBar:
                 tool = self.tools[k]
 
                 if tool == self.active_tool:
-                    Draw_2D_RectangleUniform(x, tool_y-self.inner_margins, w, w, theme.toolbar_active_tool_color)
+                    dr2drUniform(x, tool_y-self.inner_margins, w, w, theme.toolbar_active_tool_color)
                 elif tool == self.on_hover_tool:
-                    Draw_2D_RectangleUniform(x, tool_y-self.inner_margins, w, w, theme.toolbar_hovered_tool_color)
+                    dr2drUniform(x, tool_y-self.inner_margins, w, w, theme.toolbar_hovered_tool_color)
 
                 # print(tool)
                 tool.draw(tool_x, tool_y, tool_w)
@@ -459,6 +453,6 @@ class PK_UI_ToolBar:
 
         # Draw Batched Lines.
         if batch_lines:
-            Draw_2D_Lines(
+            dr2dl(
                 theme.toolbar_line_color, *batch_lines
             )

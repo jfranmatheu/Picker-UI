@@ -4,14 +4,14 @@ from .draw_picker import RECTANGLE, CIRCLE, NONE, TOP, BOTTOM, LEFT, RIGHT
 from .pk_ui_tool import MODAL_PASS, MODAL_RUN, MODAL_FINISHED, PK_UI_Tool
 from .functions import distance_between
 from .draw.text import (
-    Draw_Text, Draw_Text_AlignCenter,
-    Draw_Text_Box_Center, Draw_Text_Box_Center_WithDepth,
-    Draw_Text_Circle, Draw_Text_Circle_Smooth, Draw_Text_Circle_Smooth_Gradient,
-    Draw_Text_Circle_Smooth_Outline, Draw_Text_Circle_Smooth_Outline_Gradient
+    drt, drt_AlignCenter,
+    drtbxc, drtbxcwd,
+    drtc, drtc_Smooth, drtc_Smooth_Gradient,
+    drtc_Smooth_Outline, drtc_Smooth_Outline_Gradient
 )
-from .draw.polygon import Draw_2D_Rectangle_Frame, Draw_2D_Rectangle_Center_WithDepth
-from .draw.circle import Draw_2D_Circle_Smooth_WithDepth, Draw_2D_Circle_Smooth_Outline
-from .draw.primitives import Draw_2D_Circle_Line, Draw_2D_Lines_FromPointList, Draw_2D_Points
+from .draw.polygon import dr2drf, dr2drc_WithDepth
+from .draw.circle import dr2dcs_WithDepth, dr2dcs_Outline
+from .draw.primitives import dr2dcl, dr2dl_FromPointList, dr2dps
 from .draw.frame import Draw_2D_Frame_Line_Dotted
 # from .draw.gpu_shaders import shader_2d_color_unif
 import bgl
@@ -94,7 +94,7 @@ class Tool_MagicPicker(PK_UI_Tool):
             #)
             #off_x = op.ctx_area.x
             #off_y = op.ctx_area.y
-            #Draw_2D_Rectangle_Frame(
+            #dr2drf(
             #    self.min_point[0]-off_x, self.min_point[1]-off_y,
             #    size[0], size[1],
             #    (1, 1, 0, 1)
@@ -110,17 +110,17 @@ class Tool_MagicPicker(PK_UI_Tool):
             points.append(self.points[-1])
             points.append(self.points[0])
 
-            Draw_2D_Lines_FromPointList(
+            dr2dl_FromPointList(
                 (0, 1, 1, 1),
                 points
             )
-            #Draw_2D_Points(
+            #dr2dps(
             #    (0, 1, 1, 1), *self.points
             #)
         #if self.buffer:
         #    co = self.buffer.to_list()
         #    co[3] = 1.0
-        #    Draw_2D_Circle_Smooth_Outline(
+        #    dr2dcs_Outline(
         #        op.mousePos[0] + 5, op.mousePos[1] + 5, 5, co, (0, 0, 0, 1), .75
         #    )
 

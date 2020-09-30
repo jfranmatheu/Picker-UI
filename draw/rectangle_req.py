@@ -4,7 +4,7 @@ from mathutils import Vector
 # 2             # 3
 
 # 0             # 1
-def rectangle_points(x, y, s):
+def sgeo2rpts(x, y, s):
     w, h = s
     return [
         (x, y),
@@ -13,7 +13,7 @@ def rectangle_points(x, y, s):
         (x+w, y+h)
     ]
 
-def rectangle_points_(x, y, w, h):
+def _sgeo2rpts(x, y, w, h):
     return [
         (x, y),
         (x+w, y),
@@ -21,7 +21,7 @@ def rectangle_points_(x, y, w, h):
         (x+w, y+h)
     ]
 
-def rectangle_center_points(x, y, s):
+def sgeo2rcpts(x, y, s):
     w, h = s
     return [
         (x-w, y-h),
@@ -30,7 +30,7 @@ def rectangle_center_points(x, y, s):
         (x+w, y+h)
     ]
 
-def rectangle_center_points_(x, y, w, h):
+def sgeo2rcpts_(x, y, w, h):
     return [
         (x-w, y-h),
         (x+w, y-h),
@@ -47,7 +47,7 @@ def EvaluateCuadraticBezierCurve(p0, p1, p2, t = .5):
 
 # 1             # 4
     # 2     # 3
-def rounded_2_rectangle_points(x, y, w, h, r):
+def sgeo2rr2pts(x, y, w, h, r):
     return (
         ( x + w / 2     , y + h / 2 ), # 0 Center
         ( x             , y + r ), # 1 Bot Left up
@@ -62,7 +62,7 @@ def rounded_2_rectangle_points(x, y, w, h, r):
 
 # 0             # 3
     # 1     # 2
-def rounded_2_rectangle_points_bottom(x, y, w, h, r):
+def sgeo2rr2ptsbot(x, y, w, h, r):
     return (
         ( x             , y + r ), # 0 Bot Left up
         ( x + r         , y ), # 1 Bot Left down
@@ -78,7 +78,7 @@ def rounded_2_rectangle_points_bottom(x, y, w, h, r):
 # 1             # 6
   # 2         # 5
     # 3     # 4
-def rounded_3_rectangle_points(x, y, w, h, r):
+def sgeo2rr3pts(x, y, w, h, r):
     A = EvaluateCuadraticBezierCurve(Vector((x, y + r)), Vector((x, y)), Vector((x + r, y))) # 2 Bot Left mid
     B = EvaluateCuadraticBezierCurve(Vector((x + w - r, y)), Vector((x + w, y)), Vector((x + w, y + r))) # 5 Bot Right mid
     C = EvaluateCuadraticBezierCurve(Vector((x + w - r, y + h)), Vector((x + w, y + h)), Vector((x + w, y + h - r))) # 8 Top Right mid
@@ -108,7 +108,7 @@ def rounded_3_rectangle_points(x, y, w, h, r):
 # 0             # 5
   # 1         # 4
     # 2     # 3
-def rounded_3_rectangle_points_bottom(x, y, w, h, r):
+def sgeo2rr3ptsbot(x, y, w, h, r):
     A = EvaluateCuadraticBezierCurve(Vector((x, y + r)), Vector((x, y)), Vector((x + r, y))) # 2 Bot Left mid
     B = EvaluateCuadraticBezierCurve(Vector((x + w - r, y)), Vector((x + w, y)), Vector((x + w, y + r))) # 5 Bot Right mid
     return (
@@ -131,7 +131,7 @@ def rounded_3_rectangle_points_bottom(x, y, w, h, r):
 # 0             # 5
 
 # 6             # 7
-def rounded_3_rectangle_points_top(x, y, w, h, r):
+def sgeo2rr3ptstop(x, y, w, h, r):
     C = EvaluateCuadraticBezierCurve(Vector((x + w - r, y + h)), Vector((x + w, y + h)), Vector((x + w, y + h - r))) # 8 Top Right mid
     D = EvaluateCuadraticBezierCurve(Vector((x, y + h - r)), Vector((x, y + h)), Vector((x + r, y + h))) # 2 Top Left mid
     return (
@@ -153,7 +153,7 @@ def rounded_3_rectangle_points_top(x, y, w, h, r):
 # 2             # 3
 
 # 0             # 1
-rectangle_indices = (
+sgeo2ridx = (
     ( 0, 1, 2 ),
     ( 2, 1, 3 )
 )
@@ -162,7 +162,7 @@ rectangle_indices = (
 
 # 1             # 4
     # 2     # 3
-rounded_2_rectangle_indices = (
+sgeo2rr2idx = (
     ( 0,  1,  2 ), #
     ( 0,  2,  3 ), #
     ( 0,  3,  4 ),
@@ -174,7 +174,7 @@ rounded_2_rectangle_indices = (
 )
 # 0             # 3
     # 1     # 2
-rounded_2_rectangle_indices_bottom = (
+sgeo2rr2idxbot = (
     ( 3,  1,  2  ), #
     ( 3,  0,  1  ), #
 )
@@ -185,7 +185,7 @@ rounded_2_rectangle_indices_bottom = (
 # 1             # 6
   # 2         # 5
     # 3     # 4
-rounded_3_rectangle_indices = (
+sgeo2rr3idx = (
     ( 0,  1,  2  ), #
     ( 0,  2,  3  ), #
     ( 0,  3,  4  ),
@@ -204,7 +204,7 @@ rounded_3_rectangle_indices = (
 # 0             # 5
   # 1         # 4
     # 2     # 3
-rounded_3_rectangle_indices_bottom = (
+sgeo2rr3idxbot = (
     ( 3,  1,  2 ), #
     ( 1,  3,  4 ), #
     ( 1,  4,  5 ),
@@ -217,7 +217,7 @@ rounded_3_rectangle_indices_bottom = (
 # 0             # 5
 
 # 6             # 7
-rounded_3_rectangle_indices_top = (
+sgeo2rr3idxtop = (
     ( 6,  7,  0 ),
     ( 0,  6,  5 ),
     ( 0,  5,  1 ),

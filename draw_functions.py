@@ -13,22 +13,22 @@ from blf import (
 )
 from gpu_extras.batch import batch_for_shader
 from .draw.gpu_shaders import (
-    shader_2d_generic_basic,
-    shader_image_alpha,
-    shader_image_alpha_opacity
+    gps2gen,
+    gps2ia,
+    gps2iao
 )
-from .draw.rectangle_req import rectangle_points, rectangle_indices
+from .draw.rectangle_req import sgeo2rpts, sgeo2ridx
 
 
-def draw_2d_rectangle(_x, _y, _size, _color, shader=shader_2d_generic_basic):
-    batch_rect = batch_for_shader(shader, 'TRIS', {"pos" : rectangle_points(_x, _y, _size)}, indices=rectangle_indices)
+def _dr2dr(_x, _y, _size, _color, shader=gps2gen):
+    batch_rect = batch_for_shader(shader, 'TRIS', {"pos" : sgeo2rpts(_x, _y, _size)}, indices=sgeo2ridx)
     shader.bind()
     shader.uniform_float("color", _color)
     batch_rect.draw(shader)
 
-def draw_2d_rectangle_text(_x, _y, _size, _color, _text, _text_color, shader=shader_2d_generic_basic):
+def _dr2drt(_x, _y, _size, _color, _text, _text_color, shader=gps2gen):
     ''' DRAW RECT '''
-    batch_rect = batch_for_shader(shader, 'TRIS', {"pos" : rectangle_points(_x, _y, _size)}, indices=rectangle_indices)
+    batch_rect = batch_for_shader(shader, 'TRIS', {"pos" : sgeo2rpts(_x, _y, _size)}, indices=sgeo2ridx)
     shader.bind()
     shader.uniform_float("color", _color)
     batch_rect.draw(shader)
@@ -39,7 +39,7 @@ def draw_2d_rectangle_text(_x, _y, _size, _color, _text, _text_color, shader=sha
         text_position(0, _x + (_size[0] - dim[0]) * .5, _y + (_size[1] - dim[1]) * .5, 0)
         text_draw(0, _text)
 
-def draw_alpha_image(_pos, _size, _image, shader=shader_image_alpha):
+def _drai(_pos, _size, _image, shader=gps2ia):
     x, y = _pos
     w, h = _size
     if _image.gl_touch():
@@ -55,7 +55,7 @@ def draw_alpha_image(_pos, _size, _image, shader=shader_image_alpha):
     glBindTexture(GL_TEXTURE_2D, _image.bindcode)
     batch_img.draw(shader)
 
-def draw_alpha_opacity_image(_pos, _size, _image, _opacity=0.6, shader=shader_image_alpha_opacity):
+def _draoi(_pos, _size, _image, _opacity=0.6, shader=gps2iao):
     x, y = _pos
     w, h = _size
     if _image.gl_touch():

@@ -1,10 +1,10 @@
 from gpu_extras.batch import batch_for_shader
 import bgl
 
-from .gpu_shaders import shader_image_alpha_opacity, shader_image_alpha
+from .gpu_shaders import gps2iao, gps2ia
 
 
-def Draw_Image_Alpha_Opacity(image, off_x, off_y, _width, _height, _opacity = 1, shader = shader_image_alpha_opacity):
+def driao(image, off_x, off_y, _width, _height, _opacity = 1, shader = gps2iao):
     if image.gl_touch():
         raise Exception()
     vertices = (
@@ -27,7 +27,7 @@ def Draw_Image_Alpha_Opacity(image, off_x, off_y, _width, _height, _opacity = 1,
     batch_img.draw(shader)
     bgl.glDisable(bgl.GL_BLEND)
 
-def Draw_Image_Alpha(image, off_x, off_y, _width, _height, shader=shader_image_alpha):
+def dria(image, off_x, off_y, _width, _height, shader=gps2ia):
     if image.gl_touch():
         raise Exception()
     vertices = (
@@ -44,7 +44,7 @@ def Draw_Image_Alpha(image, off_x, off_y, _width, _height, shader=shader_image_a
     bgl.glDisable(bgl.GL_BLEND)
 
 
-def Draw_Image_Alpha_Center(image, off_x, off_y, _width, _height, shader=shader_image_alpha):
+def driac(image, off_x, off_y, _width, _height, shader=gps2ia):
     if image.gl_touch():
         raise Exception()
     batch_img = batch_for_shader(

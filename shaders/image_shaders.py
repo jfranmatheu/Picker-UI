@@ -1,12 +1,9 @@
-# STANDARD IMAGE VERT SHADER
-image_vertex_shader = '''
+vs2i = '''
     uniform mat4 ModelViewProjectionMatrix;
-
     /* Keep in sync with intern/opencolorio/gpu_shader_display_transform_vertex.glsl */
     in vec2 texCoord;
     in vec2 pos;
     out vec2 texCoord_interp;
-
     void main()
     {
         gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0f, 1.0f);
@@ -14,32 +11,23 @@ image_vertex_shader = '''
         texCoord_interp = texCoord;
     }
 '''
-
-# ALPHA IMAGE FRAG SHADER
-alpha_image_frag_shader = '''
+fs2ia = '''
     in vec2 texCoord_interp;
     out vec4 fragColor;
-
     uniform sampler2D image;
-
     void main()
     {
         vec4 texColor = texture(image, texCoord_interp);
         if(texColor.a < 0.05)
             discard;
-
         fragColor = texColor;
     }
 '''
-
-# ALPHA OPACITY FRAG SHADER
-alpha_opacity_image_frag_shader = '''
+fs2iao = '''
     in vec2 texCoord_interp;
     out vec4 fragColor;
-
     uniform sampler2D image;
     uniform float opacity;
-
     void main()
     {
         vec4 texColor = texture(image, texCoord_interp);
@@ -50,16 +38,12 @@ alpha_opacity_image_frag_shader = '''
         fragColor = texColor;
     }
 '''
-
-# ALPHA OPACITY FRAG SHADER + EXCLUDE COLOR
-alpha_opacity_exclude_image_frag_shader = '''
+fs2iaoex = '''
     in vec2 texCoord_interp;
     out vec4 fragColor;
-
     uniform sampler2D image;
     uniform float opacity;
     uniform vec3 exclude_color;
-
     void main()
     {
         vec4 texColor = texture(image, texCoord_interp);
@@ -69,7 +53,6 @@ alpha_opacity_exclude_image_frag_shader = '''
             discard;
         if(texColor.a > opacity)
             texColor.a = opacity;
-
         fragColor = texColor;
     }
 '''

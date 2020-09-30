@@ -18,34 +18,34 @@ except:
 '''
 
 from .draw_functions import (
-    draw_2d_rectangle,
-    draw_2d_rectangle_text,
-    draw_alpha_image,
-    draw_alpha_opacity_image,
+    _dr2dr,
+    _dr2drt,
+    _drai,
+    _draoi,
     text_size
 )
 from .functions import (
     point_inside_rect, point_inside_tri, _point_inside_tri, deselect_all_pose_bones, point_inside_circle
 )
 from .draw.polygon import (
-    Draw_2D_Rectangle, Draw_2D_Rectangle_Rounded, Draw_2D_Rectangle_Rounded_Top,
-    Draw_2D_Triangle, Draw_2D_Rectangle_Rounded_Frame, Draw_2D_Rectangle_Frame,
-    Draw_2D_Square, Draw_2D_Rectangle_Center, Draw_2D_Rectangle_Rounded_Bottom,
-    Draw_2D_Rectangle_Frame_Smooth_Center
+    dr2dr, dr2drr, dr2drrt,
+    dr2dt, dr2drrf, dr2drf,
+    dr2ds, dr2drc, dr2drrb,
+    dr2drfsc
 )
-from .draw.circle import Draw_2D_Circle, Draw_2D_Circle_Smooth, Draw_2D_Circle_AA_Smooth_WithDepth
+from .draw.circle import dr2dc, dr2dcs, dr2dcaaswd
 from .draw.text import (
-    Draw_Text, Draw_Text_Box, Draw_Text_Rounded_Box, Draw_2D_SpeechBubble_Right,
-    Draw_Text_Box_Center, Draw_Text_Box_Center_WithDepth, Draw_Text_Box_Center_Rotate_WithDepth,
-    Draw_Text_Circle, Draw_Text_Circle_Smooth_WithDepth,
-    Draw_Text_Circle_Smooth_Outline_WithDepth, Draw_Text_Circle_Smooth_Outline_Gradient_WithDepth,
-    Draw_Text_Circle_Smooth_Gradient_WithDepth
+    drt, drtbx, drtrbx, dr2dsbr,
+    drtbxc, drtbxcwd, drtbxcrwd,
+    drtc, drtcswd,
+    drtcsoutwd, drtcsoutgwd,
+    drtcsgwd
 )
 from .draw.image import (
-    Draw_Image_Alpha_Opacity, Draw_Image_Alpha, Draw_Image_Alpha_Center
+    driao, dria, driac
 )
 from .draw.primitives import (
-    Draw_2D_Lines, Draw_2D_Points, Draw_2D_Point, Draw_2D_Circle_Line, Draw_2D_Circle_Line_Smooth
+    dr2dl, dr2dps, dr2dp, dr2dcl, dr2dcls
 )
 from .pk_ui_menu import PK_UI_MenuBar, PK_UI_Menu, PK_UI_MenuItem, MenuItemType, PK_UI_MenuSeparator
 from .pk_ui_tool import PK_UI_ToolBar, PK_UI_Tool, MODAL_PASS, MODAL_RUN, MODAL_FINISHED
@@ -871,9 +871,9 @@ def draw_picker_callback_px(self, context):
 
     ''' START BY DRAWING THE BACKGROUND '''
     # TODO: Change picker position to scene position or something more deep like area or so.
-    # draw_2d_rectangle(o[0], o[1], pk.size, theme.pk_bg_color)
+    # _dr2dr(o[0], o[1], pk.size, theme.pk_bg_color)
     if pk.mode == PK_Mode.OBJECT():
-        Draw_2D_Rectangle_Rounded(o[0], o[1], pk.size, theme.pk_bg_color)
+        dr2drr(o[0], o[1], pk.size, theme.pk_bg_color)
 
 
     ''' DRAW SCENE. '''
@@ -893,7 +893,7 @@ def draw_picker_callback_px(self, context):
         print("WAR: Picker has no Scene!")
         # Draw Layer Bar.
         size = [theme.layerbar_width, pk.size[1] - theme.menubar_height - statusbar_height]
-        draw_2d_rectangle(o[0], o[1] + statusbar_height, size, theme.layerbar_bg_color)
+        _dr2dr(o[0], o[1] + statusbar_height, size, theme.layerbar_bg_color)
 
         # Draw Menu Bar.
         self.menu_bar.draw()
@@ -916,7 +916,7 @@ def draw_picker_callback_px(self, context):
     right = [self.scene_pos[0] + int(self.scene_size[0] / 2) + int(width / 2), self.scene_pos[1] + self.scene_size[1]]
 
     # Draw scene frame representing margins.
-    Draw_2D_Lines((.4, .4, .4, .2),
+    dr2dl((.4, .4, .4, .2),
                   # B  # D
                   # A  # C
                   [self.scene_pos[0], self.scene_pos[1]], [self.scene_pos[0], self.scene_pos[1] + self.scene_size[1]], # A-B
@@ -927,8 +927,8 @@ def draw_picker_callback_px(self, context):
                   [self.scene_pos[0], self.scene_pos[1] + self.scene_size[1]], left, # B - Left
                   [self.scene_pos[0] + self.scene_size[0], self.scene_pos[1] + self.scene_size[1]], right # D - Right
                 )
-    Draw_2D_Rectangle_Rounded_Frame(left[0], left[1]-10, width, 20, 6, (.4, .4, .4, .2))
-    Draw_Text(left[0]+10, left[1]-3, self.picker.name, 11, 0, .5, .5, .5, .5, True)
+    dr2drrf(left[0], left[1]-10, width, 20, 6, (.4, .4, .4, .2))
+    drt(left[0]+10, left[1]-3, self.picker.name, 11, 0, .5, .5, .5, .5, True)
 
     # Draw picker view image.
     if view.image:
@@ -961,7 +961,7 @@ def draw_picker_callback_px(self, context):
         ox = int(x)
         oy = int(y)
 
-        Draw_Image_Alpha_Opacity(view.image, x, y, w, h, view.image_opacity)
+        driao(view.image, x, y, w, h, view.image_opacity)
 
     else:
         # No image, coordinates from scene itself.
@@ -969,7 +969,7 @@ def draw_picker_callback_px(self, context):
 
     # Fondo anaranjado en edit mode.
     if self.picker.mode == 1:
-        Draw_2D_Rectangle(self.scene_pos[0] - 10, self.scene_pos[1] - 10, self.scene_size[0] + 20 + theme.toolbar_width, self.scene_size[1] + 35, (.8, .4, .2, .05))
+        dr2dr(self.scene_pos[0] - 10, self.scene_pos[1] - 10, self.scene_size[0] + 20 + theme.toolbar_width, self.scene_size[1] + 35, (.8, .4, .2, .05))
 
     ''' CONTINUE WITH BUTTONS '''
     text_size = theme.button_text_size
@@ -978,7 +978,7 @@ def draw_picker_callback_px(self, context):
 
     ''' SCENE EDIT MODE '''
     if self.picker.mode == 1:
-        Draw_Text(self.scene_pos[0], self.scene_pos[1] + self.scene_size[1] + 5, "[ Edit Mode ]", 12)
+        drt(self.scene_pos[0], self.scene_pos[1] + self.scene_size[1] + 5, "[ Edit Mode ]", 12)
         self.toolbar.tool_draw(self, ox, oy)
     else:
         if self.active_button:
@@ -986,7 +986,7 @@ def draw_picker_callback_px(self, context):
             data = self.active_button.get_data_from_view_index(active_view)
             shading = style.shading
             if style.shape == RECTANGLE:
-                Draw_Text_Box_Center_Rotate_WithDepth (
+                drtbxcrwd (
                     data.pos[0] + ox, data.pos[1] + oy,
                     data.size, data.rotation, style.color_on_hover,
                     self.active_button.text, style.text_color_on_hover, text_size, True, data.depth
@@ -995,26 +995,26 @@ def draw_picker_callback_px(self, context):
                 if shading == 'FLAT':
                     if style.use_outline:
                         if style.outline_blur:
-                            Draw_Text_Circle_Smooth_Outline_Gradient_WithDepth (
+                            drtcsoutgwd (
                                 data.pos[0] + ox, data.pos[1] + oy,
                                 data.size[0], style.color_on_hover, style.outline_color,
                                 style.outline_factor, style.outline_blur,
                                 self.active_button.text, style.text_color_on_hover, text_size
                             )
                         else:
-                            Draw_Text_Circle_Smooth_Outline_WithDepth (
+                            drtcsoutwd (
                                 data.pos[0] + ox, data.pos[1] + oy,
                                 data.size[0], style.color_on_hover,
                                 style.outline_color, style.outline_factor,
                                 self.active_button.text, style.text_color_on_hover, text_size
                             )
                     else:
-                        Draw_Text_Circle_Smooth_WithDepth (
+                        drtcswd (
                             data.pos[0] + ox, data.pos[1] + oy, data.size[0], style.color_on_hover,
                             self.active_button.text, style.text_color_on_hover, text_size, True
                         )
                 elif shading == 'GRAD':
-                    Draw_Text_Circle_Smooth_Gradient_WithDepth (
+                    drtcsgwd (
                         data.pos[0] + ox, data.pos[1] + oy,
                         data.size[0], style.color_on_hover,
                         style.second_color, style.gradient_type, style.gradient_factor, style.gradient_rotation,
@@ -1026,7 +1026,7 @@ def draw_picker_callback_px(self, context):
     ''' DRAW LAYERS '''
     # Draw Layer Bar.
     size = [theme.layerbar_width, pk.size[1] - theme.menubar_height]
-    draw_2d_rectangle(o[0], o[1] + statusbar_height, size, theme.layerbar_bg_color)
+    _dr2dr(o[0], o[1] + statusbar_height, size, theme.layerbar_bg_color)
 
     glEnable(GL_SCISSOR_TEST)
     #glClearColor(0, 0, 0, 0)
@@ -1045,17 +1045,17 @@ def draw_picker_callback_px(self, context):
     offY += width # Add spacing for first item on the layer list/col # need to add width
 
     for l in layers:
-        Draw_Text_Box(left, top - offY, size, co_act if l.is_active else co, l.text[0].upper(), tco_act if l.is_active else tco, tsize*2, True)
-        #Draw_2D_Rectangle(left, top - offY, size[0], size[1], co_act if l.is_active else co)
+        drtbx(left, top - offY, size, co_act if l.is_active else co, l.text[0].upper(), tco_act if l.is_active else tco, tsize*2, True)
+        #dr2dr(left, top - offY, size[0], size[1], co_act if l.is_active else co)
         offY += spacing[1] + width
 
     if self.hover_type == HoverType.LAYER and self.on_hover_layer:
         tail_pos = self.on_hover_layer[1]
         tail_pos[1] += int(self.on_hover_layer[2][1] / 2)
-        Draw_Text_Box(self.on_hover_layer[1][0], self.on_hover_layer[1][1] - int(self.on_hover_layer[2][1] / 2), self.on_hover_layer[2], (.8, .6, .2, 1), self.on_hover_layer[0].text[0].upper(), (1, 1, 1, 1), tsize*2, True)
-        #Draw_2D_Rectangle(self.on_hover_layer[1][0], self.on_hover_layer[1][1] - int(self.on_hover_layer[2][1] / 2), self.on_hover_layer[2][0], self.on_hover_layer[2][1], (.8, .6, .2, 1))
+        drtbx(self.on_hover_layer[1][0], self.on_hover_layer[1][1] - int(self.on_hover_layer[2][1] / 2), self.on_hover_layer[2], (.8, .6, .2, 1), self.on_hover_layer[0].text[0].upper(), (1, 1, 1, 1), tsize*2, True)
+        #dr2dr(self.on_hover_layer[1][0], self.on_hover_layer[1][1] - int(self.on_hover_layer[2][1] / 2), self.on_hover_layer[2][0], self.on_hover_layer[2][1], (.8, .6, .2, 1))
         glDisable(GL_SCISSOR_TEST)
-        Draw_2D_SpeechBubble_Right(tail_pos, [11, 4], (0, 0, 0, .8), self.on_hover_layer[0].text, tsize, (1, 1, 1, 1))
+        dr2dsbr(tail_pos, [11, 4], (0, 0, 0, .8), self.on_hover_layer[0].text, tsize, (1, 1, 1, 1))
 
         # Draw on hover layer buttons.
         if self.on_hover_layer[0].is_active:
@@ -1066,20 +1066,20 @@ def draw_picker_callback_px(self, context):
                 b = buttons[indice]
                 data = b.get_data_from_view_index(active_view)
                 if b.style.shape == RECTANGLE:
-                    #Draw_2D_Rectangle_Frame_Smooth_Center (
+                    #dr2drfsc (
                     #    data.pos[0] + ox, data.pos[1] + oy,
                     #    data.size[0], data.size[1], 1.3, color
                     #)
-                    Draw_2D_Rectangle_Center (
+                    dr2drc (
                         data.pos[0] + ox, data.pos[1] + oy,
                         data.size, (1, 0, 0, 1)
                     )
                 else: # CIRCLE
-                    #Draw_2D_Circle_Line_Smooth (
+                    #dr2dcls (
                     #    (data.pos[0] + ox, data.pos[1] + oy),
                     #    data.size[0], 32, 1.3, color
                     #)
-                    Draw_2D_Circle_Smooth (
+                    dr2dcs (
                         data.pos[0] + ox, data.pos[1] + oy,
                         data.size[0], (1, 0, 0, 1)
                     )
@@ -1087,7 +1087,7 @@ def draw_picker_callback_px(self, context):
         glDisable(GL_SCISSOR_TEST)
 
     # Draw Status Bar.
-    Draw_2D_Rectangle_Rounded_Bottom(o[0], o[1], (pk.size[0], statusbar_height), theme.statusbar_bg_color)
+    dr2drrb(o[0], o[1], (pk.size[0], statusbar_height), theme.statusbar_bg_color)
 
     # Draw Menu Bar.
     if pk.mode == PK_Mode.OBJECT():
@@ -1126,34 +1126,34 @@ def draw_button(ox, oy, b, data, style, text_size):
     yt = data.pos[1] + oy
     # Draw button.
     if style.shape == RECTANGLE:
-        Draw_Text_Box_Center_Rotate_WithDepth (
+        drtbxcrwd (
             xt, yt,
             data.size, data.rotation, style.color,
             b.text, style.text_color, text_size, True, data.depth
         )
         if style.use_icon and style.icon:
             s = min(data.size[0], data.size[1]) * style.icon_scale
-            Draw_Image_Alpha_Center(style.icon, xt, yt, s, s)
+            driac(style.icon, xt, yt, s, s)
     elif style.shape == CIRCLE: # CIRCLE
         shading = style.shading
         if shading == 'FLAT':
             if style.use_outline:
                 if style.outline_blur:
-                    Draw_Text_Circle_Smooth_Outline_Gradient_WithDepth (
+                    drtcsoutgwd (
                         xt, yt,
                         data.size[0], style.color, style.outline_color,
                         1-style.outline_factor, style.outline_blur,
                         b.text, style.text_color, text_size, True, data.depth
                     )
                 else:
-                    Draw_Text_Circle_Smooth_Outline_WithDepth (
+                    drtcsoutwd (
                         xt, yt,
                         data.size[0], style.color,
                         style.outline_color, 1-style.outline_factor,
                         b.text, style.text_color, text_size, True, data.depth
                     )
             else:
-                Draw_Text_Circle_Smooth_WithDepth (
+                drtcswd (
                     xt, yt,
                     data.size[0], style.color,
                     b.text, style.text_color, text_size
@@ -1161,9 +1161,9 @@ def draw_button(ox, oy, b, data, style, text_size):
             # Icon.
             if style.use_icon and style.icon:
                 s = data.size[0] * style.icon_scale
-                Draw_Image_Alpha_Center(style.icon, xt, yt, s, s)
+                driac(style.icon, xt, yt, s, s)
         elif shading == 'GRAD':
-            Draw_Text_Circle_Smooth_Gradient_WithDepth (
+            drtcsgwd (
                 xt, yt,
                 data.size[0], style.color,
                 style.second_color, style.gradient_type, style.gradient_factor, style.gradient_rotation,
@@ -1172,13 +1172,13 @@ def draw_button(ox, oy, b, data, style, text_size):
             # Icon.
             if style.use_icon and style.icon:
                 s = data.size[0] * style.icon_scale
-                Draw_Image_Alpha_Center(style.icon, xt, yt, s, s)
+                driac(style.icon, xt, yt, s, s)
         elif shading == 'IMG':
             if style.icon:
-                Draw_Image_Alpha_Center(style.icon, xt, yt, data.size[0], data.size[1])
+                driac(style.icon, xt, yt, data.size[0], data.size[1])
 
     elif style.shape == ROUND_SQUARE:
-        Draw_2D_Circle_AA_Smooth_WithDepth(
+        dr2dcaaswd(
             xt, yt, data.size[0],
             0.008, style.sharpness_factor, 1.0,
             style.color, data.depth

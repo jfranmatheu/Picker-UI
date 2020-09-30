@@ -67,6 +67,3 @@ Meant to store different scene states/views, eg. one for front view, another one
 - On Hover Text Color.
 - Shape.
 - Others (outline, blur, gradient...)
-
-
-

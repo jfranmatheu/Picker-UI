@@ -3,21 +3,21 @@ from bgl import *
 from math import radians
 
 from .gpu_shaders import (
-    shader_2d_circle,
+    gps2c,
 
-    shader_2d_circle_smooth, shader_2d_circle_smooth_depth,
-    shader_2d_circle_aa_smooth_depth,
-    shader_2d_circle_smooth_gradient_radial, shader_2d_circle_smooth_gradient_radial_depth,
-    shader_2d_circle_smooth_gradient_linear, shader_2d_circle_smooth_gradient_linear_depth,
-    shader_2d_circle_smooth_gradient_reflect, shader_2d_circle_smooth_gradient_reflect_depth,
-    shader_2d_circle_smooth_gradient_diamond, shader_2d_circle_smooth_gradient_diamond_depth,
+    gps2cs, gps2csdep,
+    gps2caasdep,
+    gpgps2csgrd, gps2csgrddep,
+    gps2csgln, gps2csglndep,
+    gps2csgrf, gps2csgrfdep,
+    gps2csgdm, gps2csgdmdep,
 
-    shader_2d_circle_smooth_outline, shader_2d_circle_smooth_outline_depth,
-    shader_2d_circle_smooth_outline_gradient, shader_2d_circle_smooth_outline_gradient_depth
+    gps2csout, gps2csoutdep,
+    gps2csoutg, gps2csoutgdep
 )
 
 # GL_FRAMEBUFFER_SRGB
-def Draw_2D_Circle(_x, _y, _radius, _color=(0, 1, 1, 1), _shader=shader_2d_circle):
+def dr2dc(_x, _y, _radius, _color=(0, 1, 1, 1), _shader=gps2c):
     batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
     glPointSize(_radius*2)
     glEnable(GL_BLEND) # TODO: delete
@@ -27,7 +27,7 @@ def Draw_2D_Circle(_x, _y, _radius, _color=(0, 1, 1, 1), _shader=shader_2d_circl
     glPointSize(4)
     glDisable(GL_BLEND) # TODO: delete
 
-def Draw_2D_Circle_Smooth(_x, _y, _radius, _color=(0, 1, 1, 1), _shader=shader_2d_circle_smooth):
+def dr2dcs(_x, _y, _radius, _color=(0, 1, 1, 1), _shader=gps2cs):
     batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
     glPointSize(_radius*2)
     glEnable(GL_BLEND) # TODO: delete
@@ -37,7 +37,7 @@ def Draw_2D_Circle_Smooth(_x, _y, _radius, _color=(0, 1, 1, 1), _shader=shader_2
     glPointSize(4)
     glDisable(GL_BLEND) # TODO: delete
 
-def Draw_2D_Circle_Smooth_WithDepth(_x, _y, _radius, _color=(0, 1, 1, 1), _depth=1, _shader=shader_2d_circle_smooth_depth):
+def dr2dcs_WithDepth(_x, _y, _radius, _color=(0, 1, 1, 1), _depth=1, _shader=gps2csdep):
     glEnable(GL_DEPTH_TEST) # TODO: delete
     glDepthFunc(GL_LESS) # TODO: improve
     glEnable(GL_BLEND) # TODO: delete
@@ -52,10 +52,10 @@ def Draw_2D_Circle_Smooth_WithDepth(_x, _y, _radius, _color=(0, 1, 1, 1), _depth
     glDisable(GL_DEPTH_TEST) # TODO: delete
     glPointSize(4)
 
-def Draw_2D_Circle_Smooth_Outline (
+def dr2dcs_Outline (
      _x, _y, _radius, _color=(0, 1, 1, 1),
      _outline_color=(0, 0, 0, 1), _outline_factor=0.1,
-     _shader=shader_2d_circle_smooth_outline
+     _shader=gps2csout
     ):
     batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
     glPointSize(_radius*2)
@@ -68,10 +68,10 @@ def Draw_2D_Circle_Smooth_Outline (
     glPointSize(4)
     glDisable(GL_BLEND) # TODO: delete
 
-def Draw_2D_Circle_Smooth_Outline_WithDepth (
+def dr2dcs_Outline_WithDepth (
      _x, _y, _radius, _color=(0, 1, 1, 1),
      _outline_color=(0, 0, 0, 1), _outline_factor=0.1,
-     _depth=0, _shader=shader_2d_circle_smooth_outline_depth
+     _depth=0, _shader=gps2csoutdep
     ):
     batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
     glEnable(GL_DEPTH_TEST) # TODO: delete
@@ -89,10 +89,10 @@ def Draw_2D_Circle_Smooth_Outline_WithDepth (
     glPointSize(4)
     glDisable(GL_BLEND) # TODO: delete
 
-def Draw_2D_Circle_Smooth_Outline_Gradient (
+def dr2dcs_Outline_Gradient (
      _x, _y, _radius, _color=(0, 1, 1, 1),
      _outline_color=(0, 0, 0, 1), _outline_factor=0.1, _use_outline_blur=False,
-     _shader=shader_2d_circle_smooth_outline_gradient
+     _shader=gps2csoutg
     ):
     batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
     glPointSize(_radius*2)
@@ -106,10 +106,10 @@ def Draw_2D_Circle_Smooth_Outline_Gradient (
     glPointSize(4)
     glDisable(GL_BLEND) # TODO: delete
 
-def Draw_2D_Circle_Smooth_Outline_Gradient_WithDepth (
+def dr2dcs_Outline_Gradient_WithDepth (
      _x, _y, _radius, _color=(0, 1, 1, 1),
      _outline_color=(0, 0, 0, 1), _outline_factor=0.1, _use_outline_blur=False,
-     _depth=0, _shader=shader_2d_circle_smooth_outline_gradient_depth
+     _depth=0, _shader=gps2csoutgdep
     ):
     batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
     glEnable(GL_DEPTH_TEST) # TODO: delete
@@ -127,10 +127,10 @@ def Draw_2D_Circle_Smooth_Outline_Gradient_WithDepth (
     glPointSize(4)
     glDisable(GL_BLEND) # TODO: delete
 
-def Draw_2D_Circle_Smooth_Gradient (
+def dr2dcs_Gradient (
      _x, _y, _radius, _color=(0, 1, 1, 1),
      _second_color=(0, 0, 0, 1), _gradient_type='RADIAL', _gradient_factor=0.0, _gradient_rotation=0,
-     _shader=shader_2d_circle_smooth_gradient_radial
+     _shader=gpgps2csgrd
      ):
     #glEnable(GL_SRGB8_ALPHA8)
     glPointSize(_radius*2)
@@ -141,17 +141,17 @@ def Draw_2D_Circle_Smooth_Gradient (
         _shader.bind()
         pass
     elif _gradient_type.startswith('L'):
-        _shader = shader_2d_circle_smooth_gradient_linear
+        _shader = gps2csgln
         batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
         _shader.bind()
         _shader.uniform_float("rotation", radians(_gradient_rotation))
     elif _gradient_type.startswith('R'):
-        _shader = shader_2d_circle_smooth_gradient_reflect
+        _shader = gps2csgrf
         batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
         _shader.bind()
         _shader.uniform_float("rotation", radians(_gradient_rotation))
     elif _gradient_type.startswith('D'):
-        _shader = shader_2d_circle_smooth_gradient_diamond
+        _shader = gps2csgdm
         batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
         _shader.bind()
         _shader.uniform_float("rotation", radians(_gradient_rotation))
@@ -168,10 +168,10 @@ def Draw_2D_Circle_Smooth_Gradient (
     glDisable(GL_BLEND) # TODO: delete
 
 
-def Draw_2D_Circle_Smooth_Gradient_WithDepth (
+def dr2dcs_Gradient_WithDepth (
      _x, _y, _radius, _color=(0, 1, 1, 1), _second_color=(0, 0, 0, 1),
      _gradient_type='RADIAL', _gradient_factor=0.0, _gradient_rotation=0,
-     _depth=0, _shader=shader_2d_circle_smooth_gradient_radial_depth
+     _depth=0, _shader=gps2csgrddep
      ):
     glEnable(GL_DEPTH_TEST) # TODO: delete
     glDepthFunc(GL_LESS) # TODO: improve
@@ -182,17 +182,17 @@ def Draw_2D_Circle_Smooth_Gradient_WithDepth (
         _shader.bind()
         pass
     elif _gradient_type.startswith('L'):
-        _shader = shader_2d_circle_smooth_gradient_linear_depth
+        _shader = gps2csglndep
         batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
         _shader.bind()
         _shader.uniform_float("rotation", radians(_gradient_rotation))
     elif _gradient_type.startswith('R'):
-        _shader = shader_2d_circle_smooth_gradient_reflect_depth
+        _shader = gps2csgrfdep
         batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
         _shader.bind()
         _shader.uniform_float("rotation", radians(_gradient_rotation))
     elif _gradient_type.startswith('D'):
-        _shader = shader_2d_circle_smooth_gradient_diamond_depth
+        _shader = gps2csgdmdep
         batch = batch_for_shader(_shader, 'POINTS', {"pos": [(_x, _y)]})
         _shader.bind()
         _shader.uniform_float("rotation", radians(_gradient_rotation))
@@ -208,7 +208,7 @@ def Draw_2D_Circle_Smooth_Gradient_WithDepth (
     glPointSize(4)
     glDisable(GL_BLEND) # TODO: delete
 
-def Draw_2D_Circle_AA_Smooth_WithDepth(_x, _y, _r, _rf, _f, _cf, _co, _depth=1, _shader=shader_2d_circle_aa_smooth_depth):
+def dr2dcaaswd(_x, _y, _r, _rf, _f, _cf, _co, _depth=1, _shader=gps2caasdep):
     glEnable(GL_DEPTH_TEST) # TODO: delete
     glDepthFunc(GL_LESS) # TODO: improve
     glEnable(GL_BLEND) # TODO: delete

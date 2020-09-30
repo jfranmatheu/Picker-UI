@@ -7,24 +7,24 @@ from blf import (
     clipping as text_clipping, CLIPPING, KERNING_DEFAULT, WORD_WRAP, MONOCHROME
 )
 
-from .rectangle_req import rectangle_indices, rectangle_points
-from .gpu_shaders import shader_2d_generic_basic, shader_2d_generic_basic_depth
+from .rectangle_req import sgeo2ridx, sgeo2rpts
+from .gpu_shaders import gps2gen, gps2gendep
 from .polygon import (
-    Draw_2D_Triangle, Draw_2D_Rectangle_Rounded,
-    Draw_2D_Rectangle_Center, Draw_2D_Rectangle_Center_WithDepth, Draw_2D_Rectangle_Center_Rotate_WithDepth
+    dr2dt, dr2drr,
+    dr2drc, dr2drc_WithDepth, dr2drc_Rotate_WithDepth
 )
 from .circle import (
-    Draw_2D_Circle,
-    Draw_2D_Circle_Smooth, Draw_2D_Circle_Smooth_WithDepth,
-    Draw_2D_Circle_Smooth_Outline, Draw_2D_Circle_Smooth_Outline_WithDepth,
-    Draw_2D_Circle_Smooth_Outline_Gradient, Draw_2D_Circle_Smooth_Outline_Gradient_WithDepth,
-    Draw_2D_Circle_Smooth_Gradient, Draw_2D_Circle_Smooth_Gradient_WithDepth
+    dr2dc,
+    dr2dcs, dr2dcs_WithDepth,
+    dr2dcs_Outline, dr2dcs_Outline_WithDepth,
+    dr2dcs_Outline_Gradient, dr2dcs_Outline_Gradient_WithDepth,
+    dr2dcs_Gradient, dr2dcs_Gradient_WithDepth
 )
 from math import radians, cos, sin
 from ..functions import rotate_point_around_point
 
 
-def Draw_Text(_x, _y, _text, _size, _font_id = 0, _r = 1, _g = 1, _b = 1, _a = 1, _use_shadow = False):
+def drt(_x, _y, _text, _size, _font_id = 0, _r = 1, _g = 1, _b = 1, _a = 1, _use_shadow = False):
     if _use_shadow:
         _font_id = 1
         text_enable(_font_id, SHADOW)
@@ -37,7 +37,7 @@ def Draw_Text(_x, _y, _text, _size, _font_id = 0, _r = 1, _g = 1, _b = 1, _a = 1
     if _use_shadow:
         text_disable(_font_id, SHADOW)
 
-def Draw_Text_AlignCenter(_x=0, _y=0, _text='', _text_size=12, _text_color=(1, 1, 1, 1), _use_shadow=True):
+def drt_AlignCenter(_x=0, _y=0, _text='', _text_size=12, _text_color=(1, 1, 1, 1), _use_shadow=True):
     if _use_shadow:
         text_enable(0, SHADOW)
         text_shadow(0, 3, 0, 0, 0, .6)
@@ -50,9 +50,9 @@ def Draw_Text_AlignCenter(_x=0, _y=0, _text='', _text_size=12, _text_color=(1, 1
     if _use_shadow:
         text_disable(0, SHADOW)
 
-def Draw_Text_Box(_x, _y, _size, _color, _text, _text_color, _text_size=12, _use_shadow=False, shader=shader_2d_generic_basic):
+def drtbx(_x, _y, _size, _color, _text, _text_color, _text_size=12, _use_shadow=False, shader=gps2gen):
     ''' DRAW RECT '''
-    batch_rect = batch_for_shader(shader, 'TRIS', {"pos" : rectangle_points(_x, _y, _size)}, indices=rectangle_indices)
+    batch_rect = batch_for_shader(shader, 'TRIS', {"pos" : sgeo2rpts(_x, _y, _size)}, indices=sgeo2ridx)
     shader.bind()
     shader.uniform_float("color", _color)
     batch_rect.draw(shader)
@@ -71,9 +71,9 @@ def Draw_Text_Box(_x, _y, _size, _color, _text, _text_color, _text_size=12, _use
             text_disable(0, SHADOW)
 
 
-def Draw_Text_Box_Center(_x, _y, _size, _color, _text, _text_color, _text_size=12, _use_shadow=True, shader=shader_2d_generic_basic):
+def drtbxc(_x, _y, _size, _color, _text, _text_color, _text_size=12, _use_shadow=True, shader=gps2gen):
     ''' DRAW RECT '''
-    Draw_2D_Rectangle_Center(_x, _y, _size, _color)
+    dr2drc(_x, _y, _size, _color)
     ''' DRAW TEXT '''
     if _text != '':
         if _use_shadow:
@@ -88,9 +88,9 @@ def Draw_Text_Box_Center(_x, _y, _size, _color, _text, _text_color, _text_size=1
         if _use_shadow:
             text_disable(0, SHADOW)
 
-def Draw_Text_Box_Center_WithDepth(_x, _y, _size, _color, _text, _text_color, _text_size=12, _use_shadow=True, _depth=1, shader=shader_2d_generic_basic_depth):
+def drtbxcwd(_x, _y, _size, _color, _text, _text_color, _text_size=12, _use_shadow=True, _depth=1, shader=gps2gendep):
     ''' DRAW RECT '''
-    Draw_2D_Rectangle_Center_WithDepth(_x, _y, _size, _color, _depth)
+    dr2drc_WithDepth(_x, _y, _size, _color, _depth)
     ''' DRAW TEXT '''
     if _text != '':
         if _use_shadow:
@@ -105,10 +105,10 @@ def Draw_Text_Box_Center_WithDepth(_x, _y, _size, _color, _text, _text_color, _t
         if _use_shadow:
             text_disable(0, SHADOW)
 
-def Draw_Text_Box_Center_Rotate_WithDepth(_x, _y, _size, _angle, _color, _text, _text_color, _text_size=12, _use_shadow=True, _depth=1, shader=shader_2d_generic_basic_depth):
+def drtbxcrwd(_x, _y, _size, _angle, _color, _text, _text_color, _text_size=12, _use_shadow=True, _depth=1, shader=gps2gendep):
     angle = radians(_angle)
     ''' DRAW RECT '''
-    Draw_2D_Rectangle_Center_Rotate_WithDepth(_x, _y, _size, angle, _color, _depth)
+    dr2drc_Rotate_WithDepth(_x, _y, _size, angle, _color, _depth)
     ''' DRAW TEXT '''
     if _text != '':
         text_size(0, _text_size, 72)
@@ -161,9 +161,9 @@ def Draw_Text_Box_Center_Rotate_WithDepth(_x, _y, _size, _angle, _color, _text, 
         else:
             text_disable(0, CLIPPING)
 
-def Draw_Text_Rounded_Box(_x, _y, _size, _color, _text, _text_size, _text_color, shader=shader_2d_generic_basic):
+def drtrbx(_x, _y, _size, _color, _text, _text_size, _text_color, shader=gps2gen):
     ''' DRAW RECT '''
-    Draw_2D_Rectangle_Rounded(_x, _y, _size, _color, 2, 10, shader)
+    dr2drr(_x, _y, _size, _color, 2, 10, shader)
     ''' DRAW TEXT '''
     if _text != '':
         text_size(0, _text_size, 72)
@@ -173,7 +173,7 @@ def Draw_Text_Rounded_Box(_x, _y, _size, _color, _text, _text_size, _text_color,
         text_draw(0, _text)
 
 
-def Draw_2D_SpeechBubble_Right(_tail_tip, _tail_size, _color, _text, _text_size, _text_color, _shader=shader_2d_generic_basic):
+def dr2dsbr(_tail_tip, _tail_size, _color, _text, _text_size, _text_color, _shader=gps2gen):
     margin_top_bottom = 6
     margin_left_right = 12
 
@@ -188,17 +188,17 @@ def Draw_2D_SpeechBubble_Right(_tail_tip, _tail_size, _color, _text, _text_size,
     B = [_tail_tip[0] - _tail_size[0], _tail_tip[1] + _tail_size[1]]
     C = [_tail_tip[0] - _tail_size[0], _tail_tip[1] - _tail_size[1]]
 
-    Draw_2D_Triangle(_tail_tip, B, C, _color)
+    dr2dt(_tail_tip, B, C, _color)
 
-    Draw_2D_Rectangle_Rounded(x, y, [dim[0] + margin_left_right * 2, dim[1] + margin_top_bottom * 2], _color, 2, 6)
+    dr2drr(x, y, [dim[0] + margin_left_right * 2, dim[1] + margin_top_bottom * 2], _color, 2, 6)
 
     text_color(0, *_text_color)
     text_position(0, x + margin_left_right, y + margin_top_bottom, 0)
     text_draw(0, _text)
 
-def Draw_Text_Circle(_x, _y, _radius, _color, _text, _text_color, _text_size=12, _use_shadow=True):
+def drtc(_x, _y, _radius, _color, _text, _text_color, _text_size=12, _use_shadow=True):
     ''' DRAW RECT '''
-    Draw_2D_Circle(_x, _y, _radius, _color)
+    dr2dc(_x, _y, _radius, _color)
     ''' DRAW TEXT '''
     if _text != '':
         if _use_shadow:
@@ -213,7 +213,7 @@ def Draw_Text_Circle(_x, _y, _radius, _color, _text, _text_color, _text_size=12,
         if _use_shadow:
             text_disable(0, SHADOW)
 
-def Draw_TextBoxText(_x, _y, _text, _text_color, _text_size=12, _use_shadow=True):
+def drtBoxText(_x, _y, _text, _text_color, _text_size=12, _use_shadow=True):
     ''' DRAW TEXT '''
     if _text != '':
         if _use_shadow:
@@ -229,54 +229,54 @@ def Draw_TextBoxText(_x, _y, _text, _text_color, _text_size=12, _use_shadow=True
             text_disable(0, SHADOW)
 
 
-def Draw_Text_Circle_Smooth(_x, _y, _radius, _color, _text, _text_color, _text_size=12, _use_shadow=True):
-    Draw_2D_Circle_Smooth(_x, _y, _radius, _color)
-    Draw_TextBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
+def drtc_Smooth(_x, _y, _radius, _color, _text, _text_color, _text_size=12, _use_shadow=True):
+    dr2dcs(_x, _y, _radius, _color)
+    drtBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
 
-def Draw_Text_Circle_Smooth_WithDepth(_x, _y, _radius, _color, _text, _text_color, _text_size=12, _use_shadow=True, _depth=1):
-    Draw_2D_Circle_Smooth_WithDepth(_x, _y, _radius, _color, _depth)
-    Draw_TextBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
+def drtcswd(_x, _y, _radius, _color, _text, _text_color, _text_size=12, _use_shadow=True, _depth=1):
+    dr2dcs_WithDepth(_x, _y, _radius, _color, _depth)
+    drtBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
 
-def Draw_Text_Circle_Smooth_Outline(
+def drtc_Smooth_Outline(
      _x, _y, _radius, _color, _outline_color, _outline_factor,
      _text, _text_color, _text_size=12, _use_shadow=True
     ):
-    Draw_2D_Circle_Smooth_Outline(_x, _y, _radius, _color, _outline_color, _outline_factor)
-    Draw_TextBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
+    dr2dcs_Outline(_x, _y, _radius, _color, _outline_color, _outline_factor)
+    drtBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
 
-def Draw_Text_Circle_Smooth_Outline_WithDepth(
+def drtcsoutwd(
      _x, _y, _radius, _color, _outline_color, _outline_factor,
      _text, _text_color, _text_size=12, _use_shadow=True, _depth=1
     ):
-    Draw_2D_Circle_Smooth_Outline_WithDepth(_x, _y, _radius, _color, _outline_color, _outline_factor, _depth)
-    Draw_TextBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
+    dr2dcs_Outline_WithDepth(_x, _y, _radius, _color, _outline_color, _outline_factor, _depth)
+    drtBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
 
-def Draw_Text_Circle_Smooth_Outline_Gradient(
+def drtc_Smooth_Outline_Gradient(
      _x, _y, _radius, _color, _outline_color, _outline_factor, _use_outline_blur,
      _text, _text_color, _text_size=12, _use_shadow=True
     ):
-    Draw_2D_Circle_Smooth_Outline_Gradient(_x, _y, _radius, _color, _outline_color, _outline_factor, _use_outline_blur)
-    Draw_TextBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
+    dr2dcs_Outline_Gradient(_x, _y, _radius, _color, _outline_color, _outline_factor, _use_outline_blur)
+    drtBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
 
-def Draw_Text_Circle_Smooth_Outline_Gradient_WithDepth(
+def drtcsoutgwd(
      _x, _y, _radius, _color, _outline_color, _outline_factor, _use_outline_blur,
      _text, _text_color, _text_size=12, _use_shadow=True, _depth=1
     ):
-    Draw_2D_Circle_Smooth_Outline_Gradient_WithDepth(_x, _y, _radius, _color, _outline_color, _outline_factor, _use_outline_blur, _depth)
-    Draw_TextBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
+    dr2dcs_Outline_Gradient_WithDepth(_x, _y, _radius, _color, _outline_color, _outline_factor, _use_outline_blur, _depth)
+    drtBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
 
-def Draw_Text_Circle_Smooth_Gradient(
+def drtc_Smooth_Gradient(
      _x, _y, _radius, _color, _second_color,
      _gradient_type, _gradient_factor, _gradient_rotation,
      _text, _text_color, _text_size=12, _use_shadow=True
     ):
-    Draw_2D_Circle_Smooth_Gradient(_x, _y, _radius, _color, _second_color, _gradient_type, _gradient_factor, _gradient_rotation)
-    Draw_TextBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
+    dr2dcs_Gradient(_x, _y, _radius, _color, _second_color, _gradient_type, _gradient_factor, _gradient_rotation)
+    drtBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
 
-def Draw_Text_Circle_Smooth_Gradient_WithDepth(
+def drtcsgwd(
      _x, _y, _radius, _color, _second_color,
      _gradient_type, _gradient_factor, _gradient_rotation,
      _text, _text_color, _text_size=12, _use_shadow=True, _depth=1
     ):
-    Draw_2D_Circle_Smooth_Gradient_WithDepth(_x, _y, _radius, _color, _second_color, _gradient_type, _gradient_factor, _gradient_rotation, _depth)
-    Draw_TextBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
+    dr2dcs_Gradient_WithDepth(_x, _y, _radius, _color, _second_color, _gradient_type, _gradient_factor, _gradient_rotation, _depth)
+    drtBoxText(_x, _y, _text, _text_color, _text_size, _use_shadow)
