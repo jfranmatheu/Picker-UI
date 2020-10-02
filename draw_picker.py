@@ -829,6 +829,8 @@ class PK_OT_draw_picker(Operator):
         #tool_rotate = PK_UI_Tool("Rotate", toolbar)
 
         self.toolbar = toolbar
+        
+        self.ensure_buttons_positions()
 
         ''' SETUP HANDLERS '''
         context.window_manager.modal_handler_add(self)

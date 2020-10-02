@@ -5,6 +5,33 @@ from bpy.props import StringProperty, BoolProperty, EnumProperty, IntProperty
 from .pk_character import PK_Character
 
 
+def get_scene_size(pk, with_margins=False):
+    if with_margins:
+        # In EDIT MODE take into account the tool bar space.
+        if pk.mode == 1:
+            return [pk.size[0] - pk.theme.layerbar_width - 20 - pk.theme.toolbar_width, pk.size[1] - pk.theme.menubar_height - pk.theme.statusbar_height - 35]
+        else:
+            return [pk.size[0] - pk.theme.layerbar_width - 20, pk.size[1] - pk.theme.menubar_height - pk.theme.statusbar_height - 35]
+    else:
+        return (pk.size[0] - pk.theme.layerbar_width, pk.size[1] - pk.theme.menubar_height - pk.theme.statusbar_height)
+
+def get_view_image_size(pk, view):
+    scene_size = get_scene_size(pk, True)
+    if not view.image:
+        return scene_size[0], scene_size[1]
+    s = view.image.size
+    p = s[1] / s[0]
+    if s[1] > s[0]:
+        h = scene_size[1]
+        w = h / p
+        if w > scene_size[0]:
+            w = scene_size[0]
+    else:
+        w = scene_size[0]
+        if h > scene_size[1]:
+            w = h / p
+    return w, h
+    
 ''' NEW PICKER SCENE
     active_picker > scene
 '''

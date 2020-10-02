@@ -52,15 +52,19 @@ class PK_OT_create_picker(Operator):
             layer.name = "Layer_Master"
             layer.text = "Master"
             layer.is_active = True
-            
-            if create.add_selected_bones:
-                if context.selected_pose_bones:
-                    layer.add_selected_pose_bones(context, scene)
-                    
+   
             if create.generate_picker_image:
+                if create.add_selected_bones:
+                    if context.selected_pose_bones:
+                        layer.add_selected_pose_bones(context, scene)
+                        
                 bpy.ops.pk.view_generate_image(view=create.view)
             elif create.picker_image:
                 scene.main_view.image = create.picker_image
+            
+                if create.add_selected_bones:
+                    if context.selected_pose_bones:
+                        layer.add_selected_pose_bones(context, scene)
 
         return {'FINISHED'}
 

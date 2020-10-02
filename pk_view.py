@@ -191,7 +191,11 @@ class PK_View(PropertyGroup):
     def generate_image(self, context, view: str):
         if view == "" or view.isspace():
             return
+        
+        selected_bones = context.selected_pose_bones
+        print("NOW:", selected_bones)
         select_all_pose_bones()
+        print("NEXT:", selected_bones)
         if self.image:
             self.image.gl_free()
             self.image.buffers_free()
@@ -299,6 +303,8 @@ class PK_View(PropertyGroup):
             self.load_image()
         
         deselect_all_pose_bones(context)
+        for b in selected_bones:
+            b.bone.select = True
 
 '''
 class PK_View_Layer_Selector(Panel):

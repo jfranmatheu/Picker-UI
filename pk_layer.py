@@ -5,8 +5,7 @@ from bpy.props import (
     StringProperty, CollectionProperty, BoolProperty,
     PointerProperty, IntProperty, IntVectorProperty, IntProperty
 )
-
-from .functions import get_corner_points_from_bb_relative_to_view, view3d_utils
+from . functions import get_corner_points_from_bb_relative_to_view, view3d_utils
 
 
 SCENE_MAX_BUTTONS = 1024
@@ -297,16 +296,19 @@ class PK_Layer(PropertyGroup):
                     view.button_indices.append(button.index)
         
         # Ensure.
+        '''
+        from . ops_scene import get_scene_size, get_view_image_size
         active_scene = pk.get_active_scene()
         active_view_idx = active_scene.active_view
         active_view = active_scene.get_active_view()
         if active_view.image:
-            x, y, w, h = self.get_view_image_pos_size(active_view)
-        else:
-            w, h = self.get_scene_size(True)
-        for b in new_button_list:
-            d = b.get_data_from_view_index(active_view_idx)
-            d.pos = [int(w * d.factor[0]), int(h * d.factor[1])]
+            w, h = get_view_image_size(pk, active_view)
+        #else:
+        #    w, h = get_scene_size(pk, True)
+            for b in new_button_list:
+                d = b.get_data_from_view_index(active_view_idx)
+                d.pos = [int(w * d.factor[0]), int(h * d.factor[1])]
+        '''
         
         # Recover values.
         region3d.is_perspective     = old_is_perspective
