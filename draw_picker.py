@@ -448,7 +448,7 @@ class PK_OT_draw_picker(Operator):
             x, y, w, h = b_data.get_real_pos_size()
             if point_inside_rect(mouse, (x + ox, y + oy), (w, h)):
                 self.active_button = b
-                return self.select_bone(context, b, event.shift)
+                return self.select_bone(context, b, event.shift, event.alt)
         self.active_button = None
         return False
 
@@ -475,7 +475,7 @@ class PK_OT_draw_picker(Operator):
         # self.active_button = None
         return None
 
-    def select_bone(self, context, button, additive=False) -> bool:
+    def select_bone(self, context, button, additive=False, mirror=False) -> bool:
         arma = self.picker.arm_obj.data
         bone = arma.bones.get(button.name, None)
         if not bone:
@@ -484,6 +484,19 @@ class PK_OT_draw_picker(Operator):
         if not additive:
             deselect_all_pose_bones(context)
         bone.select = True # Select the target bone
+        if mirror:
+            if button.name[-1] in {'L', 'l'}:
+                ending = 'R' if button.name.endswith('L') else 'r'
+                bone = arma.bones.get(button.name[:-1] + ending, None)
+            elif button.name[-1] in {'R', 'r'}:
+                ending = 'L' if button.name.endswith('R') else 'l'
+            else:
+                ending = None
+            if ending:
+                bone = arma.bones.get(button.name[:-1] + ending, None)
+                if bone:
+                    bone.select = True
+                
         arma.bones.active = bone # Make the target bone the active one
         if self.picker.use_button_direct_action:
             if button.action == 'MOVE':
