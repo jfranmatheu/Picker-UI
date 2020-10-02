@@ -29,6 +29,9 @@ class PK_OT_create_picker(Operator):
         arm_obj = context.scene.objects.get(create.armature.name, None)
         if not arm_obj:
             arm = create.armature
+            if len(arm.bones) <= 1:
+                self.report({'WARNING'}, "Your armature sucks! Why you want a picker with 0 or 1 bone? :-)")
+                return {'CANCELLED'}
             for ob in context.scene.objects:
                 if ob.data == arm:
                     arm_obj = ob

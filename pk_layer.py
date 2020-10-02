@@ -222,8 +222,8 @@ class PK_Layer(PropertyGroup):
         else:
             w, h = scene_size # size[0] - 20, size[1] - 20
         # Get relation between sub-spaces.
-        relX = w / _w
-        relY = h / _h
+        relX = w / max(0.01, _w)
+        relY = h / max(0.01, _h)
 
         # Armature Object Matrix World.
         mw = pk.arm_obj.matrix_world
