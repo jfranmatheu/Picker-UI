@@ -72,6 +72,8 @@ class PK_OT_draw_picker(Operator):
     bl_idname = "pk.draw_picker"
     bl_label = ""
     bl_description = "Draw Picker"
+    
+    idx : bpy.props.IntProperty(default=-1)
 
     def toggle_ghost_mode(self, toggle: bool = False) -> bool:
         if toggle:
@@ -696,11 +698,14 @@ class PK_OT_draw_picker(Operator):
 
         ''' SETUP PICKER VARIABLES '''
         self.ghost_mode = False
-        context.scene.pickers.active_index = len(context.scene.pickers.data) - 1
-        if context.scene.pickers.active_index < 0:
-            print("ERROR: Picker data not found")
-            return {'CANCELLED'}
-        self.picker = context.scene.pickers.data[-1]
+        if self.idx == -1:
+            context.scene.pickers.active_index = len(context.scene.pickers.data) - 1
+            if context.scene.pickers.active_index < 0:
+                print("ERROR: Picker data not found")
+                return {'CANCELLED'}
+        else:
+            context.scene.pickers.active_index = self.idx
+        self.picker = context.scene.pickers.data[self.idx]
         if not self.picker:
             print("ERROR: Picker data is invalid or corrupted")
             return {'CANCELLED'}

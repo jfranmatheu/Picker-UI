@@ -35,8 +35,16 @@ def register():
     from . pk_data import PK
     wm.ui_data = PointerProperty(type=PK_UI_Properties)
     scn.pickers = PointerProperty(type=PK)
+    
+    from bpy.utils import register_class
+    from .ui.panels import register as register_ui
+    register_ui(register_class)
 
 def unregister():
+    from .ui.panels import unregister as unregister_ui
+    from bpy.utils import unregister_class
+    unregister_ui(unregister_class)
+    
     auto_load.unregister()
 
     from bpy.types import WindowManager as wm, Scene as scn

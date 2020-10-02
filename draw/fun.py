@@ -14,7 +14,7 @@ from blf import (
 )
 from .gpu_shaders import *
 
-# PRIM
+# PRIMITIVE
 def dr2dp(_pos, _co = (0, 0, 0, .8), s = shader_2d_color_unif):
     b = bat(s, POINTS, {pos: [_pos]})
     s.bind()

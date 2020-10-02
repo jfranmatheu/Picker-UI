@@ -34,3 +34,6 @@ class PK(PropertyGroup):
         if not active_scene:
             return None
         return active_scene.get_active_view()
+    
+    def remove(self, index: int) -> None:
+        self.data.remove(index)
