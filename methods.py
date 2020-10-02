@@ -12,6 +12,10 @@ class PK_OT_create_picker(Operator):
     bl_description = "Create Picker"
 
     create_scene : BoolProperty(default=True)
+    
+    @classmethod
+    def poll(cls, context):
+        return context.mode == 'POSE'
 
     def execute(self, context):
         create = context.window_manager.ui_data
@@ -43,15 +47,21 @@ class PK_OT_create_picker(Operator):
             scene.name = "Main"
             picker.active_scene = 0
             scene.active_view = 0
-            if create.generate_picker_image:
-                bpy.ops.pk.view_generate_image(view=create.view)
-            elif create.picker_image:
-                scene.main_view.image = create.picker_image
+            
             layer = scene.main_view.layers.add()
             layer.name = "Layer_Master"
             layer.text = "Master"
             layer.is_active = True
             
+            if create.add_selected_bones:
+                if context.selected_pose_bones:
+                    layer.add_selected_pose_bones(context, scene)
+                    
+            if create.generate_picker_image:
+                bpy.ops.pk.view_generate_image(view=create.view)
+            elif create.picker_image:
+                scene.main_view.image = create.picker_image
+
         return {'FINISHED'}
 
 

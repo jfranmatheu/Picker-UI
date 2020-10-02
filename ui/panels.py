@@ -47,6 +47,8 @@ class SetupPickerUI(Panel):
             col.prop(pk, 'view')
         else:
             col.prop(pk, 'picker_image')
+        
+        col.prop(pk, 'add_selected_bones', text="Add selected bones")
 
         op = layout.row()
         op.scale_y = 1.25

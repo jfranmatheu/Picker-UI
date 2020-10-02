@@ -10,6 +10,7 @@ class PK_UI_Properties(PropertyGroup):
     
     generate_picker_image : BoolProperty(default=True, name="Generate Picker Images")
     picker_image : PointerProperty(type=Image, name="Picker Image")
+    add_selected_bones : BoolProperty(default=True, name="Add selected bones")
     
     view : EnumProperty (
         items=(

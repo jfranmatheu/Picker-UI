@@ -230,10 +230,12 @@ class PK_Layer(PropertyGroup):
         mw = pk.arm_obj.matrix_world
 
         # Loop over selected bones in Pose Mode.
+        new_button_list = []
         for bone in context.selected_pose_bones:
             button = buttons.get(bone.name, None)
             if not button:
                 button = scene.buttons.add()
+                new_button_list.append(button)
                 # Button.
                 bone_name = bone.name.upper()
                 button.name = bone.name
@@ -293,7 +295,19 @@ class PK_Layer(PropertyGroup):
                     # Add button to view and layer.
                     self.add_button(button)
                     view.button_indices.append(button.index)
-
+        
+        # Ensure.
+        active_scene = pk.get_active_scene()
+        active_view_idx = active_scene.active_view
+        active_view = active_scene.get_active_view()
+        if active_view.image:
+            x, y, w, h = self.get_view_image_pos_size(active_view)
+        else:
+            w, h = self.get_scene_size(True)
+        for b in new_button_list:
+            d = b.get_data_from_view_index(active_view_idx)
+            d.pos = [int(w * d.factor[0]), int(h * d.factor[1])]
+        
         # Recover values.
         region3d.is_perspective     = old_is_perspective
         region3d.view_matrix        = old_view_matrix
