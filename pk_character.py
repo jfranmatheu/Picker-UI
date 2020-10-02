@@ -16,10 +16,13 @@ class PK_Mode(Enum):
     def __call__(self):
         return self.value
 
+def update_name(self, context):
+    if self.name == "":
+        self.name = "My Picker"
 
 class PK_Character(PropertyGroup):
     uuid : StringProperty(default="", name="UUID", description="Unic Identifier of your picker")
-    name : StringProperty(default="My Picker", name="Picker Name", description="Name of your picker")
+    name : StringProperty(default="", name="Picker Name", description="Name of your picker", update=update_name)
 
     pos : IntVectorProperty(default=(0, 0), size=2, min=0, name="Position")
     size : IntVectorProperty(default=(282, 375), size=2, min=280, max=1024, name="Size")

@@ -82,7 +82,8 @@ class ListPickerUI(Panel):
             row = col.row(align=True)
             row.operator('pk.draw_picker', text='', icon='PLAY').idx = i
             row.prop(pk, 'name', text='')
-            row.operator('pk.remove_picker', text='', icon='REMOVE').index = i
+            row.alert = True
+            row.operator('pk.remove_picker', text='', icon='TRASH').index = i
             
         
 classes = (

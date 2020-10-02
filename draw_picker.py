@@ -429,6 +429,9 @@ class PK_OT_draw_picker(Operator):
         
         # ox, oy = self.get_scene_position(True)
         scene = self.picker.get_active_scene()
+        if not scene:
+            self.failed = True
+            return False
         ox, oy, ow, oh = self.get_view_image_pos_size(scene.get_active_view())
         
         active_view = scene.active_view
@@ -509,12 +512,17 @@ class PK_OT_draw_picker(Operator):
         elif self.ctx_area != context.area:
             self.finish()
             return {'CANCELLED'}
-        if not self.picker:
-            self.finish()
-            return {'CANCELLED'}
         if context.mode != 'POSE':
             self.finish()
             return {'CANCELLED'}
+        if not self.picker or self.picker.name == "" or self.failed:
+            print("Name:", self.picker.name)
+            print("HELLO ERROR")
+            del self.picker
+            self.finish()
+            context.area.tag_redraw()
+            return {'CANCELLED'}
+        
         #print(event.type, event.value)
         #print(bpy.context.window_manager.clipboard)
 
@@ -721,6 +729,7 @@ class PK_OT_draw_picker(Operator):
         self.active_view_index = 0
 
         ''' SETUP MODAL VARIABLES '''
+        self.failed = False
         self.override_buttons = False
         self.using_tool = False
         self.temp_button_props = {}
