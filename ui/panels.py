@@ -41,9 +41,12 @@ class SetupPickerUI(Panel):
 
         col.prop(pk, 'picker_name')
         col.prop(pk, 'generate_picker_image')
-        row = col.row()
-        row.enabled = not pk.generate_picker_image
-        row.prop(pk, 'picker_image')
+        # row = col.row()
+        # row.enabled = not pk.generate_picker_image
+        if pk.generate_picker_image:
+            col.prop(pk, 'view')
+        else:
+            col.prop(pk, 'picker_image')
 
         op = layout.row()
         op.scale_y = 1.25

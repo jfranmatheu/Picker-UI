@@ -43,12 +43,15 @@ class PK_OT_create_picker(Operator):
             scene.name = "Main"
             picker.active_scene = 0
             scene.active_view = 0
-            if create.picker_image:
+            if create.generate_picker_image:
+                bpy.ops.pk.view_generate_image(view=create.view)
+            elif create.picker_image:
                 scene.main_view.image = create.picker_image
             layer = scene.main_view.layers.add()
             layer.name = "Layer_Master"
             layer.text = "Master"
             layer.is_active = True
+            
         return {'FINISHED'}
 
 

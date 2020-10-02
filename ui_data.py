@@ -11,9 +11,6 @@ class PK_UI_Properties(PropertyGroup):
     generate_picker_image : BoolProperty(default=True, name="Generate Picker Images")
     picker_image : PointerProperty(type=Image, name="Picker Image")
     
-    '''
-    scene_name : StringProperty(default="New Scene", name="Scene Name", description="Identifier for your scene")
-    view_name : StringProperty(default="New View", name="View Name", description="Identifier for your view")
     view : EnumProperty (
         items=(
             ('FRONT',       "Front",        "Create front view"),
@@ -25,6 +22,11 @@ class PK_UI_Properties(PropertyGroup):
         name="View",
         description="Select view you want to generate"
     )
+    
+    '''
+    scene_name : StringProperty(default="New Scene", name="Scene Name", description="Identifier for your scene")
+    view_name : StringProperty(default="New View", name="View Name", description="Identifier for your view")
+    
     
     layer_name : StringProperty(default="New Layer", name="Layer Name", description="Identifier for your view")
     layer_text : StringProperty(default="Layer", name="Layer Text", description="Text for your layer")

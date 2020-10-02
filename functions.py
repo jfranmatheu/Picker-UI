@@ -83,6 +83,9 @@ def deselect_all_pose_bones(context):
     for b in context.selected_pose_bones_from_active_object:
         b.bone.select = False
 
+def select_all_pose_bones():
+    bpy.ops.pose.select_all(action='SELECT')
+    
 # 2D METHOD
 def distance_between(_p1, _p2): # Punto - Punto
     return hypot(_p1[0] - _p2[0], _p1[1] - _p2[1]) # Método 1

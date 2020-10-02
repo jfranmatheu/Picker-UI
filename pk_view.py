@@ -8,7 +8,7 @@ from .pk_layer import PK_Layer
 from . functions import (
     get_corner_points_from_bb_relative_to_view,
     convert_3d_spacecoords_to_2d_screencoords,
-    viewport_screenshot
+    viewport_screenshot, select_all_pose_bones, deselect_all_pose_bones
 )
 from bpy_extras import view3d_utils
 
@@ -191,6 +191,7 @@ class PK_View(PropertyGroup):
     def generate_image(self, context, view: str):
         if view == "" or view.isspace():
             return
+        select_all_pose_bones()
         if self.image:
             self.image.gl_free()
             self.image.buffers_free()
@@ -296,6 +297,8 @@ class PK_View(PropertyGroup):
         if pk_image:
             self.image = pk_image
             self.load_image()
+        
+        deselect_all_pose_bones(context)
 
 '''
 class PK_View_Layer_Selector(Panel):
