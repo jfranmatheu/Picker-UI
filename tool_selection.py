@@ -266,20 +266,28 @@ class Tool_SelectBox(PK_UI_Tool):
         self.selected_buttons.clear()
 
         active_scene = op.picker.get_active_scene()
-        if active_scene == -1:
+        if not active_scene:
             return
 
         active_view = active_scene.active_view
         if active_view == -1:
-            return False
-
+            return
+        
+        '''
         ox, oy = op.get_scene_position(True)
-
         for b in active_scene.buttons:
             b_data = b.get_data_from_view_index(active_view)
             # Get real coordinates and size.
             # x, y, w, h = b_data.get_real_pos_size()
             if point_inside_rect([b_data.pos[0] + ox, b_data.pos[1] + oy], self.box_origin, self.box_size):
+                self.selected_buttons.append(b)
+        '''
+        ox, oy, ow, oh = op.get_view_image_pos_size(active_scene.get_active_view())
+
+        for b in active_scene.buttons:
+            # TODO: check if buttons is active and visible...
+            x, y, w, h = b.get_data_from_view_index(active_view).get_real_pos_size()
+            if point_inside_rect((x + ox, y + oy), self.box_origin, self.box_size):
                 self.selected_buttons.append(b)
 
     def invoke(self, op, event) -> bool:
