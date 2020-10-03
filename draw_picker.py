@@ -24,7 +24,7 @@ from .draw.fun import (
     _draoi,
     text_size,
     dr2dr, dr2drr, dr2drrt,
-    dr2dt, dr2drrf, dr2drf,
+    dr2dtri, dr2drrf, dr2drf,
     dr2ds, dr2drc, dr2drrb,
     dr2drfsc,
     drt, drtbx, drtrbx, dr2dsbr,

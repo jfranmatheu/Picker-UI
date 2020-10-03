@@ -7,7 +7,7 @@ from .utils.shapes import RectSimple
 from blf import size as text_size, dimensions as text_dim
 from .utils.colors import ColorsRGBA as Color
 from .draw.fun import  (
-    dr2drr_2, dr2dr, dr2dt, dr2drUniform,
+    dr2drr_2, dr2dr, dr2dtri, dr2drUniform,
     dr2dls,
     drtbx, drtrbx, drt,
     dria

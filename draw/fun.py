@@ -274,7 +274,7 @@ sgeo2rr3idxtop = (
     ( 4,  2,  1 ),
     ( 2,  4,  3 )
 )
-def dr2dt(_p1, _p2, _p3, _co = (0, 0.5, 0.5, 1.0), s = gps2gen):
+def dr2dtri(_p1, _p2, _p3, _co = (0, 0.5, 0.5, 1.0), s = gps2gen):
     b = bat(s, TRIS, {pos: (_p1, _p2, _p3)}, indices=triidx)
     s.bind()
     s.uniform_float(co, _co)
@@ -993,7 +993,7 @@ def dr2dsbr(_tail_tip, _tail_size, _co, _t, _ts, _tco, s=gps2gen):
     B = [_tail_tip[0] - _tail_size[0], _tail_tip[1] + _tail_size[1]]
     C = [_tail_tip[0] - _tail_size[0], _tail_tip[1] - _tail_size[1]]
 
-    dr2dt(_tail_tip, B, C, _co)
+    dr2dtri(_tail_tip, B, C, _co)
 
     dr2drr(x, y, [dim[0] + margin_left_right * 2, dim[1] + margin_top_bottom * 2], _co, 2, 6)
 
