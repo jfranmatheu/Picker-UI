@@ -1146,6 +1146,15 @@ def draw_picker_callback_px(self, context):
     ''' DRAW TOOL BAR : EDIT MODE '''
     if pk.mode == 1:
         self.toolbar.draw()
+        
+    # Draw scale mark.
+    tr = [o[0] + pk.size[0] - 3, o[1] + pk.size[1] - 3]
+    dr2dtri(
+        (tr[0], tr[1]),
+        (tr[0] - 6, tr[1]),
+        (tr[0], tr[1] - 6),
+        (.9, .9, .9, 1)
+    )
 
     if behind:
         glDisable(GL_DEPTH_TEST)
