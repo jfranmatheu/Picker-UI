@@ -12,11 +12,11 @@ try:
     gps2ldot = S(*s2ldot)
     gps2ldotmul = S(*s2ldotmul)
 except:
-    gps2ldot = shader_2d_color_unif
-    gps2ldotmul = shader_2d_color_unif
+    gps2ldot = shader_2d_color_flat
+    gps2ldotmul = shader_2d_color_flat
 gps2gen = S(vs2gen, fs2gen)
 gps2gendep = S(vs2gendep, fs2gen)
-gps2rr = S(vs2gen, fs2rr)
+# gps2rr = S(vs2gen, fs2rr) # MacOS issue.
 gps2c = S(vs2c, fs2c3)
 gps2cs = S(vs2c, fs2cs2)
 gps2csdep = S(vs2cdep, fs2cs2)
