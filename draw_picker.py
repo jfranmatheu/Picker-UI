@@ -458,12 +458,18 @@ class PK_OT_draw_picker(Operator):
     def check_button(self, event):
         # print("Searching button...")
         mouse = self.mousePos
-        ox, oy = self.get_scene_position(True)
         scene = self.picker.get_active_scene()
         active_view = scene.active_view
 
         if active_view == -1:
             return None
+        
+        view = scene.get_active_view()
+        
+        if view.image:
+            ox, oy, ow, oh = self.get_view_image_pos_size(view)
+        else:
+            ox, oy = self.get_scene_position(True)
 
         for b in scene.buttons:
             b_data = b.get_data_from_view_index(active_view)

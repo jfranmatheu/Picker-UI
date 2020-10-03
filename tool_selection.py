@@ -363,7 +363,14 @@ class Tool_SelectBox(PK_UI_Tool):
     def draw_callback(self, op, *args, **kwargs):
         if self.selected_buttons:
             active_view = op.picker.get_active_scene().active_view
-            ox, oy = op.get_scene_position(True)
+            if active_view == -1:
+                return
+            view = op.picker.get_active_scene().get_active_view()
+            if view.image:
+                ox, oy, ow, oh = op.get_view_image_pos_size(view)
+            else:
+                ox, oy = op.get_scene_position(True)
+
             for b in self.selected_buttons:
                 b_data = b.get_data_from_view_index(active_view)
                 if b.style.shape == RECTANGLE:
