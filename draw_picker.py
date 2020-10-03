@@ -541,11 +541,14 @@ class PK_OT_draw_picker(Operator):
         if self.signal:
             from . utils.signal import Signal
             if self.signal == Signal.GENERATE_IMAGE:
+                self.prev_signal = self.signal
                 self.signal = Signal.COMPLETE
                 return {'RUNNING_MODAL'}
             elif self.signal == Signal.COMPLETE:
-                self.is_hidden = False
-                self.refresh()
+                if self.prev_signal == Signal.GENERATE_IMAGE:
+                    self.is_hidden = False
+                    self.refresh()
+                self.prev_signal = NONE
                 self.signal = NONE
             return {'RUNNING_MODAL'}
         #print(event.type, event.value)
@@ -755,7 +758,8 @@ class PK_OT_draw_picker(Operator):
 
         ''' SETUP MODAL VARIABLES '''
         self.triggers = []
-        self.signal = None
+        self.signal = NONE
+        self.prev_signal = NONE
         self.signal_args = ()
         self.is_hidden = False
         self.failed = False
