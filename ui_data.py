@@ -17,8 +17,8 @@ class PK_UI_Properties(PropertyGroup):
             ('FRONT',       "Front",        "Create front view"),
             ('RIGHT',       "Right",        "Create right view"),
             ('LEFT',        "Left",         "Create left view"),
-            ('BACK',        "Back",         "Create back view"),
-            ('TOP',         "Top",          "Create top view"),
+            #('BACK',        "Back",         "Create back view"),
+            #('TOP',         "Top",          "Create top view"),
         ), default='FRONT',
         name="View",
         description="Select view you want to generate"

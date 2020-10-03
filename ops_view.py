@@ -70,9 +70,9 @@ class PK_OT_view_generate_image(Operator):
             ('FRONT', 'Front', ""),
             ('LEFT', 'Left', ""),
             ('RIGHT', 'Right', ""),
-            ('TOP', 'Top', ""),
-            ('BOTTOM', 'Bottom', ""),
-            ('BACK', 'Back', "")
+            #('TOP', 'Top', ""),
+            #('BOTTOM', 'Bottom', ""),
+            #('BACK', 'Back', "")
         ),
         default='FRONT',
         name="View",
