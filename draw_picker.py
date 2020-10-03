@@ -74,6 +74,9 @@ class PK_OT_draw_picker(Operator):
     bl_description = "Draw Picker"
     
     idx : bpy.props.IntProperty(default=-1)
+    
+    def refresh(self):
+        self.ctx_area.tag_redraw()
 
     def toggle_ghost_mode(self, toggle: bool = False) -> bool:
         if toggle:
@@ -266,7 +269,7 @@ class PK_OT_draw_picker(Operator):
         for b in scene.buttons:
             b_data = b.get_data_from_view_index(active_view)
             # TODO: CHANGE THIS!
-            if b.style.shape == CIRCLE:
+            if b.style.shape != RECTANGLE:
                 b_data.size[1] = b_data.size[0]
             # Get real coordinates and size.
             x, y, w, h = b_data.get_real_pos_size()
@@ -328,7 +331,7 @@ class PK_OT_draw_picker(Operator):
                 if (self.initial_pos[0] + diff_pos) > ow:
                     return
                 b_data.size[0] = diff_pos
-                if self.active_button.style.shape == CIRCLE:
+                if self.active_button.style.shape != RECTANGLE:
                     b_data.size[1] = b_data.size[0]
             elif side in {TOP, BOTTOM}:
                 local_mouse_pos = my - oy
@@ -346,7 +349,7 @@ class PK_OT_draw_picker(Operator):
                 if (self.initial_pos[1] + diff_pos) > oh:
                     return
                 b_data.size[1] = diff_pos
-                if self.active_button.style.shape == CIRCLE:
+                if self.active_button.style.shape != RECTANGLE:
                     b_data.size[0] = b_data.size[1]
             return
 
@@ -366,7 +369,7 @@ class PK_OT_draw_picker(Operator):
             else:
                 b_data.pos[0] = new_pos
                 b_data.size[0] = new_size
-                if self.active_button.style.shape == CIRCLE:
+                if self.active_button.style.shape != RECTANGLE:
                     b_data.size[1] = b_data.size[0]
         elif side == RIGHT:
             local_mouse_pos = mx - ox
@@ -384,7 +387,7 @@ class PK_OT_draw_picker(Operator):
             else:
                 b_data.pos[0] = new_pos
                 b_data.size[0] = new_size
-                if self.active_button.style.shape == CIRCLE:
+                if self.active_button.style.shape != RECTANGLE:
                     b_data.size[1] = b_data.size[0]
         elif side == BOTTOM:
             local_mouse_pos = my - oy
@@ -402,7 +405,7 @@ class PK_OT_draw_picker(Operator):
             else:
                 b_data.pos[1] = new_pos
                 b_data.size[1] = new_size
-                if self.active_button.style.shape == CIRCLE:
+                if self.active_button.style.shape != RECTANGLE:
                     b_data.size[0] = b_data.size[1]
         elif side == TOP:
             local_mouse_pos = my - oy
@@ -420,7 +423,7 @@ class PK_OT_draw_picker(Operator):
             else:
                 b_data.pos[1] = new_pos
                 b_data.size[1] = new_size
-                if self.active_button.style.shape == CIRCLE:
+                if self.active_button.style.shape != RECTANGLE:
                     b_data.size[0] = b_data.size[1]
 
 
@@ -442,7 +445,7 @@ class PK_OT_draw_picker(Operator):
         for b in scene.buttons:
             b_data = b.get_data_from_view_index(active_view)
             # TODO: CHANGE THIS!
-            if b.style.shape == CIRCLE:
+            if b.style.shape != RECTANGLE:
                 b_data.size[1] = b_data.size[0]
             # Get real coordinates and size.
             x, y, w, h = b_data.get_real_pos_size()
@@ -465,7 +468,7 @@ class PK_OT_draw_picker(Operator):
         for b in scene.buttons:
             b_data = b.get_data_from_view_index(active_view)
             # TODO: CHANGE THIS!
-            if b.style.shape == CIRCLE:
+            if b.style.shape != RECTANGLE:
                 b_data.size[1] = b_data.size[0]
             # Get real coordinates and size.
             x, y, w, h = b_data.get_real_pos_size()
@@ -535,7 +538,16 @@ class PK_OT_draw_picker(Operator):
             self.finish()
             context.area.tag_redraw()
             return {'CANCELLED'}
-        
+        if self.signal:
+            from . utils.signal import Signal
+            if self.signal == Signal.GENERATE_IMAGE:
+                self.signal = Signal.COMPLETE
+                return {'RUNNING_MODAL'}
+            elif self.signal == Signal.COMPLETE:
+                self.is_hidden = False
+                self.refresh()
+                self.signal = NONE
+            return {'RUNNING_MODAL'}
         #print(event.type, event.value)
         #print(bpy.context.window_manager.clipboard)
 
@@ -742,6 +754,10 @@ class PK_OT_draw_picker(Operator):
         self.active_view_index = 0
 
         ''' SETUP MODAL VARIABLES '''
+        self.triggers = []
+        self.signal = None
+        self.signal_args = ()
+        self.is_hidden = False
         self.failed = False
         self.override_buttons = False
         self.using_tool = False
@@ -785,7 +801,7 @@ class PK_OT_draw_picker(Operator):
         m_view = PK_UI_Menu("View", menu_bar)
         m_view.add_item(PK_UI_MenuItem("Switch View", OP, bpy.ops.pk.switch_view))
         m_view.add_item(PK_UI_MenuSeparator())
-        m_view.add_item(PK_UI_MenuItem("Generate Image", OP, bpy.ops.pk.view_generate_image, 'INVOKE_DEFAULT'))
+        m_view.add_item(PK_UI_MenuItem("Generate Image", OP, self.generate_image_safe, 'INVOKE_DEFAULT'))
         m_view.add_item(PK_UI_MenuSeparator())
         m_view.add_item(PK_UI_MenuItem("Clear", OP, bpy.ops.pk.clear_view, 'INVOKE_DEFAULT'))
 
@@ -867,12 +883,22 @@ class PK_OT_draw_picker(Operator):
         if view.image:
             print("Loading picker image...")
             view.image.gl_load()
+    
+    def generate_image_safe(self, *args):
+        from .utils.signal import Signal
+        self.is_hidden = True
+        self.refresh()
+        bpy.ops.pk.view_generate_image(*args)
+        self.signal = Signal.GENERATE_IMAGE
+        # self.signal_args = args
 
 
 def draw_picker_callback_px(self, context):
     if self.ctx_area != context.area:
         return
     if not self.picker:
+        return
+    if self.is_hidden:
         return
 
     ''' INTERESTING VARS '''

@@ -16,4 +16,18 @@ class Simulate:
         # Wnd.event_simulate()
         Simulate.press(ctx, mouse, key)
         timers.register(partial(Simulate.release, ctx, mouse, key), first_interval=time)
+
+# TODO. support args and kwargs.
+class Event:
+    def __init__(self):
+        self.callbacks = []
+    
+    def set_callbacks(self, *args):
+        for arg in args:
+            self.callbacks.append(arg)
+    
+    def add_callback(self, call):
+        self.callbacks.append(call)
         
+    def remove_callbacks(self):
+        self.callbacks.clear()
