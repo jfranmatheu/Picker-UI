@@ -16,7 +16,7 @@ bl_info = {
     "author" : "J. Fran Matheu (@jfranmatheu)",
     "description" : "The most wanted power for rig and animation",
     "blender" : (2, 83, 0),
-    "version" : (0, 1, 0),
+    "version" : (0, 1, 1),
     "location" : "3D Viewport > Sidebar (N) > 'Rig' tab",
     "warning" : "",
     "category" : "Interface"
