@@ -18,7 +18,7 @@ vs2gendep = '''
     void main()
     {
         gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0, 1.0);
-        gl_Position.z = depth / 100 - .1; // Debe ser inferior a 0.92 o así por tanto hay que restarle para asegurar...
+        gl_Position.z = -1.0 + depth / 100; // depth / 100 - .1; // Debe ser inferior a 0.92 o así por tanto hay que restarle para asegurar...
         col = color;
     }
 '''
@@ -212,7 +212,7 @@ in vec2 pos;
 void main()
 {
   gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0, 1.0);
-  gl_Position.z = depth / 100 - .1; // Debe ser inferior a 0.92 o así por tanto hay que restarle para asegurar...
+  gl_Position.z = -1.0 + depth / 100; // Debe ser inferior a 0.92 o así por tanto hay que restarle para asegurar...
   gl_PointSize = size;
 }
 """

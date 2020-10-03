@@ -148,7 +148,7 @@ class PK_Button_Data(PropertyGroup):
     factor : FloatVectorProperty(default=(0, 0), size=2, min=0, max=1, name="Factor")
 
     rotation : IntProperty(default=0, min=-90, max=90, step=5, name="Rotation")
-    depth : FloatProperty(default=50, min=0, max=100, step=1, name="Depth")
+    depth : FloatProperty(default=0, min=0, max=100, step=1, name="Depth")
 
     ''' To avoid a triple loop (as we may want to add a button to multiple layers),
         We need to store the layer users this button has (int).
@@ -374,12 +374,13 @@ class PK_Button_ContextMenu(Panel):
     def draw_settings(self, layout, data):
         layout.separator()
 
-        settings = layout.box().column(align=True)
-        settings.label(text="Settings:", icon='SETTINGS')
-        settings.prop(data, "depth", text="Depth", slider=True, icon='IMAGE_ZDEPTH')
+        #settings = layout.box().column(align=True)
+        #settings.label(text="Settings:", icon='SETTINGS')
+        #settings.prop(data, "depth", text="Depth", slider=True, icon='IMAGE_ZDEPTH')
 
         exp = layout.box().column(align=True)
         exp.label(text="Experimental:", icon='EXPERIMENTAL')
+        exp.prop(data, "depth", text="Depth", slider=True, icon='IMAGE_ZDEPTH')
         exp.prop(data, 'rotation', text="Rotation", slider=True, icon='ORIENTATION_GIMBAL')
 
         #manage = main.box()
