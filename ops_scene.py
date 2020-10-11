@@ -184,9 +184,10 @@ class PK_OT_change_scene_selector(Operator):
                 row = layout.row()
                 row.active_default = active_scene == idx
                 row.operator('pk.change_scene', text=scene.name if scene.name != '' else 'Scene_' + str(idx)).scene_index = idx
+
         context.window_manager.popup_menu(draw, title="Scenes", icon='SCENE_DATA')
-        return WindowManager.invoke_confirm(self, event)
-        return {'FINISHED'}
+        #WindowManager.invoke_confirm(self, event)
+        return {'INTERFACE'}
         #return WindowManager.invoke_props_popup(self, event) # necesita register undo
         #return WindowManager.invoke_popup(self, width=250)
 

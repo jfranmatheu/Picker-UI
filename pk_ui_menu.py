@@ -144,7 +144,7 @@ class PK_UI_Menu:
         if not self.is_on_hover(menu_pos, mouse):
             return True, False
 
-        if event.type == 'LEFTMOUSE' and event.value in {'CLICK', 'PRESS'}:
+        if event.type == 'LEFTMOUSE' and event.value in {'CLICK', 'RELEASE'}: # {'CLICK', 'PRESS'}:
             close = self.on_click() # close on start ?
             self.is_active = False
             self.on_hover_item = None
