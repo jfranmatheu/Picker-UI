@@ -76,9 +76,9 @@ class PK_Button_Style(PropertyGroup):
         name="Shape"
     )
     shape : IntProperty(default=0, name="Shape", min=0)
-    color : FloatVectorProperty(default=(0, 1, 1, .6), size=4, min=0, max=1, subtype='COLOR', name="Color") # (.6, .2, .32, .8)
-    text_color : FloatVectorProperty(default=(1, 1, 1, 1), size=4, min=0, max=1, subtype='COLOR', name="Text Color")
-    color_on_hover : FloatVectorProperty(default=(1, 1, 0, 1), size=4, min=0, max=1, subtype='COLOR', name="OnHover Color")
+    color : FloatVectorProperty(default=(1, 1, 1, 1), size=4, min=0, max=1, subtype='COLOR', name="Color") # (.6, .2, .32, .8)
+    text_color : FloatVectorProperty(default=(0, 0, 0, 1), size=4, min=0, max=1, subtype='COLOR', name="Text Color")
+    color_on_hover : FloatVectorProperty(default=(0, .9, 1, 1), size=4, min=0, max=1, subtype='COLOR', name="OnHover Color")
     text_color_on_hover : FloatVectorProperty(default=(0, 0, 0, 1), size=4, min=0, max=1, subtype='COLOR', name="OnHover Text Color")
 
     # FLAT Shading.
