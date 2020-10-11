@@ -171,4 +171,42 @@ class PK_OT_layer_add_selected_buttons(Operator):
         else:
             self.report({'WARNING'}, "Can't add bones. Not in pose mode or not bones selected")
         return {'FINISHED'}
-    
+
+
+class PK_OT_remove_layer(Operator):
+    bl_idname = "pk.remove_layer"
+    bl_label = "Remove Picker Layer :"
+    bl_description = "Remove selected layer in active picker"
+    bl_options = {'INTERNAL'}
+
+    layers_enum : EnumProperty(items=get_view_layer_as_enum, name="Layer List")
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene.pickers.active_index != -1
+
+    def draw(self, context):
+        self.layout.prop(self, 'layers_enum', text='')
+
+    def invoke(self, context, event):
+        return WindowManager.invoke_props_dialog(self, width=200)
+
+    def execute(self, context):
+        if self.layers_enum == 'NONE':
+            self.report({'WARNING'}, "Selected layer is invalid or no layer is created")
+            return {'CANCELLED'}
+        pickers = context.scene.pickers
+        active_picker = pickers.data[pickers.active_index]
+        if active_picker.active_scene == -1:
+            self.report({'WARNING'}, "Picker has no scene")
+            return {'CANCELLED'}
+        active_scene = active_picker.scenes[active_picker.active_scene]
+        if active_scene.active_view == -1:
+            self.report({'WARNING'}, "Picker has no view")
+            return {'CANCELLED'}
+        # active_view = active_scene.views[active_scene.active_view]
+        active_view = active_scene.get_active_view()
+        if not active_view.remove_layer_by_name(self.layers_enum, active_scene):
+            self.report({'WARNING'}, "Selected layer is invalid (please report)")
+            return {'CANCELLED'}
+        return {'FINISHED'}

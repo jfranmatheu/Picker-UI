@@ -98,7 +98,8 @@ class PK_View(PropertyGroup):
         #    # NOTE: Check this for future.
         #    self.button_indices[idx] = idx - 1
     
-    def remove_layer(self, index):
+    def remove_layer(self, index, scene):
+        self.layers[index].remove_all_buttons(scene)
         self.layers.remove(index)
         
     def clear(self, scene, use_cached_indices = False):
@@ -172,7 +173,22 @@ class PK_View(PropertyGroup):
         scene.update_indices(idx)
         scene.print_button()
         '''
+    
+    def get_layer_index(self, layer_name: str) -> int:
+        layer = self.layers.get(layer_name, None)
+        if not layer:
+            return -1
+        for i, l in enumerate(self.layers):
+            if l == layer:
+                return i
+        return -1
         
+    def remove_layer_by_name(self, layer: str, scene) -> bool:
+        idx = self.get_layer_index(layer)
+        if idx != -1:
+            self.remove_layer(idx, scene)
+            return True
+        return False
 
     def load_image(self):
         if self.image:

@@ -261,11 +261,10 @@ class PK_Button(PropertyGroup):
                 # self.reset_data(other_view)
                 # scene.other_view().remove_button(self)
                 # Remove from scene.
-                scene.remove_button(self, True)
+                scene.remove_button(self, True) # NOTE: check this... hm
         else:
             # Remove from scene.
             scene.remove_button(self)
-
 
 class PK_Button_ContextMenu(Panel):
     bl_idname = "PK_PT_button_context_menu"

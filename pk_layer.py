@@ -69,6 +69,13 @@ class PK_Layer(PropertyGroup):
         self.current_button_index -= 1
         self.update_indices(idx)
         # print(list(self.button_indices))
+    
+    def remove_all_buttons(self, scene):
+        buttons = scene.buttons
+        for indice in reversed(self.button_indices):
+            if indice != -1:
+                buttons[indice].remove(scene, True)
+                indice = -1
 
     def update_indices(self, removed_button_indice):
         # 1ST. Take good indices:
