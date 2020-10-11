@@ -54,10 +54,12 @@ class SetupPickerUI(Panel):
         op.scale_y = 1.25
         op.operator('pk.create_picker', text="Create Picker")
 
+        '''
         if len(context.scene.pickers.data) > 0:
             op = layout.row()
             op.scale_y = 1.25
             op.operator('pk.draw_picker', text="Draw Picker")
+        '''
 
 
 class ListPickerUI(Panel):
