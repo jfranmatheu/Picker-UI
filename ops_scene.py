@@ -98,6 +98,8 @@ class PK_OT_remove_scene(Operator):
         else:
             self.report({'WARNING'}, "Active Scene index ouside bounds! (please report this)")
             return {'CANCELLED'}
+        if len(active_picker.scenes) == 0:
+            bpy.ops.pk.create_scene(scene_name='Main Scene')
         return {'FINISHED'}
 
 ''' CHANGE PICKER SCENE
