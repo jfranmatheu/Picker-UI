@@ -281,10 +281,7 @@ class PK_UI_ToolBar:
             self.active_tool = tool
 
     def get_pos(self):
-        # OUTSIDE
-        # return self.picker.pos[0] + self.picker.size[0] + self.padding_picker, self.picker.pos[1] + self.picker.size[1] - self.picker.theme.menubar_height
-        # INSIDE
-        return self.picker.pos[0] + self.picker.size[0] - self.picker.theme.toolbar_width - self.padding_right, self.picker.pos[1] + self.picker.size[1] - self.picker.theme.menubar_height - self.padding_top
+        return self.picker.pos[0] + self.picker.size[0] - self.picker.theme.toolbar_width - self.padding_right, self.picker.pos[1] + self.picker.size[1] - self.picker.theme.header_height() - self.padding_top
 
     def get_size(self):
         w = self.picker.theme.toolbar_width

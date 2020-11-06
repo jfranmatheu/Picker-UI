@@ -6,7 +6,10 @@ class PK_Theme(PropertyGroup):
     # COLORS
     pk_bg_color              : FloatVectorProperty(default=(0, 0, 0, .6),    size=4, min=0, max=1, subtype='COLOR', name="Background Color")
     pk_text_color            : FloatVectorProperty(default=(1, 1, 1, .8),    size=4, min=0, max=1, subtype='COLOR', name="Text Color")
-
+    
+    wndheader_bg_color       : FloatVectorProperty(default=(0, 0, 0, .6),    size=4, min=0, max=1, subtype='COLOR', name="Header Background Color")
+    wndheader_text_color     : FloatVectorProperty(default=(1, 1, 1, .8),    size=4, min=0, max=1, subtype='COLOR', name="Header Text Color") 
+    
     menubar_bg_color         : FloatVectorProperty(default=(.01, .01, .01, 1), size=4, min=0, max=1, subtype='COLOR', name="MenuBar Background Color")
     menubar_color_active     : FloatVectorProperty(default=(.1, .2, .4, 1), size=4, min=0, max=1, subtype='COLOR', name="Active MenuBar Menu Background Color")
     menubar_drop_bg_color    : FloatVectorProperty(default=[.01, .01, .01, .9], size=4, min=0, max=1, subtype='COLOR', name="MenuBar Dropdown Background Color")
@@ -14,7 +17,7 @@ class PK_Theme(PropertyGroup):
     menubar_text_color       : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="MenuBar Text Color")
 
     layerbar_bg_color        : FloatVectorProperty(default=(.1, .1, .1, 1), size=4, min=0, max=1, subtype='COLOR', name="Background Color")
-    layerbar_button_color  : FloatVectorProperty(default=(.2, .3, .7, 1), size=4, min=0, max=1, subtype='COLOR', name="Layer Button Color")
+    layerbar_button_color    : FloatVectorProperty(default=(.2, .3, .7, 1), size=4, min=0, max=1, subtype='COLOR', name="Layer Button Color")
     layerbar_button_color_active   : FloatVectorProperty(default=(.4, .5, .9, 1), size=4, min=0, max=1, subtype='COLOR', name="Active Layer Button Color")
     layerbar_text_color      : FloatVectorProperty(default=(0, 0, 0, 1),     size=4, min=0, max=1, subtype='COLOR', name="Text Color")
     layerbar_text_color_active     : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="Active Text Color")
@@ -29,6 +32,7 @@ class PK_Theme(PropertyGroup):
 
 
     # DIMENSIONS
+    wndheader_height         : IntProperty(default=25, name="Window Header Height")
     layerbar_width           : IntProperty(default=32, name="Layer Bar Width")
     menubar_height           : IntProperty(default=25, name="MenuBar Height")
     statusbar_height         : IntProperty(default=16, name="StatusBar Height")
@@ -46,3 +50,6 @@ class PK_Theme(PropertyGroup):
 
     # OTHER
     draw_behind_objects : BoolProperty(default=False, name="Draw Behind Objects")
+    
+    def header_height(self):
+        return self.menubar_height + self.wndheader_height

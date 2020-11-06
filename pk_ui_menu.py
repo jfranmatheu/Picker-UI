@@ -186,7 +186,7 @@ class PK_UI_MenuBar:
         self.picker = picker
         self.menus = []
         self.active_menu = None
-        self.pos = [self.picker.pos[0], self.picker.pos[1] + self.picker.size[1] - self.picker.theme.menubar_height]
+        self.pos = [self.picker.pos[0], self.picker.pos[1] + self.picker.size[1] - self.picker.theme.header_height()]
         self.size = [self.picker.size[0], self.picker.theme.menubar_height]
         self.on_hover_menu = None
         self.active_menu_rect = RectSimple()
@@ -206,7 +206,7 @@ class PK_UI_MenuBar:
             raise TypeError
 
     def get_pos(self):
-        return self.picker.pos[0], self.picker.pos[1] + self.picker.size[1] - self.picker.theme.menubar_height
+        return self.picker.pos[0], self.picker.pos[1] + self.picker.size[1] - self.picker.theme.header_height()
 
     def get_size(self):
         return self.picker.size[0], self.picker.theme.menubar_height

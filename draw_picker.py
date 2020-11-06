@@ -157,11 +157,11 @@ class PK_OT_draw_picker(Operator):
         if with_margins:
             # In EDIT MODE take into account the tool bar space.
             if pk.mode == 1:
-                return [pk.size[0] - pk.theme.layerbar_width - 20 - pk.theme.toolbar_width, pk.size[1] - pk.theme.menubar_height - pk.theme.statusbar_height - 35]
+                return [pk.size[0] - pk.theme.layerbar_width - 20 - pk.theme.toolbar_width, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 35]
             else:
-                return [pk.size[0] - pk.theme.layerbar_width - 20, pk.size[1] - pk.theme.menubar_height - pk.theme.statusbar_height - 35]
+                return [pk.size[0] - pk.theme.layerbar_width - 20, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 35]
         else:
-            return (pk.size[0] - pk.theme.layerbar_width, pk.size[1] - pk.theme.menubar_height - pk.theme.statusbar_height)
+            return (pk.size[0] - pk.theme.layerbar_width, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height)
 
     def get_view_image_pos_size(self, view):
         scene_pos = self.get_scene_position(True)
@@ -207,7 +207,7 @@ class PK_OT_draw_picker(Operator):
         view = scene.get_active_view()
         layers = view.layers
 
-        size = [self.picker.theme.layerbar_width, self.picker.size[1] - self.picker.theme.menubar_height]
+        size = [self.picker.theme.layerbar_width, self.picker.size[1] - self.picker.theme.header_height()]
         spacing = [3, 6] # TODO: NOT HARDCODED -> theme.layer_button_spacing
         offX = offY = spacing[0] # we want top spacing to be the same as side spacings (for first item)
         top = self.picker.pos[1] + size[1] # Top coords
@@ -611,7 +611,7 @@ class PK_OT_draw_picker(Operator):
             # SCENE ?
             pk = self.picker
             scene_pos = (pk.pos[0] + pk.theme.layerbar_width, pk.pos[1])
-            scene_size = (pk.size[0] - pk.theme.layerbar_width, pk.size[1] - pk.theme.menubar_height)
+            scene_size = (pk.size[0] - pk.theme.layerbar_width, pk.size[1] - pk.theme.header_height())
 
             if point_inside_rect(self.mousePos, scene_pos, scene_size):
                 self.hover_type = HoverType.SCENE
@@ -760,7 +760,7 @@ class PK_OT_draw_picker(Operator):
                 self.load_view_image(view) # scene.views[scene.active_view]
 
         self.scene_pos = (self.picker.pos[0] + self.picker.theme.layerbar_width, self.picker.pos[1])
-        self.scene_size = (self.picker.size[0] - self.picker.theme.layerbar_width, self.picker.size[1] - self.picker.theme.menubar_height)
+        self.scene_size = (self.picker.size[0] - self.picker.theme.layerbar_width, self.picker.size[1] - self.picker.theme.header_height())
         self.active_view_index = 0
 
         ''' SETUP MODAL VARIABLES '''
@@ -951,7 +951,7 @@ def draw_picker_callback_px(self, context):
     else:
         print("WAR: Picker has no Scene!")
         # Draw Layer Bar.
-        size = [theme.layerbar_width, pk.size[1] - theme.menubar_height - statusbar_height]
+        size = [theme.layerbar_width, pk.size[1] - statusbar_height - theme.header_height()] #]
         _dr2dr(o[0], o[1] + statusbar_height, size, theme.layerbar_bg_color)
 
         # Draw Menu Bar.
@@ -965,9 +965,9 @@ def draw_picker_callback_px(self, context):
     # Real scene transform.
     self.scene_pos = (o[0] + theme.layerbar_width + 10, o[1] + statusbar_height + 10)
     if pk.mode == 1:
-        self.scene_size = (pk.size[0] - theme.layerbar_width - 20 - theme.toolbar_width, pk.size[1] - theme.menubar_height - statusbar_height - 35)
+        self.scene_size = (pk.size[0] - theme.layerbar_width - 20 - theme.toolbar_width, pk.size[1] - theme.header_height() - statusbar_height - 35)
     else:
-        self.scene_size = (pk.size[0] - theme.layerbar_width - 20, pk.size[1] - theme.menubar_height - statusbar_height - 35)
+        self.scene_size = (pk.size[0] - theme.layerbar_width - 20, pk.size[1] - theme.header_height() - statusbar_height - 35)
 
     # frame name points
     width = 90
@@ -1084,7 +1084,7 @@ def draw_picker_callback_px(self, context):
 
     ''' DRAW LAYERS '''
     # Draw Layer Bar.
-    size = [theme.layerbar_width, pk.size[1] - theme.menubar_height]
+    size = [theme.layerbar_width, pk.size[1] - theme.header_height()]
     _dr2dr(o[0], o[1] + statusbar_height, size, theme.layerbar_bg_color)
 
     glEnable(GL_SCISSOR_TEST)
