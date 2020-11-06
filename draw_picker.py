@@ -57,6 +57,7 @@ class HoverType(Enum):
     TOP_RIGHT = 4
     SCENE = 5
     TOOL = 6
+    HEADER = 7
 
 NONE = None
 BOTTOM = 0
@@ -639,7 +640,7 @@ class PK_OT_draw_picker(Operator):
                     self.hover_type = HoverType.LAYER
                     return {'PASS_THROUGH'}
 
-                if not self.is_locked():
+                if not self.is_locked() and point_inside_rect(self.mousePos, (pk.pos[0], pk.pos[1]+pk.size[1]-pk.theme.wndheader_height), (pk.size[0],pk.theme.wndheader_height)):
                     # TOP_RIGHT ? (for scaling).
                     tr = [pk.pos[0] + pk.size[0], pk.pos[1] + pk.size[1]]
                     if point_inside_tri(
@@ -652,7 +653,7 @@ class PK_OT_draw_picker(Operator):
                         Cursor.set_icon(context, CursorIcon.MOVE_X)
                     else:
                         Cursor.set_icon(context, CursorIcon.DEFAULT)
-                        self.hover_type = HoverType.NONE
+                        self.hover_type = HoverType.HEADER
                 else:
                     Cursor.set_icon(context, CursorIcon.DEFAULT)
                     self.hover_type = HoverType.NONE
@@ -671,7 +672,7 @@ class PK_OT_draw_picker(Operator):
                         if not self.is_locked():
                             if self.hover_type == HoverType.TOP_RIGHT:
                                 self.scaling = True
-                            else:
+                            elif self.hover_type == HoverType.HEADER:
                                 self.moving = True
                                 self.offset = self.mousePos - Vector((pk.pos[0], pk.pos[1]))
                     return {'RUNNING_MODAL'}
@@ -708,7 +709,7 @@ class PK_OT_draw_picker(Operator):
                         if not self.is_locked():
                             if self.hover_type == HoverType.TOP_RIGHT:
                                 self.scaling = True
-                            else:
+                            elif self.hover_type == HoverType.HEADER:
                                 self.moving = True
                                 self.offset = self.mousePos - Vector((pk.pos[0], pk.pos[1]))
                     return {'RUNNING_MODAL'}
