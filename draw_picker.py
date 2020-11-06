@@ -72,6 +72,7 @@ class PK_OT_draw_picker(Operator):
     bl_idname = "pk.draw_picker"
     bl_label = ""
     bl_description = "Draw Picker"
+    instance = None
     
     idx : bpy.props.IntProperty(default=-1)
     
@@ -872,17 +873,21 @@ class PK_OT_draw_picker(Operator):
         self.ensure_buttons_positions()
 
         ''' SETUP HANDLERS '''
-        context.window_manager.modal_handler_add(self)
+        if not context.window_manager.modal_handler_add(self):
+            return {'FINISHED'}
         args = (self, context)
         self._handler = context.space_data.draw_handler_add(draw_picker_callback_px, args, 'WINDOW', 'POST_PIXEL')
         context.area.tag_redraw()
+        PK_OT_draw_picker.instance = self
         return {'RUNNING_MODAL'}
 
     def finish(self, context=None):
+        PK_OT_draw_picker.instance = None
         try:
             if hasattr(self, '_handler'):
                 if context:
                     context.space_data.draw_handler_remove(self._handler, 'WINDOW')
+                    context.area.tag_redraw()
                 else:
                     bpy.types.SpaceView3D.draw_handler_remove(self._handler, 'WINDOW')
                 del self._handler

@@ -32,6 +32,11 @@ class SetupPickerUI(Panel):
         pk = context.window_manager.ui_data
         
         layout = self.layout
+        
+        from ..draw_picker import PK_OT_draw_picker
+        if PK_OT_draw_picker.instance:
+            layout.enabled = False
+        
         col = layout.column(align=True)
 
         col.prop(pk, 'armature')
@@ -85,14 +90,22 @@ class ListPickerUI(Panel):
         
         col = layout.column(align=True)
         
-        for i, pk in enumerate(pks.data):
+        from ..draw_picker import PK_OT_draw_picker
+        if not PK_OT_draw_picker.instance:
+            for i, pk in enumerate(pks.data):
+                row = col.row(align=True)
+                row.operator('pk.draw_picker', text='', icon='PLAY').idx = i
+                row.prop(pk, 'name', text='')
+                row.alert = True
+                row.operator('pk.remove_picker', text='', icon='TRASH').index = i
+        else:
+            #for i, pk in enumerate(pks.data):
             row = col.row(align=True)
-            row.operator('pk.draw_picker', text='', icon='PLAY').idx = i
             row.prop(pk, 'name', text='')
             row.alert = True
-            row.operator('pk.remove_picker', text='', icon='TRASH').index = i
-            
-        
+            row.operator('pk.remove_picker', text='', icon='TRASH').index = pks.active_index
+
+
 classes = (
     PickerUIPanel,
     SetupPickerUI,

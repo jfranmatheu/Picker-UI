@@ -7,7 +7,7 @@ shader_2d_color_unif = from_builtin('2D_UNIFORM_COLOR') # 2D_FLAT_COLOR # 2D_SMO
 shader_2d_color_flat = from_builtin('2D_FLAT_COLOR') # 2D_FLAT_COLOR # 2D_SMOOTH_COLOR
 shader_2d_color_smooth = from_builtin('2D_SMOOTH_COLOR') # 2D_FLAT_COLOR # 2D_SMOOTH_COLOR
 shader_3d_color_unif = from_builtin('3D_UNIFORM_COLOR') # 3D_FLAT_COLOR # 3D_SMOOTH_COLOR
-# This is cause a Linux (and maybe MacOS too) shader issue (not in Windows! :))) ).
+# This is cause a Linux (and maybe MacOS too) shader issue (not in the cool Windows! :))) ).
 try:
     gps2ldot = S(*s2ldot)
     gps2ldotmul = S(*s2ldotmul)
