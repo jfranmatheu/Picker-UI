@@ -191,7 +191,7 @@ class PK_Layer(PropertyGroup):
         o = pk.pos
         theme = pk.theme
         scene_pos = (o[0] + theme.layerbar_width + 10, o[1] + 10)
-        scene_size = (pk.size[0] - theme.layerbar_width - 20, pk.size[1] - theme.header_height() - 35)
+        scene_size = (pk.size[0] - theme.layerbar_width - 20, pk.size[1] - theme.header_height() - 20)
 
         image = view.image
         if image:

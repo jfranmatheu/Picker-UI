@@ -157,9 +157,9 @@ class PK_OT_draw_picker(Operator):
         if with_margins:
             # In EDIT MODE take into account the tool bar space.
             if pk.mode == 1:
-                return [pk.size[0] - pk.theme.layerbar_width - 20 - pk.theme.toolbar_width, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 35]
+                return [pk.size[0] - pk.theme.layerbar_width - 20 - pk.theme.toolbar_width, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 20]
             else:
-                return [pk.size[0] - pk.theme.layerbar_width - 20, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 35]
+                return [pk.size[0] - pk.theme.layerbar_width - 20, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 20]
         else:
             return (pk.size[0] - pk.theme.layerbar_width, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height)
 
@@ -965,9 +965,9 @@ def draw_picker_callback_px(self, context):
     # Real scene transform.
     self.scene_pos = (o[0] + theme.layerbar_width + 10, o[1] + statusbar_height + 10)
     if pk.mode == 1:
-        self.scene_size = (pk.size[0] - theme.layerbar_width - 20 - theme.toolbar_width, pk.size[1] - theme.header_height() - statusbar_height - 35)
+        self.scene_size = (pk.size[0] - theme.layerbar_width - 20 - theme.toolbar_width, pk.size[1] - theme.header_height() - statusbar_height - 20)
     else:
-        self.scene_size = (pk.size[0] - theme.layerbar_width - 20, pk.size[1] - theme.header_height() - statusbar_height - 35)
+        self.scene_size = (pk.size[0] - theme.layerbar_width - 20, pk.size[1] - theme.header_height() - statusbar_height - 20)
 
     # frame name points
     width = 90

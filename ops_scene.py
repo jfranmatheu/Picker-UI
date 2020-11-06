@@ -9,9 +9,9 @@ def get_scene_size(pk, with_margins=False):
     if with_margins:
         # In EDIT MODE take into account the tool bar space.
         if pk.mode == 1:
-            return [pk.size[0] - pk.theme.layerbar_width - 20 - pk.theme.toolbar_width, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 35]
+            return [pk.size[0] - pk.theme.layerbar_width - 20 - pk.theme.toolbar_width, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 20]
         else:
-            return [pk.size[0] - pk.theme.layerbar_width - 20, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 35]
+            return [pk.size[0] - pk.theme.layerbar_width - 20, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height - 20]
     else:
         return (pk.size[0] - pk.theme.layerbar_width, pk.size[1] - pk.theme.header_height() - pk.theme.statusbar_height)
 
