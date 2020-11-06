@@ -235,7 +235,8 @@ class PK_UI_MenuBar:
         self.size = [w, h]
         self.pos = [x0, y0]
 
-        dr2drrt(x0, y0, self.size, theme.menubar_bg_color)
+        dr2drrt(x0, y0, (w,self.picker.theme.header_height()), theme.wndheader_bg_color)
+        dr2dr(x0,y0,w,h, theme.menubar_bg_color)
 
         x0 += self.margin_left
 

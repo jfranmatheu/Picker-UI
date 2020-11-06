@@ -7,7 +7,7 @@ class PK_Theme(PropertyGroup):
     pk_bg_color              : FloatVectorProperty(default=(0, 0, 0, .6),    size=4, min=0, max=1, subtype='COLOR', name="Background Color")
     pk_text_color            : FloatVectorProperty(default=(1, 1, 1, .8),    size=4, min=0, max=1, subtype='COLOR', name="Text Color")
     
-    wndheader_bg_color       : FloatVectorProperty(default=(0, 0, 0, .6),    size=4, min=0, max=1, subtype='COLOR', name="Header Background Color")
+    wndheader_bg_color       : FloatVectorProperty(default=(.005, .005, .005, .6),    size=4, min=0, max=1, subtype='COLOR', name="Header Background Color")
     wndheader_text_color     : FloatVectorProperty(default=(1, 1, 1, .8),    size=4, min=0, max=1, subtype='COLOR', name="Header Text Color") 
     
     menubar_bg_color         : FloatVectorProperty(default=(.01, .01, .01, 1), size=4, min=0, max=1, subtype='COLOR', name="MenuBar Background Color")
