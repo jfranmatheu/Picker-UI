@@ -101,7 +101,7 @@ class ListPickerUI(Panel):
         else:
             #for i, pk in enumerate(pks.data):
             row = col.row(align=True)
-            row.prop(pk, 'name', text='')
+            row.prop(pks.data[pks.active_index], 'name', text='')
             row.alert = True
             row.operator('pk.remove_picker', text='', icon='TRASH').index = pks.active_index
 

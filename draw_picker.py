@@ -98,7 +98,7 @@ class PK_OT_draw_picker(Operator):
         return self.picker.is_locked
 
     def is_locked(self):
-        print(self.picker.is_locked)
+        #print(self.picker.is_locked)
         return self.picker.is_locked
 
     def move_picker(self, reg):
@@ -584,7 +584,7 @@ class PK_OT_draw_picker(Operator):
         # We are moving our picker UI.
         elif self.moving:
             if (event.type == 'LEFTMOUSE' and event.value == 'RELEASE') or event.value not in {'PRESS', 'MOUSEMOVE', 'NOTHING'}:
-                print(event.type, event.value)
+                #print(event.type, event.value)
                 Cursor.set_icon(context, CursorIcon.DEFAULT)
                 self.moving = False
                 return {'PASS_THROUGH'}

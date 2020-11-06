@@ -84,7 +84,7 @@ class PK_OT_generate_picker(Operator):
         return {'FINISHED'}
 
     def create_scene(self, context, region3d, create, picker, views, is_facial=False):
-        print("CreateScene::CONTEXT: ", context)
+        #print("CreateScene::CONTEXT: ", context)
         # Create our scene
         pk_scene = picker.scenes.add()
         # Create Buttons
@@ -177,7 +177,7 @@ class PK_OT_generate_picker(Operator):
         pk_view.layer_indices_text.from_string(str(pk_view.layer_indices)[1:-1])
 
     def project_from_view(self, context, create, view, pk_view, pk_buttons, is_facial=False):
-        print("ProjectFromview::CONTEXT: ", context)
+        #print("ProjectFromview::CONTEXT: ", context)
         # GET PROJECTED POINTS AND SIZE FROM ARMATURE OBJECT AND MESH BOUNDS
         # Get specific bound points per view.
         bounds = get_corner_points_from_bb_relative_to_view(context.active_object, view)
@@ -226,7 +226,7 @@ class PK_OT_generate_picker(Operator):
 
 
     def generate_view_image(self, context, pk_view, is_facial=False):
-        print("GenerateViewImage::CONTEXT: ", context)
+        #print("GenerateViewImage::CONTEXT: ", context)
         space   = self.space_data
         overlay = space.overlay
         shading = space.shading
@@ -283,7 +283,7 @@ class PK_OT_generate_picker(Operator):
 
 
     def project_bone_to_picker(self, context, pose_bone, pk_view, pk_button):
-        print("ProjectBone::CONTEXT: ", context)
+        #print("ProjectBone::CONTEXT: ", context)
         # CHECK FOR ERRORS
         if pk_button.name != pose_bone.name:
             print("WARN: Button's name it's different from bone's name!")
