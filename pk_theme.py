@@ -4,25 +4,25 @@ from bpy.props import FloatVectorProperty, IntProperty, BoolProperty, FloatPrope
 
 class PK_Theme(PropertyGroup):
     # COLORS
-    pk_bg_color              : FloatVectorProperty(default=(0, 0, 0, .6),    size=4, min=0, max=1, subtype='COLOR', name="Background Color")
+    pk_bg_color              : FloatVectorProperty(default=(0, 0, 0, .8),    size=4, min=0, max=1, subtype='COLOR', name="Background Color")
     pk_text_color            : FloatVectorProperty(default=(1, 1, 1, .8),    size=4, min=0, max=1, subtype='COLOR', name="Text Color")
     
     wndheader_bg_color       : FloatVectorProperty(default=(.005, .005, .005, .6),    size=4, min=0, max=1, subtype='COLOR', name="Header Background Color")
     wndheader_text_color     : FloatVectorProperty(default=(1, 1, 1, .8),    size=4, min=0, max=1, subtype='COLOR', name="Header Text Color") 
     
-    menubar_bg_color         : FloatVectorProperty(default=(.01, .01, .01, 1), size=4, min=0, max=1, subtype='COLOR', name="MenuBar Background Color")
+    menubar_bg_color         : FloatVectorProperty(default=(.01, .01, .01, .85), size=4, min=0, max=1, subtype='COLOR', name="MenuBar Background Color")
     menubar_color_active     : FloatVectorProperty(default=(.1, .2, .4, 1), size=4, min=0, max=1, subtype='COLOR', name="Active MenuBar Menu Background Color")
-    menubar_drop_bg_color    : FloatVectorProperty(default=[.01, .01, .01, .9], size=4, min=0, max=1, subtype='COLOR', name="MenuBar Dropdown Background Color")
+    menubar_drop_bg_color    : FloatVectorProperty(default=[.02, .02, .024, .9], size=4, min=0, max=1, subtype='COLOR', name="MenuBar Dropdown Background Color")
     menubar_drop_color_active: FloatVectorProperty(default=(.1, .2, .4, 1), size=4, min=0, max=1, subtype='COLOR', name="Active MenuBar Dropdown Item Background Color")
     menubar_text_color       : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="MenuBar Text Color")
 
-    layerbar_bg_color        : FloatVectorProperty(default=(.1, .1, .1, 1), size=4, min=0, max=1, subtype='COLOR', name="Background Color")
+    layerbar_bg_color        : FloatVectorProperty(default=(.1, .1, .1, .85), size=4, min=0, max=1, subtype='COLOR', name="Background Color")
     layerbar_button_color    : FloatVectorProperty(default=(.2, .3, .7, 1), size=4, min=0, max=1, subtype='COLOR', name="Layer Button Color")
     layerbar_button_color_active   : FloatVectorProperty(default=(.4, .5, .9, 1), size=4, min=0, max=1, subtype='COLOR', name="Active Layer Button Color")
     layerbar_text_color      : FloatVectorProperty(default=(0, 0, 0, 1),     size=4, min=0, max=1, subtype='COLOR', name="Text Color")
     layerbar_text_color_active     : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="Active Text Color")
 
-    statusbar_bg_color       : FloatVectorProperty(default=(.01, .01, .01, 1), size=4, min=0, max=1, subtype='COLOR', name="StatusBar Background Color")
+    statusbar_bg_color       : FloatVectorProperty(default=(.01, .01, .01, .85), size=4, min=0, max=1, subtype='COLOR', name="StatusBar Background Color")
     statusbar_text_color     : FloatVectorProperty(default=(1, 1, 1, 1),     size=4, min=0, max=1, subtype='COLOR', name="StatusBar Text Color")
 
     toolbar_bg_color         : FloatVectorProperty(default=(.016, .016, .016, 1), size=4, min=0, max=1, subtype='COLOR', name="ToolBar Background Color")
