@@ -367,6 +367,28 @@ def dr2drcrotdep(_posX, _posY, _sz, _angle, _co = [0, 0.5, 0.5, 1.0], _dep = 1,
     glDisable(GL_BLEND) # TODO: delete
     glDisable(GL_DEPTH_TEST) # TODO: delete
 
+def dr2drcrot(_posX, _posY, _sz, _angle, _co = [0, 0.5, 0.5, 1.0], _dep = 1,
+                             s = gps2gen):
+    points = sgeo2rcpts(_posX, _posY, _sz)
+
+    if _angle != 0:
+        for i, p in enumerate(points):
+            points[i] = rotate_point_around_point(_posX, _posY, p, _angle)
+
+    glEnable(GL_DEPTH_TEST) # TODO: delete
+    glDepthFunc(GL_LESS) # TODO: improve
+    glEnable(GL_BLEND) # TODO: delete
+
+    b = bat(s, TRIS,
+                             {pos: points},
+                             indices=sgeo2ridx)
+    s.bind()
+    s.uniform_float(co, _co)
+    b.draw(s)
+
+    glDisable(GL_BLEND) # TODO: delete
+    glDisable(GL_DEPTH_TEST) # TODO: delete
+
 def dr2drf(_x, _y, _width, _height, _co = [0, 0.5, 0.5, 1.0]):
     A = (_x, _y)
     B = (_x, _y + _height)
@@ -913,6 +935,44 @@ def drtbxcwd(_x, _y, _sz, _co, _t, _tco, _ts=12, _shadow=True, _dep=1, s=gps2gen
         text_draw(0, _t)
         if _shadow:
             text_disable(0, SHADOW)
+
+def drtbxcr(_x, _y, _sz, _angle, _co, _t, _tco, _ts=12, _shadow=True, s=gps2gen):
+    angle = radians(_angle)
+    dr2drcrot(_x, _y, _sz, angle, _co)
+    if _t != '':
+        text_size(0, _ts, 72)
+        dim = text_dim(0, _t)
+        text_color(0, *_tco)
+
+        if _shadow:
+            text_enable(0, SHADOW)
+            text_shadow(0, 3, 0, 0, 0, .6)
+            text_shadow_offset(0, -1, -1)
+        if _angle != 0:
+            text_enable(0, ROTATION)
+            text_rotation(0, angle)
+
+            x, y = rotate_point_around_point(_x, _y, (_x - dim[0]*.5, _y - dim[1]*.5), angle)
+            text_position(0, x, y, 0)
+        else:
+            text_position(0, _x - dim[0]*.5, _y - dim[1]*.5, 0)
+            text_enable(0, CLIPPING)
+            text_clipping(
+                0,
+                _x-_sz[0],
+                _y-_sz[1],
+                _x+_sz[0],
+                _y+_sz[1]
+            )
+
+        text_draw(0, _t)
+
+        if _shadow:
+            text_disable(0, SHADOW)
+        if _angle != 0:
+            text_disable(0, ROTATION)
+        else:
+            text_disable(0, CLIPPING)
 
 def drtbxcrwd(_x, _y, _sz, _angle, _co, _t, _tco, _ts=12, _shadow=True, _dep=1, s=gps2gendep):
     angle = radians(_angle)

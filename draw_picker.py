@@ -28,7 +28,7 @@ from .draw.fun import (
     dr2ds, dr2drc, dr2drrb,
     dr2drfsc,
     drt, drtbx, drtrbx, dr2dsbr,
-    drtbxc, drtbxcwd, drtbxcrwd,
+    drtbxc, drtbxcwd, drtbxcr, drtbxcrwd,
     drtc, drtcswd,
     drtcsoutwd, drtcsoutgwd,
     drtcsgwd,
@@ -452,9 +452,18 @@ class PK_OT_draw_picker(Operator):
             # Get real coordinates and size.
             x, y, w, h = b_data.get_real_pos_size()
             if point_inside_rect(mouse, (x + ox, y + oy), (w, h)):
-                self.active_button = b
+                if not event.shift:
+                    self.picked_buttons.clear()
+                self.picked_buttons.append(b)
                 return self.select_bone(context, b, event.shift, event.alt)
-        self.active_button = None
+        
+        if self.picked_buttons:
+            arma = self.picker.arm_obj.data
+            for button in self.picked_buttons:
+                bone = arma.bones.get(button.name, None)
+                if bone:
+                    bone.select = False
+            self.picked_buttons.clear()
         return False
 
     def check_button(self, event):
@@ -481,9 +490,9 @@ class PK_OT_draw_picker(Operator):
             # Get real coordinates and size.
             x, y, w, h = b_data.get_real_pos_size()
             if point_inside_rect(mouse, (x + ox, y + oy), (w, h)):
-                #self.active_button = b
+                #self.active_button.append(b)
                 return b
-        # self.active_button = None
+        # self.active_button.clear()
         return None
 
     def select_bone(self, context, button, additive=False, mirror=False) -> bool:
@@ -493,7 +502,7 @@ class PK_OT_draw_picker(Operator):
             self.report({'WARNING'}, "Bone '%s' not found" % button.name)
             return False
         if not additive:
-            deselect_all_pose_bones(context)
+            deselect_all_pose_bones(context) # TODO: change to partial deselection of selected bones.
         bone.select = True # Select the target bone
         if mirror:
             if button.name[-1] in {'L', 'l'}:
@@ -730,7 +739,8 @@ class PK_OT_draw_picker(Operator):
                 Cursor.set_icon(context, CursorIcon.DEFAULT)
                 self.inside = False
                 self.on_hover_layer = None
-                self.active_button = None
+                #if self.picker.mode == 1:
+                #self.active_button.clear()
 
         return {'PASS_THROUGH'}
 
@@ -777,6 +787,7 @@ class PK_OT_draw_picker(Operator):
         self.on_hover_layer = None
         self.on_hover_button = None
         self.active_button = None
+        self.picked_buttons = []
         self.scaling_from = NONE
         self.initial_pos = [0, 0]
         self.initial_size = [0, 0]
@@ -1026,50 +1037,53 @@ def draw_picker_callback_px(self, context):
 
     ''' SCENE EDIT MODE '''
     if self.picker.mode == 1:
-        drt(self.scene_pos[0], self.scene_pos[1] + self.scene_size[1] + 5, "[ Edit Mode ]", 12)
+        #drt(self.scene_pos[0], self.scene_pos[1] + self.scene_size[1] + 5, "[ Edit Mode ]", 12)
         self.toolbar.tool_draw(self, ox, oy)
     else:
-        if self.active_button:
-            style = self.active_button.style
-            data = self.active_button.get_data_from_view_index(active_view)
-            shading = style.shading
-            if style.shape == RECTANGLE:
-                drtbxcrwd (
-                    data.pos[0] + ox, data.pos[1] + oy,
-                    data.size, data.rotation, style.color_on_hover,
-                    self.active_button.text, style.text_color_on_hover, text_size, True, data.depth
-                )
-            else: # CIRCLE
-                if shading == 'FLAT':
-                    if style.use_outline:
-                        if style.outline_blur:
-                            drtcsoutgwd (
-                                data.pos[0] + ox, data.pos[1] + oy,
-                                data.size[0], style.color_on_hover, style.outline_color,
-                                style.outline_factor, style.outline_blur,
-                                self.active_button.text, style.text_color_on_hover, text_size
-                            )
-                        else:
-                            drtcsoutwd (
-                                data.pos[0] + ox, data.pos[1] + oy,
-                                data.size[0], style.color_on_hover,
-                                style.outline_color, style.outline_factor,
-                                self.active_button.text, style.text_color_on_hover, text_size
-                            )
-                    else:
-                        drtcswd (
-                            data.pos[0] + ox, data.pos[1] + oy, data.size[0], style.color_on_hover,
-                            self.active_button.text, style.text_color_on_hover, text_size, True
-                        )
-                elif shading == 'GRAD':
-                    drtcsgwd (
+        print(self.picked_buttons)
+        if self.picked_buttons:
+            for button in self.picked_buttons:
+                style = button.style
+                data = button.get_data_from_view_index(active_view)
+                shading = style.shading
+                if style.shape == RECTANGLE:
+                    drtbxcr (
                         data.pos[0] + ox, data.pos[1] + oy,
-                        data.size[0], style.color_on_hover,
-                        style.second_color, style.gradient_type, style.gradient_factor, style.gradient_rotation,
-                        self.active_button.text, style.text_color_on_hover, text_size
+                        data.size, data.rotation, style.color_on_hover,
+                        button.text, style.text_color_on_hover, text_size, True, 1.0
                     )
-                elif shading == 'IMG':
-                    pass
+                    
+                else: # CIRCLE
+                    if shading == 'FLAT':
+                        if style.use_outline:
+                            if style.outline_blur:
+                                drtcsoutgwd (
+                                    data.pos[0] + ox, data.pos[1] + oy,
+                                    data.size[0], style.color_on_hover, style.outline_color,
+                                    style.outline_factor, style.outline_blur,
+                                    button.text, style.text_color_on_hover, text_size, True, 1.0
+                                )
+                            else:
+                                drtcsoutwd (
+                                    data.pos[0] + ox, data.pos[1] + oy,
+                                    data.size[0], style.color_on_hover,
+                                    style.outline_color, style.outline_factor,
+                                    button.text, style.text_color_on_hover, text_size, True, 1.0
+                                )
+                        else:
+                            drtcswd (
+                                data.pos[0] + ox, data.pos[1] + oy, data.size[0], style.color_on_hover,
+                                button.text, style.text_color_on_hover, text_size, True, 1.0
+                            )
+                    elif shading == 'GRAD':
+                        drtcsgwd (
+                            data.pos[0] + ox, data.pos[1] + oy,
+                            data.size[0], style.color_on_hover,
+                            style.second_color, style.gradient_type, style.gradient_factor, style.gradient_rotation,
+                            button.text, style.text_color_on_hover, text_size, True, 1.0
+                        )
+                    elif shading == 'IMG':
+                        pass
 
     ''' DRAW LAYERS '''
     # Draw Layer Bar.
@@ -1144,12 +1158,12 @@ def draw_picker_callback_px(self, context):
         self.edit_menu_bar.draw()
         
     # Cabecera de la ventana del picker.
-    drt(o[0] + 10, o[1] + pk.size[1] - theme.wndheader_height/1.5, self.picker.name, 12, 0, .5, .5, .5, 1, True)
+    drt(o[0] + 10, o[1] + pk.size[1] - theme.wndheader_height/1.5, self.picker.name if pk.mode==0 else "[Edit Mode] " + self.picker.name, 12, 0, .5, .5, .5, 1, True)
 
     ''' DRAW TOOL BAR : EDIT MODE '''
     if pk.mode == 1:
         self.toolbar.draw()
-        
+    
     # Draw scale mark.
     tr = [o[0] + pk.size[0] - 3, o[1] + pk.size[1] - 3]
     dr2dtri(
