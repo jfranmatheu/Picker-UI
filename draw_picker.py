@@ -975,20 +975,8 @@ def draw_picker_callback_px(self, context):
     right = [self.scene_pos[0] + int(self.scene_size[0] / 2) + int(width / 2), self.scene_pos[1] + self.scene_size[1]]
 
     # Draw scene frame representing margins.
-    dr2dls((.4, .4, .4, .2),
-                  # B  # D
-                  # A  # C
-                  [self.scene_pos[0], self.scene_pos[1]], [self.scene_pos[0], self.scene_pos[1] + self.scene_size[1]], # A-B
-                  [self.scene_pos[0], self.scene_pos[1]], [self.scene_pos[0] + self.scene_size[0], self.scene_pos[1]], # A-C
-                  #[self.scene_pos[0], self.scene_pos[1] + self.scene_size[1]], [self.scene_pos[0] + self.scene_size[0], self.scene_pos[1] + self.scene_size[1]], # B-D
-                  [self.scene_pos[0] + self.scene_size[0], self.scene_pos[1]], [self.scene_pos[0] + self.scene_size[0], self.scene_pos[1] + self.scene_size[1]], # C-D
-                  # TOP
-                  [self.scene_pos[0], self.scene_pos[1] + self.scene_size[1]], left, # B - Left
-                  [self.scene_pos[0] + self.scene_size[0], self.scene_pos[1] + self.scene_size[1]], right # D - Right
-                )
-    dr2drrf(left[0], left[1]-10, width, 20, 6, (.4, .4, .4, .2))
-    drt(left[0]+10, left[1]-3, self.picker.name, 11, 0, .5, .5, .5, .5, True)
-
+    dr2drf(*self.scene_pos, *self.scene_size, (.4, .4, .4, .2))
+    
     # Draw picker view image.
     if view.image:
         s = view.image.size
@@ -1153,6 +1141,9 @@ def draw_picker_callback_px(self, context):
         self.menu_bar.draw()
     else: # Edit Mode
         self.edit_menu_bar.draw()
+        
+    # Cabecera de la ventana del picker.
+    drt(o[0] + 10, o[1] + pk.size[1] - theme.wndheader_height/1.5, self.picker.name, 12, 0, .5, .5, .5, 1, True)
 
     ''' DRAW TOOL BAR : EDIT MODE '''
     if pk.mode == 1:
