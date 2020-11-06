@@ -5,7 +5,8 @@ vs2gen = '''
     out vec4 col;
     void main()
     {
-        gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0, 1.0);
+        gl_Position = ModelViewProjectionMatrix * vec4(pos, 1.0, 1.0);
+        gl_Position.z = -1.0;
         col = color;
     }
 '''
@@ -18,7 +19,7 @@ vs2gendep = '''
     void main()
     {
         gl_Position = ModelViewProjectionMatrix * vec4(pos, 0.0, 1.0);
-        gl_Position.z = -1.0 + depth / 100; // depth / 100 - .1; // Debe ser inferior a 0.92 o así por tanto hay que restarle para asegurar...
+        gl_Position.z = -.999999 + depth / 100; // depth / 100 - .1; // Debe ser inferior a 0.92 o así por tanto hay que restarle para asegurar...
         col = color;
     }
 '''

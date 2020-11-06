@@ -457,7 +457,7 @@ class PK_OT_draw_picker(Operator):
                 self.picked_buttons.append(b)
                 return self.select_bone(context, b, event.shift, event.alt)
         
-        if self.picked_buttons:
+        if self.picked_buttons and not event.shift and not event.alt:
             arma = self.picker.arm_obj.data
             for button in self.picked_buttons:
                 bone = arma.bones.get(button.name, None)
@@ -1026,31 +1026,22 @@ def draw_picker_callback_px(self, context):
         # No image, coordinates from scene itself.
         ox, oy = self.scene_pos
 
+    text_size = theme.button_text_size
+    
     # Fondo anaranjado en edit mode.
     if self.picker.mode == 1:
         dr2dr(self.scene_pos[0] - 10, self.scene_pos[1] - 10, self.scene_size[0] + 20 + theme.toolbar_width, self.scene_size[1] + 35, (.8, .4, .2, .05))
-
-    ''' CONTINUE WITH BUTTONS '''
-    text_size = theme.button_text_size
-    if not self.override_buttons:
-        draw_buttons(active_view, layers, buttons, ox, oy, text_size)
-
-    ''' SCENE EDIT MODE '''
-    if self.picker.mode == 1:
-        #drt(self.scene_pos[0], self.scene_pos[1] + self.scene_size[1] + 5, "[ Edit Mode ]", 12)
-        self.toolbar.tool_draw(self, ox, oy)
-    else:
-        print(self.picked_buttons)
+    else: # self.picker.mode == 0:
         if self.picked_buttons:
             for button in self.picked_buttons:
                 style = button.style
                 data = button.get_data_from_view_index(active_view)
                 shading = style.shading
                 if style.shape == RECTANGLE:
-                    drtbxcr (
+                    drtbxcrwd (
                         data.pos[0] + ox, data.pos[1] + oy,
                         data.size, data.rotation, style.color_on_hover,
-                        button.text, style.text_color_on_hover, text_size, True, 1.0
+                        button.text, style.text_color_on_hover, text_size, True, 0
                     )
                     
                 else: # CIRCLE
@@ -1061,29 +1052,38 @@ def draw_picker_callback_px(self, context):
                                     data.pos[0] + ox, data.pos[1] + oy,
                                     data.size[0], style.color_on_hover, style.outline_color,
                                     style.outline_factor, style.outline_blur,
-                                    button.text, style.text_color_on_hover, text_size, True, 1.0
+                                    button.text, style.text_color_on_hover, text_size, True, 0
                                 )
                             else:
                                 drtcsoutwd (
                                     data.pos[0] + ox, data.pos[1] + oy,
                                     data.size[0], style.color_on_hover,
                                     style.outline_color, style.outline_factor,
-                                    button.text, style.text_color_on_hover, text_size, True, 1.0
+                                    button.text, style.text_color_on_hover, text_size, True, 0
                                 )
                         else:
                             drtcswd (
                                 data.pos[0] + ox, data.pos[1] + oy, data.size[0], style.color_on_hover,
-                                button.text, style.text_color_on_hover, text_size, True, 1.0
+                                button.text, style.text_color_on_hover, text_size, True, 0
                             )
                     elif shading == 'GRAD':
                         drtcsgwd (
                             data.pos[0] + ox, data.pos[1] + oy,
                             data.size[0], style.color_on_hover,
                             style.second_color, style.gradient_type, style.gradient_factor, style.gradient_rotation,
-                            button.text, style.text_color_on_hover, text_size, True, 1.0
+                            button.text, style.text_color_on_hover, text_size, True, 0
                         )
                     elif shading == 'IMG':
                         pass
+
+    ''' CONTINUE WITH BUTTONS '''
+    if not self.override_buttons:
+        draw_buttons(active_view, layers, buttons, ox, oy, text_size)
+
+    ''' SCENE EDIT MODE '''
+    #if self.picker.mode == 1:
+        ####drt(self.scene_pos[0], self.scene_pos[1] + self.scene_size[1] + 5, "[ Edit Mode ]", 12)
+        #self.toolbar.tool_draw(self, ox, oy)
 
     ''' DRAW LAYERS '''
     # Draw Layer Bar.
